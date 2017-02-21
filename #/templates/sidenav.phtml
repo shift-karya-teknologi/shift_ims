@@ -1,0 +1,6 @@
+<a class="mdl-navigation__link<?= $_SERVER['PATH_INFO'] === '/' ? ' active' : '' ?>"
+   href="<?= BASE_URL ?>/"><i class="material-icons">apps</i>Shift Apps</a>
+<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/account')
+   || str_starts_with($_SERVER['PATH_INFO'], '/change-password') ? ' active' : '' ?>"
+   href="<?= BASE_URL ?>/account"><i class="material-icons">account_box</i>Akun Saya</a>
+<a class="mdl-navigation__link" href="<?= LOGOUT_URL ?>"><i class="material-icons">exit_to_app</i>Keluar</a>
