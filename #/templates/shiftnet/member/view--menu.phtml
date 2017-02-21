@@ -1,0 +1,14 @@
+<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button">
+  <i class="material-icons">more_vert</i>
+</button>
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+  <li class="mdl-menu__item">
+    <a href="./edit?id=<?= $id ?>"><i class="material-icons">edit</i>Perbarui</a>
+  </li>
+  <li class="mdl-menu__item mdl-menu__item--full-bleed-divider">
+    <a href="./reset-password?id=<?= $id ?>"><i class="material-icons">vpn_key</i>Atur Ulang Sandi</a>
+  </li>
+  <li class="mdl-menu__item">
+    <a href="./delete?id=<?= $id ?>"><i class="material-icons">delete_forever</i>Hapus</a>
+  </li>
+</ul>

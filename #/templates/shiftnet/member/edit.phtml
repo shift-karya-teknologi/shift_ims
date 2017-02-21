@@ -1,0 +1,20 @@
+<form method="POST" class="mdl-grid">
+  <input type="hidden" name="id" value="<?= $member->id ?>">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
+    <input class="mdl-textfield__input" type="text" value="<?= e($member->username) ?>" maxlength="40"
+           id="username" readonly>
+    <label class="mdl-textfield__label" for="username">Nama Pengguna</label>
+  </div>
+  <div class="mdl-cell mdl-cell--6-col">
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="active">
+      <input type="checkbox" id="active" class="mdl-checkbox__input" value="1" name="active" <?= $member->active ? 'checked' : '' ?>>
+      <span class="mdl-checkbox__label">Aktif (dapat login)</span>
+    </label>
+  </div>
+  <div class="mdl-cell mdl-cell--12-col buttons">
+    <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit">
+      <i class="material-icons left">check</i>Simpan</button>
+    <a href="./view?id=<?= $member->id ?>" class="mdl-button mdl-button--raised  mdl-js-button mdl-js-ripple-effect">
+      <i class="material-icons left">close</i>Batal</a>
+  </div>
+</form>

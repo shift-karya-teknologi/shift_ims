@@ -1,0 +1,18 @@
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--12-col">
+    <p>
+      Akun <b><?= $member->username ?></b> memiliki sisa waktu <?= format_duration($member->remainingDuration) ?>.
+      <br>
+      Anda yakin akan menghapus member <b><?= $member->username ?></b> dari daftar member ShiftNet?
+    </p>
+  </div>
+  <div class="mdl-cell mdl-cell--12-col buttons">
+    <form method="POST">
+      <input type="hidden" name="id" value="<?= $member->id ?>">      
+      <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit">
+        <i class="material-icons left">delete_forever</i>Hapus Permanen</button>
+      <a href="./view?id=<?= $member->id ?>" class="mdl-button mdl-button--raised  mdl-js-button mdl-js-ripple-effect">
+        <i class="material-icons left">close</i>Batal</a>
+    </form>
+  </div>
+</div>
