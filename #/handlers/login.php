@@ -2,7 +2,7 @@
 
 // Redirect ke home jika user sudah login
 if ($_SESSION['CURRENT_USER']) {
-  exit(header('Location: ' . BASE_URL));
+  exit(header('Location: ./'));
 }
 
 $username = '';
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $_SESSION['CURRENT_USER'] = $user;
 
       // TODO: Log user activity
-      header('Location: ' . BASE_URL);
+      header('Location: ./');
       exit;
     }
   }
