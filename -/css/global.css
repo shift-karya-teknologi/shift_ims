@@ -137,7 +137,10 @@ h6.mdl-cell {
 }
 }
 
-.buttons .mdl-button {
+.mdl-cell.buttons {
+  min-height: 66px;
+}
+.mdl-cell.buttons .mdl-button {
   top: 10px;
   float: left;
   margin-right: 10px;
@@ -150,3 +153,4 @@ h6.mdl-cell {
 .mdl-button .material-icons {
   margin-right: 6px;
 }
+
