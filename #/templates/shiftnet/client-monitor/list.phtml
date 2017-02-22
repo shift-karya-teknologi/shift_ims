@@ -1,0 +1,33 @@
+<style>
+  .mdl-data-table tr>*:nth-child(1) { width: 50px; text-align: center; }
+  .mdl-data-table tr>*:nth-child(2) { width: 50px; text-align: center; }
+  .mdl-data-table tr>*:nth-child(3) { width: 50px; text-align: center; }
+  .mdl-data-table tr>*:nth-child(4) { text-align: left; }
+  .mdl-data-table tr>*:nth-child(5) { width: 100px; text-align: center; }
+  .mdl-data-table .material-icons { vertical-align: middle; }
+</style>
+<div class="mdl-grid">
+  <div class="mdlx-data-table--responsive mdl-cell mdl-cell--12-col">
+    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+      <thead>
+        <tr>
+          <th><i class="material-icons">desktop_windows</i></th>
+          <th><i class="material-icons">supervisor_account</i></th>
+          <th><i class="material-icons">person</i></th>
+          <th><i class="material-icons">timer</i></th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($clients as $client): ?>
+        <tr id="client-<?= $client->id ?>" class="client">
+          <td><?= $client->id ?></td>
+          <td class="state"></td>
+          <td class="person"></td>
+          <td class="duration"></td>
+        </tr>
+        <?php endforeach ?>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>SNBS_URL='ws://192.168.100.1:8821/';</script>

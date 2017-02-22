@@ -1,0 +1,55 @@
+<form method="get" class="mdl-grid">
+  <?php if (!$voucher): ?>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
+      $error ? 'is-invalid' : '' ?>">
+      <input class="mdl-textfield__input" type="text" name="code" id="code" value="<?= e($code ? $code : '') ?>" maxlength="6">
+      <label class="mdl-textfield__label" for="code">6 Digit Kode Voucher</label>
+      <?php if ($error): ?>
+        <div class="form-error"><?= $error ?></div>
+      <?php endif ?>
+    </div>
+    <div class="mdl-cell mdl-cell--4-col buttons">
+      <button type="submit" class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+        <i class="material-icons">check</i>Periksa
+      </button>
+    </div>
+  <?php else: ?>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+      <input class="mdl-textfield__input" type="text" id="code" value="<?= $voucher->code ?>" readonly>
+      <label class="mdl-textfield__label" for="code">6 Digit Kode Voucher</label>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+      <input class="mdl-textfield__input" type="text" id="price" value="<?= format_money($voucher->price) ?>" readonly>
+      <label class="mdl-textfield__label" for="price">Harga</label>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+      <input class="mdl-textfield__input" type="text" id="duration" value="<?= format_duration($voucher->duration) ?>" readonly>
+      <label class="mdl-textfield__label" for="duration">Durasi</label>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+      <input class="mdl-textfield__input" type="text" id="remainingDuration" value="<?= format_duration($voucher->remainingDuration) ?>" readonly>
+      <label class="mdl-textfield__label" for="remainingDuration">Sisa Waktu</label>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--8-col">
+      <input class="mdl-textfield__input" type="text" id="status" value="<?= $voucher->status ?>" readonly>
+      <label class="mdl-textfield__label" for="status">Status</label>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+      <input class="mdl-textfield__input" type="text" id="expirationDateTime" value="<?= date('d/m/Y H:i:s', strtotime($voucher->expirationDateTime)) ?>" readonly>
+      <label class="mdl-textfield__label" for="expirationDateTime">Kadaluarsa</label>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+      <input class="mdl-textfield__input" type="text" id="creationDateTime" value="<?= date('d/m/Y H:i:s', strtotime($voucher->creationDateTime)) ?>" readonly>
+      <label class="mdl-textfield__label" for="creationDateTime">Tanggal Dibuat</label>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+      <input class="mdl-textfield__input" type="text" id="creationOperator" value="<?= $voucher->creationOperator ?>" readonly>
+      <label class="mdl-textfield__label" for="creationOperator">Dibuat Oleh</label>
+    </div>
+    <div class="mdl-cell mdl-cell--12-col buttons">
+      <a href="?" class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+        <i class="material-icons">check</i>Selesai
+      </a>
+    </div>
+  <?php endif ?>
+</form>

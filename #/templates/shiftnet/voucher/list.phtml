@@ -1,0 +1,40 @@
+<form method="GET" class="mdl-grid">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--3-col">
+    <input class="mdl-textfield__input" type="text" value="<?= $datetime->format('d/m/Y') ?>" id="date" name="date">
+    <label class="mdl-textfield__label" for="date">Tanggal</label>
+  </div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--3-col">
+    <input class="mdl-textfield__input" type="text" readonly value="<?= format_money($total) . ' - ' . count($vouchers) ?> transaksi" id="total">
+    <label class="mdl-textfield__label" for="total">Total</label>
+  </div>
+  <div class="mdl-cell mdl-cell--3-col buttons">
+    <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit">
+      <i class="material-icons left">check</i>Terapkan</button>
+  </div>
+  <?php if (!empty($vouchers)): ?>
+  <div class="mdlx-data-table--responsive mdl-cell mdl-cell--12-col">
+    <table class="mdl-data-table">
+      <thead>
+        <th class="mdl-data-table__cell--non-numeric">Voucher</th>
+        <th class="mdl-data-table__cell--non-numeric">Transaksi</th>
+      </thead>
+      <tbody>
+      <?php foreach ($vouchers as $voucher): ?>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <a href="./check?code=<?= $voucher->code ?>"><?= $voucher->code ?></a>
+            <?= format_duration($voucher->duration) ?>
+            <?= format_money($voucher->price) ?> 
+            <br>EXP: <?= date('d/m/Y H:i:s', strtotime($voucher->expirationDateTime)) ?>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <a href="./view?id=<?= $voucher->id ?>">#<?= $voucher->id ?></a> - Op: <?= $voucher->operator ?>
+            <br>CR: <?= date('d/m/Y H:i:s', strtotime($voucher->creationDateTime)) ?>
+          </td>
+        </tr>
+      <?php endforeach ?>
+      </tbody>
+    </table>
+  </div>
+  <?php endif ?>
+</form>

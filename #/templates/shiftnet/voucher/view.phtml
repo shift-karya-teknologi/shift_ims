@@ -1,0 +1,16 @@
+<style>
+  div.mdl-grid{text-align:center;width:300px;padding-top:20px;}
+  div.mdl-cell{padding:20px 0;}
+  div.mdl-cell>*{padding:0 20px;}
+  h2,h3,p{margin:5px;}
+</style>
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--2dp">
+      <h3><?= format_money($voucher->price) ?></h3>
+      <hr>
+      <h2><?= $voucher->code ?></h2>
+      <h3><?= format_duration($voucher->duration) ?></h3>
+      <hr>
+      <p>EXP: <?= strftime('<b>%A, %e %B %Y</b> jam <b>%H:%M:%S</b>', strtotime($voucher->expirationDateTime)) ?>.</p>
+  </div>
+</div>

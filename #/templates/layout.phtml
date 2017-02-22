@@ -26,5 +26,14 @@
       <main class="mdl-layout__content"><?= $content ?></main>
     </div>
     <?= render('foot') ?>
+    <?php if (!empty($scripts)): ?>
+    <?php foreach ($scripts as $type => $items): ?>
+      <?php if ($type === 'files'): ?>
+        <?php foreach ($items as $key => $item): ?>
+          <script <?= $key . '="' . $item . '"' ?>></script>
+        <?php endforeach ?>
+      <?php endif ?>
+    <?php endforeach ?>
+    <?php endif ?>
   </body>
 </html>
