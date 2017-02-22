@@ -12,6 +12,7 @@ define('CSS_BASE_URL', BASE_URL . '/-/css/');
 define('JS_BASE_URL' , BASE_URL . '/-/js/');
 define('LOGIN_URL'   , BASE_URL . '/login');
 define('LOGOUT_URL'  , BASE_URL . '/logout');
+define('SNBS_URL'    , 'ws://192.168.1.10:8821/');
 
 // setup encoding
 mb_internal_encoding('utf-8');
