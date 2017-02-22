@@ -9,7 +9,7 @@ define('TEMPLATE_PATH', __DIR__ . '/#/templates');
 define('TMP_PATH'     , __DIR__ . '/#/tmp');
 
 // url definitions
-define('BASE_URL'    , '/shift_ims');
+define('BASE_URL'    , $cfg['base_url']);
 define('CSS_BASE_URL', BASE_URL . '/-/css/');
 define('JS_BASE_URL' , BASE_URL . '/-/js/');
 define('LOGIN_URL'   , BASE_URL . '/login');
