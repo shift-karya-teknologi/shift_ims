@@ -1,20 +1,23 @@
-var ws;
-
 const ClientState = Object.freeze({
   Offline     : 0,
   Ready       : 1,
   Used        : 2,
-  Maintenance : 3,
+  Maintenance : 3
 });
 
 const UserGroup = Object.freeze({
   Unknown       : 0,
   Administrator : 1,
   Member        : 2,
-  Guest         : 3,
+  Guest         : 3
 });
 
+var ws;
 var clients = new Map();
+
+function is_connected() {
+  return ws && ws.readyState === 1;
+}
 
 function reset_table_body() {
   document.querySelectorAll('.person').forEach(function(el) { el.innerHTML = ''; });
@@ -57,15 +60,20 @@ function update_table_row(id, client) {
 
 function set_ui_enabled(enabled){
   reset_table_body();
-//  $('#action').prop('disabled', enabled ? '' : 'disabled');
-//  $('#go-button').prop('disabled', enabled ? '' : 'disabled');
-//  $('#all-checkbox').prop('disabled', enabled ? '' : 'disabled');
+  document.querySelector('#server-indicator').innerHTML = enabled ? 'report_problem' : 'check_circle';
+}
+
+function uncheckAll() {
+  document.querySelectorAll('.mdl-js-checkbox').forEach(function(el) {
+    el.MaterialCheckbox.uncheck();
+  });
 }
 
 function send(msgType, data) {
-  if (ws === undefined || ws === null)
+  if (!is_connected())
     return;
-  var message = JSON.stringify(["client-monitor", msgType, data == undefined ? null : data]);
+  
+  var message = JSON.stringify(["client-monitor", msgType, data === undefined ? null : data]);
   console.log('sending message:', message);
   ws.send(message);
 };
@@ -81,97 +89,78 @@ function duration_str(duration) {
   return str_pad_left(h, 2, '0') + ':' + str_pad_left(m, 2, '0');
 }
 
+function connect() {
+  ws = new WebSocket(window['SNBS_URL']);
+
+  ws.onopen = function() {
+    send("init");
+  };
+
+  ws.onmessage = function (e) {
+    var msg = JSON.parse(e.data);
+    var type = msg[0];
+    var data = msg[1];
+
+    console.log(msg);
+
+    if (type === 'init') {
+      set_ui_enabled(true);
+
+      clients = new Map();
+
+      for (var i = 0; i < data.clients.length; i++) {
+        var client = data.clients[i];
+        clients.set(client.id, client);
+        update_table_row(client.id, client);
+      }
+
+    }
+    else if (type === 'client-session-start' || type === 'client-session-stop' || type === 'client-session-sync' || type === 'client-session-timeout'
+      || type === 'client-maintenance-started' || type === 'client-maintenance-finished'
+      || type === 'client-connected' || type === 'client-disconnected') {
+      update_table_row(data.id, data);
+    }
+  };
+
+  ws.onclose = function() {
+    ws = null;
+    set_ui_enabled(false);
+    setTimeout(connect, 5000);
+  }
+  
+  
+}
+
+function do_action(action, callback) {
+  if (!is_connected()) return;
+  var ids = [];
+  document.querySelectorAll('tr.is-selected').forEach(function(el){
+    var id = parseInt(el.id.replace('client-', ''));
+    var client = clients.get(id);
+    if (callback(client.state))
+      ids.push(id);
+  });
+  send(action, ids);
+  uncheckAll();
+}
+
 (function () {
   if (!("WebSocket" in window)) {
     console.log("Unsupported browser!");
     return;
   }
   
-  (function connect() {
-    ws = new WebSocket(SNBS_URL);
-
-    ws.onopen = function() {
-      send("init");
-    };
-    
-    ws.onmessage = function (e) {
-      var msg = JSON.parse(e.data);
-      var type = msg[0];
-      var data = msg[1];
-      
-      console.log(msg);
-      
-      if (type === 'init') {
-        set_ui_enabled(true);
-        
-        clients = new Map();
-        
-        for (var i = 0; i < data.clients.length; i++) {
-          var client = data.clients[i];
-          clients.set(client.id, client);
-          update_table_row(client.id, client);
-        }
-        
-      }
-      else if (type === 'client-session-start' || type === 'client-session-stop' || type === 'client-session-sync' || type === 'client-session-timeout'
-        || type === 'client-maintenance-started' || type === 'client-maintenance-finished'
-        || type === 'client-connected' || type === 'client-disconnected') {
-        update_table_row(data.id, data);
-      }
-    };
-    
-    ws.onclose = function() {
-      ws = null;
-      set_ui_enabled(false);
-      setTimeout(connect, 5000);
-    }
-  })();
-  
-  set_ui_enabled(false);
-  
   var stopActionElement = document.getElementById('stop-action');
   var shutDownActionElement = document.getElementById('shutdown-action');
   var restartActionElement = document.getElementById('restart-action');
   
-  function uncheckAll() {
-    document.querySelectorAll('.mdl-js-checkbox').forEach(function(el) {
-      el.MaterialCheckbox.uncheck();
-    });
-  }
+  function stop_callback(state) { return state === ClientState.Used || state === ClientState.Maintenance; }
+  function shutdown_callback(state) { return state === ClientState.Ready; }
+  function restart_callback(state) { return state !== ClientState.Offline; }
   
-  stopActionElement.addEventListener('click', function() {
-    var ids = [];
-    document.querySelectorAll('tr.is-selected').forEach(function(el){
-      var id = parseInt(el.id.replace('client-', ''));
-      var client = clients.get(id);
-      if (client.state === ClientState.Used || client.state === ClientState.Maintenance)
-        ids.push(id);
-    });
-    send("stop-sessions", ids);
-    uncheckAll();
-  });
+  stopActionElement.addEventListener('click', function() { do_action("stop-sessions", stop_callback); });
+  shutDownActionElement.addEventListener('click', function() { do_action("shutdown-clients", shutdown_callback); });
+  restartActionElement.addEventListener('click', function() { do_action("restart-clients", restart_callback); });
   
-  shutDownActionElement.addEventListener('click', function() {
-    var ids = [];
-    document.querySelectorAll('tr.is-selected').forEach(function(el){
-      var id = parseInt(el.id.replace('client-', ''));
-      var client = clients.get(id);
-      if (client.state === ClientState.Ready)
-        ids.push(id);
-    });
-    send("shutdown-clients", ids);
-    uncheckAll();
-  });
-  
-  restartActionElement.addEventListener('click', function() {
-    var ids = [];
-    document.querySelectorAll('tr.is-selected').forEach(function(el){
-      var id = parseInt(el.id.replace('client-', ''));
-      var client = clients.get(id);
-      if (client.state !== ClientState.Offline)
-        ids.push(id);
-    });
-    send("restart-clients", ids);
-    uncheckAll();
-  });
+  connect();
 })();

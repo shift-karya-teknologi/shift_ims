@@ -1,5 +1,7 @@
 <?php
 
+$cfg = require __DIR__ . '/#/config.inc';
+
 // path definitions
 define('CORELIB_PATH' , __DIR__ . '/#/corelib');
 define('HANDLER_PATH' , __DIR__ . '/#/handlers');
@@ -12,7 +14,6 @@ define('CSS_BASE_URL', BASE_URL . '/-/css/');
 define('JS_BASE_URL' , BASE_URL . '/-/js/');
 define('LOGIN_URL'   , BASE_URL . '/login');
 define('LOGOUT_URL'  , BASE_URL . '/logout');
-define('SNBS_URL'    , 'ws://192.168.1.10:8821/');
 
 // setup encoding
 mb_internal_encoding('utf-8');
@@ -35,7 +36,7 @@ session_name('shift-ims');
 session_start();
 
 // setup database
-$db = new PDO('mysql:host=localhost;port=3306;dbname=shift_ims;charset=utf8mb4', 'root', '12345', [
+$db = new PDO($cfg['db']['dsn'], $cfg['db']['username'], $cfg['db']['password'], [
   PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
   PDO::ATTR_PERSISTENT => false
 ]);
