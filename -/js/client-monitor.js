@@ -60,7 +60,7 @@ function update_table_row(id, client) {
 
 function set_ui_enabled(enabled){
   reset_table_body();
-  document.querySelector('#server-indicator').innerHTML = enabled ? 'report_problem' : 'check_circle';
+  document.querySelector('#server-indicator').innerHTML = enabled ? 'check_circle' : 'report_problem';
 }
 
 function uncheckAll() {
