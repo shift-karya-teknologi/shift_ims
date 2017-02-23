@@ -1,14 +1,32 @@
 <form method="GET" class="mdl-grid">
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--3-col">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
     <input class="mdl-textfield__input" type="text" value="<?= $datetime->format('d/m/Y') ?>" id="date" name="date">
     <label class="mdl-textfield__label" for="date">Tanggal Shift</label>
   </div>
-  <div class="mdl-cell mdl-cell--3-col buttons">
+  <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col">
+    <select id="clientId" name="clientId" class="mdl-selectfield__select">
+      <option value="0">Semua Client</option>
+      <?php foreach ($clients as $client): ?>
+        <option value="<?= $client->id ?>" <?= $client->id == $clientId ? 'selected' : '' ?>>Client <?= $client->id ?></option>
+      <?php endforeach ?>
+    </select>
+    <label class="mdl-selectfield__label" for="clientId">Client</label>
+  </div>
+  <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col">
+    <select id="groupId" name="groupId" class="mdl-selectfield__select">
+      <option value="0">Semua Grup</option>
+      <?php foreach ($groups as $id => $name): ?>
+        <option value="<?= $id ?>" <?= $id == $groupId ? 'selected' : '' ?>><?= $name ?></option>
+      <?php endforeach ?>
+    </select>
+    <label class="mdl-selectfield__label" for="groupId">Grup</label>
+  </div>
+  <div class="mdl-cell mdl-cell--6-col buttons">
     <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit">
       <i class="material-icons left">check</i>Terapkan</button>
   </div>
   <?php if (empty($activities)): ?>
-  <p class="mdl-cell mdl-cell--12-col">Tidak ada aktifitas pada tanggal yang dipilih.</p>
+  <p class="mdl-cell mdl-cell--12-col">Tidak ada aktifitas berdasarkan kriteria yang dipilih.</p>
   <?php else: ?>
   <style>
     .mdl-data-table th .material-icons { vertical-align: middle; }
