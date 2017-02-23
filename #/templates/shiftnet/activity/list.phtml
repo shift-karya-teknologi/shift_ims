@@ -1,1 +1,42 @@
-
+<form method="GET" class="mdl-grid">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--3-col">
+    <input class="mdl-textfield__input" type="text" value="<?= $datetime->format('d/m/Y') ?>" id="date" name="date">
+    <label class="mdl-textfield__label" for="date">Tanggal Shift</label>
+  </div>
+  <div class="mdl-cell mdl-cell--3-col buttons">
+    <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit">
+      <i class="material-icons left">check</i>Terapkan</button>
+  </div>
+  <?php if (!empty($activities)): ?>
+  <style>
+    .mdl-data-table th .material-icons { vertical-align: middle; }
+    .mdl-data-table tr>*{text-align:left;}
+    .mdl-data-table tr>*:nth-child(1),
+    .mdl-data-table tr>*:nth-child(2)
+    {text-align:center;}
+    
+  </style>
+  <div class="mdlx-data-table--responsive mdl-cell mdl-cell--12-col">
+    <table class="mdl-data-table">
+      <thead>
+        <tr>
+          <th><i class="material-icons">watch</i></th>
+          <th><i class="material-icons">tv</i></th>
+          <th><i class="material-icons">person</i></th>
+          <th>Rincian</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach ($activities as $activity): ?>
+        <tr>
+          <td><?= date('H:i:s', strtotime($activity->dateTime)) ?></td>
+          <td><?= $activity->clientId ?></td>
+          <td><?= $activity->username ?></td>
+          <td><?= $activity->detail ?></td>
+        </tr>
+      <?php endforeach ?>
+      </tbody>
+    </table>
+  </div>
+  <?php endif ?>
+</form>

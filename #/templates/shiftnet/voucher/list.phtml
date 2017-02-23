@@ -1,7 +1,7 @@
 <form method="GET" class="mdl-grid">
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--3-col">
     <input class="mdl-textfield__input" type="text" value="<?= $datetime->format('d/m/Y') ?>" id="date" name="date">
-    <label class="mdl-textfield__label" for="date">Tanggal</label>
+    <label class="mdl-textfield__label" for="date">Tanggal Shift</label>
   </div>
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--3-col">
     <input class="mdl-textfield__input" type="text" readonly value="<?= format_money($total) . ' - ' . count($vouchers) ?> transaksi" id="total">
