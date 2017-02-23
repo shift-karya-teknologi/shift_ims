@@ -7,13 +7,14 @@
     <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit">
       <i class="material-icons left">check</i>Terapkan</button>
   </div>
-  <?php if (!empty($activities)): ?>
+  <?php if (empty($activities)): ?>
+  <p class="mdl-cell mdl-cell--12-col">Tidak ada aktifitas pada tanggal yang dipilih.</p>
+  <?php else: ?>
   <style>
     .mdl-data-table th .material-icons { vertical-align: middle; }
     .mdl-data-table tr>*{text-align:left;}
     .mdl-data-table tr>*:nth-child(1),
-    .mdl-data-table tr>*:nth-child(2),
-    .mdl-data-table tr>th:nth-child(3)
+    .mdl-data-table tr>*:nth-child(2)
     {text-align:center;}
     .mdl-data-table tr>*:nth-child(1){width:110px;}
     .mdl-data-table tr>*:nth-child(2){width:60px;}
@@ -25,7 +26,7 @@
         <tr>
           <th><i class="material-icons">access_time</i></th>
           <th><i class="material-icons">desktop_windows</i></th>
-          <th><i class="material-icons">person</i></th>
+          <th><i class="material-icons">supervisor_account</i></th>
           <th>Rincian</th>
         </tr>
       </thead>
