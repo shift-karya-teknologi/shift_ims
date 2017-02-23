@@ -103,3 +103,12 @@ function get_current_user_password() {
     ->query('select password from users where id=' . $_SESSION['CURRENT_USER']->id)
     ->fetch(PDO::FETCH_COLUMN);
 }
+
+function finance_get_sum_amount($accountId, $dateTime) {
+  $q = g('db')->prepare('select sum(amount) from finance_transactions where accountId=?'
+    . 'and dateTime<=?');
+  $q->bindValue(1, $accountId);
+  $q->bindValue(2, $dateTime->format('Y-m-d H:i:s'));
+  $q->execute();
+  return $q->fetch(PDO::FETCH_COLUMN);
+}
