@@ -16,3 +16,39 @@
     </label>
   </div>
 </div>
+
+<div method="GET" class="mdl-grid">
+  <h5 class="mdl-cell mdl-cell--12-col">Aktifitas 3 hari terakhir</h5>
+  <?php if (empty($activities)): ?>
+    <p class="mdl-cell mdl-cell--12-col">Tidak ada aktivitas.</p>
+  <?php else: ?>
+  <style>
+    .mdl-data-table th .material-icons { vertical-align: middle; }
+    .mdl-data-table tr>*{text-align:left;}
+    .mdl-data-table tr>*:nth-child(1),
+    .mdl-data-table tr>*:nth-child(2)
+    {text-align:center;}
+    .mdl-data-table tr>*:nth-child(1){width:100px;}
+  </style>
+  <div class="mdlx-data-table--responsive mdl-cell mdl-cell--12-col">
+    <table class="mdl-data-table">
+      <thead>
+        <tr>
+          <th><i class="material-icons">access_time</i></th>
+          <th><i class="material-icons">desktop_windows</i></th>
+          <th>Rincian</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach ($activities as $activity): ?>
+        <tr>
+          <td><?= date('d/m/Y H:i:s', strtotime($activity->dateTime)) ?></td>
+          <td><?= $activity->clientId ?></td>
+          <td><?= $activity->detail ?></td>
+        </tr>
+      <?php endforeach ?>
+      </tbody>
+    </table>
+  </div>
+  <?php endif ?>
+</div>
