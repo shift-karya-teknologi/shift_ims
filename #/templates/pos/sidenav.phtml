@@ -1,0 +1,22 @@
+<a class="mdl-navigation__link<?= $_SERVER['PATH_INFO'] === '/pos/' ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/"><i class="material-icons">dashboard</i>Dasbor</a>
+<hr>
+<a class="mdl-navigation__link<?= $_SERVER['PATH_INFO'] === '/pos/price-list' ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/price-list">Daftar Harga</a>
+<hr>
+<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/sales/') ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/sales/">Penjualan</a>
+<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/sales-return/') ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/sales-return/">Retur Penjualan</a>
+<hr>
+<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/purchasing/') ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/purchasing/">Pembelian</a>
+<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/purchasing-return/') ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/purchasing-return/">Retur Pembelian</a>
+<hr>
+<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/stock-adjustment/') ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/stock-adjustment/">Penyesuaian Stok</a>
+<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/product/') ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/product/">Produk</a>
+<hr>
+<a class="mdl-navigation__link" href="<?= BASE_URL ?>/"><i class="material-icons">arrow_back</i>Shift Apps</a>
