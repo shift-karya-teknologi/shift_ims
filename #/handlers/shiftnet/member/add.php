@@ -4,17 +4,26 @@ $errors   = [];
 $username = $password1 = $password2 = '';
 $active   = 1;
 
+$disallowed_usernames = [
+  'admin', 'administrator',
+  'user', 'operator', 'tester',
+];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $username  = strtolower(filter_input(INPUT_POST, 'new_username', FILTER_SANITIZE_STRING));
   $password1 = isset($_POST['password1']) ? (string)$_POST['password1'] : '';
   $password2 = isset($_POST['password2']) ? (string)$_POST['password2'] : '';
   $active    = isset($_POST['active']) && (int)$_POST['active'] === 1;
   
+  $lc_username = mb_strtolower($username);
   if (mb_strlen($username) < 3) {
     $errors['username'] = 'Nama pengguna harus diisi, minimal 3 karakter.';
   }
   else if (!preg_match('/^[a-zA-Z]+[a-zA-Z0-9_]*$/', $username)) {
     $errors['username'] = 'Nama pengguna harus diawali alfabet dan boleh diikuti huruf, angka atau underscore (_).';
+  }
+  else if (in_array ($lc_username, $disallowed_usernames)) {
+    $errors['username'] = 'Nama pengguna ' . $lc_username . ' tidak diizinkan.';
   }
   else {
     $q = $db->prepare('select count(0) from shiftnet_members where username=?');
