@@ -15,8 +15,11 @@
       <div class="mdl-layout__drawer">
         <header class="mdl-color--blue-grey mdl-color-text--white">
           <span class="mdl-layout-title"><small><?= isset($app_name) ? $app_name : (
-            str_starts_with($_SERVER['PATH_INFO'], '/shiftnet') ? 'ShiftNet' : 'Shift IMS'
-          ) ?></small></span>
+            str_starts_with($_SERVER['PATH_INFO'], '/shiftnet/') ? 'ShiftNet' : (
+            str_starts_with($_SERVER['PATH_INFO'], '/pos/') ? 'Point of Sales' : (
+            str_starts_with($_SERVER['PATH_INFO'], '/service/') ? 'Servis' : (
+            str_starts_with($_SERVER['PATH_INFO'], '/finance/') ? 'Keuangan' :
+            'Shift IMS')))) ?></small></span>
           <span class="my-account-name"><a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a></span>
         </header>
         <?php if (isset($sidenav)): ?>
