@@ -3,35 +3,51 @@
     <p class="mdl-cell mdl-cell--12-col">Tidak ada produk.</p>
   <?php else: ?>
     <style>
+      .mdl-data-table>thead th:nth-child(2) { text-align: right; }
       .mdl-data-table tbody tr,
       .mdl-data-table td{
         height: auto;
       }
       .mdl-data-table th { text-align: left; }
-      .mdl-data-table td {
+      .mdl-data-table >tbody>tr> td {
         padding-top: 5px;
         padding-bottom: 5px;
         vertical-align: top;
         text-align: left;
       }
-      .mdl-data-table tr>*:nth-child(2),
-      .mdl-data-table tr>*:nth-child(3){ text-align: center; }
+
+      .inner-table {width:100%;}
+      #price-list-table .inner-table td {
+        border: none;
+        padding: 0;
+        text-align: right;
+      }
+      #price-list-table .inner-table td:nth-child(1) { width: 100px; padding-right: 10px; }
     </style>
     <div class="mdl-cell mdl-cell--12-col mdlx-data-table--responsive">
       <table id="price-list-table" class="mdl-data-table">
         <thead>
           <tr>
             <th>Produk</th>
-            <th>Stok</th>
             <th>Harga</th>
+            <th>Stok</th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($products as $product): ?>
           <tr>
             <td><?= e($product->name) ?></td>
-            <td><?= e($product->stock) ?></td>
-            <td><?= e($product->price) ?></td>
+            <td>
+              <table class="inner-table">
+              <?php for ($i = 0; $i < count($product->priceInfo); $i++): ?>
+                <tr>
+                  <td><?= $product->priceInfo[$i][0] ?></td>
+                  <td><?= $product->priceInfo[$i][1] ?></td>
+                </tr>
+              <?php endfor ?>
+              </table>
+            </td>
+            <td><?= $product->stockInfo ?></td>
           </tr>
           <?php endforeach ?>
           <tr style="display:none;" id="empty-result-info">
@@ -42,19 +58,19 @@
     </div>
     <script>
       function applyFilter() {   
-        var input, filter, table, tr, td, i;
+        var input, filter, table, rows, td, i;
         input = document.getElementById("search-product-textbox");
         filter = input.value.toUpperCase();
-        table = document.querySelector("#price-list-table tbody");
-        tr = table.getElementsByTagName("tr");
-        var visibleItemCount = tr.length - 1;
-        for (i = 0; i < tr.length - 1; i++) {
-          td = tr[i].getElementsByTagName("td")[0];
+        table = document.querySelector("#price-list-table>tbody");
+        rows = table.querySelectorAll("#price-list-table>tbody>tr");
+        var visibleItemCount = rows.length - 1;
+        for (i = 0; i < rows.length - 1; i++) {
+          td = rows[i].children[0];
           if (td) {
             if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
+              rows[i].style.display = "";
             } else {
-              tr[i].style.display = "none";
+              rows[i].style.display = "none";
               visibleItemCount--;
             }
           } 
