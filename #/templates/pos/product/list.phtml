@@ -1,0 +1,64 @@
+<div class="mdl-grid">
+  <?php if (count($products) == 0 ): ?>
+    <p class="mdl-cell mdl-cell--12-col">Tidak ada produk.</p>
+  <?php else: ?>
+    <style>
+      .mdl-data-table tbody tr,
+      .mdl-data-table td{
+        height: auto;
+      }
+      .mdl-data-table th { text-align: left; }
+      .mdl-data-table td {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        vertical-align: top;
+        text-align: left;
+      }
+      .mdl-data-table tr>*:nth-child(2),
+      .mdl-data-table tr>*:nth-child(3){ text-align: center; }
+    </style>
+    <div class="mdl-cell mdl-cell--12-col mdlx-data-table--responsive">
+      <table id="product-list-table" class="mdl-data-table">
+        <thead>
+          <tr>
+            <th>Produk</th>
+            <th>Aktif</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($products as $product): ?>
+          <tr>
+            <td><a href="./edit?id=<?= $product->id ?>"><?= e($product->name) ?></a></td>
+            <td><?= $product->active ? 'Ya' : 'Tidak' ?></td>
+          </tr>
+          <?php endforeach ?>
+          <tr style="display:none;" id="empty-result-info">
+            <td colspan="3" style="text-align:center;font-style:italic;">Tidak ditemukan</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script>
+      function applyFilter() {   
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("search-product-textbox");
+        filter = input.value.toUpperCase();
+        table = document.querySelector("#product-list-table tbody");
+        tr = table.getElementsByTagName("tr");
+        var visibleItemCount = tr.length - 1;
+        for (i = 0; i < tr.length - 1; i++) {
+          td = tr[i].getElementsByTagName("td")[0];
+          if (td) {
+            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+              visibleItemCount--;
+            }
+          } 
+        }
+        document.getElementById('empty-result-info').style.display = visibleItemCount === 0 ? '' : 'none';
+      }
+    </script>
+  <?php endif ?>  
+</div>
