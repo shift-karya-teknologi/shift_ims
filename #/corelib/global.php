@@ -53,8 +53,8 @@ function g(string $name, $default = null) {
  * @param string $str String yang akan di escape
  * @return string String hasil escape
  */
-function e(string $str) {
-  return htmlentities($str, ENT_COMPAT | ENT_HTML5, 'UTF-8', true);
+function e($str) {
+  return htmlentities((string)$str, ENT_COMPAT | ENT_HTML5, 'UTF-8', true);
 }
 
 function str_starts_with(string $str, string $prefix) {
