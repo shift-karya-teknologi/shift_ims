@@ -1,14 +1,13 @@
 <form method="POST" class="mdl-grid">
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col <?=
-      !empty($errors['username']) ? 'is-invalid' : '' ?>">
-      <input class="mdl-textfield__input" type="text" value="<?= e($username) ?>" maxlength="40"
-             id="username" name="new_username">
-      <label class="mdl-textfield__label" for="username">Nama Pengguna</label>
-      <?php if (!empty($errors['username'])): ?>
-        <span class="form-error"><?= $errors['username'] ?></span>
-      <?php endif ?>
-    </div>
-
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col <?=
+    !empty($errors['username']) ? 'is-invalid' : '' ?>">
+    <input class="mdl-textfield__input" type="text" value="<?= e($username) ?>" maxlength="40"
+           id="username" name="new_username">
+    <label class="mdl-textfield__label" for="username">Nama Pengguna</label>
+    <?php if (!empty($errors['username'])): ?>
+      <span class="form-error"><?= $errors['username'] ?></span>
+    <?php endif ?>
+  </div>
   <div class="mdl-cell mdl-cell--6-col">
     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="active">
       <input type="checkbox" id="active" class="mdl-checkbox__input" value="1" name="active" <?= $active ? 'checked' : '' ?>>
