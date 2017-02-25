@@ -3,6 +3,7 @@
 $errors   = [];
 $username = $password1 = $password2 = '';
 $active   = 1;
+$remainingDuration = 0;
 
 $disallowed_usernames = [
   'admin', 'administrator',
@@ -14,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $password1 = isset($_POST['password1']) ? (string)$_POST['password1'] : '';
   $password2 = isset($_POST['password2']) ? (string)$_POST['password2'] : '';
   $active    = isset($_POST['active']) && (int)$_POST['active'] === 1;
+  $durationStr = '00:00';
   
   $lc_username = mb_strtolower($username);
   if (mb_strlen($username) < 3) {
@@ -44,6 +46,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors['password2'] = 'Kata sandi yang anda konfirmasi salah.';
   }
   
+  if ($_SESSION['CURRENT_USER']->groupId <= 2) {
+    $durationStr = filter_input(INPUT_POST, 'remainingDuration', FILTER_SANITIZE_STRING);
+    if (!preg_match('/(\d+):([0-5][0-9])/', $durationStr)) {
+      $errors['remainingDuration'] = 'Format durasi tidak valid.';
+    }
+    else {
+      $durationStr = explode(':', $durationStr);
+      $remainingDuration = ((int)$durationStr[0] * 60) + (int)$durationStr[1];
+    }
+  }
+  
   if (empty($errors)) {
     $q = $db->prepare('insert into shiftnet_members('
       . ' username'
@@ -51,13 +64,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       . ',active'
       . ',registrationOperatorId'
       . ',registrationDateTime'
-      . ')values(?,?,?,?,?)');
+      . ',remainingDuration'
+      . ')values(?,?,?,?,?,?)');
     $now = date('Y-m-d H:i:s');
     $q->bindValue(1, $username);
     $q->bindValue(2, sha1($password));
     $q->bindValue(3, $active);
     $q->bindValue(4, $_SESSION['CURRENT_USER']->id);
     $q->bindValue(5, $now);
+    $q->bindValue(6, $remainingDuration);
     $q->execute();
    
     $_SESSION['FLASH_MESSAGE'] = 'Akun ' . $username . ' telah terdaftar sebagai member ShiftNet.';
@@ -72,6 +87,7 @@ render('layout', [
   'content'  => render('shiftnet/member/add', [
     'username' => $username,
     'active'   => $active,
+    'remainingDuration' => $remainingDuration,
     'errors'   => $errors,
   ], true)
 ]);

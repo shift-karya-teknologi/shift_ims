@@ -1,5 +1,5 @@
 <form method="POST" class="mdl-grid">
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col <?=
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
     !empty($errors['username']) ? 'is-invalid' : '' ?>">
     <input class="mdl-textfield__input" type="text" value="<?= e($username) ?>" maxlength="40"
            id="username" name="new_username">
@@ -8,7 +8,18 @@
       <span class="form-error"><?= $errors['username'] ?></span>
     <?php endif ?>
   </div>
-  <div class="mdl-cell mdl-cell--6-col">
+  <?php if ($_SESSION['CURRENT_USER']->groupId <= 2): ?>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
+    !empty($errors['remainingDuration']) ? 'is-invalid' : '' ?>">
+    <input class="mdl-textfield__input" type="text" value="<?= format_duration($remainingDuration) ?>"
+           id="remainingDuration" name="remainingDuration">
+    <label class="mdl-textfield__label" for="remainingDuration">Sisa Waktu</label>
+    <?php if (!empty($errors['remainingDuration'])): ?>
+      <span class="form-error"><?= $errors['remainingDuration'] ?></span>
+    <?php endif ?>
+  </div>
+  <?php endif ?>
+  <div class="mdl-cell mdl-cell--4-col">
     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="active">
       <input type="checkbox" id="active" class="mdl-checkbox__input" value="1" name="active" <?= $active ? 'checked' : '' ?>>
       <span class="mdl-checkbox__label">Aktif (dapat login)</span>
