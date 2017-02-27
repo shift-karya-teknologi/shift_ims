@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       . ')values(?,?,?,?,?,?)');
     $now = date('Y-m-d H:i:s');
     $q->bindValue(1, $username);
-    $q->bindValue(2, sha1($password));
+    $q->bindValue(2, sha1($password1));
     $q->bindValue(3, $active);
     $q->bindValue(4, $_SESSION['CURRENT_USER']->id);
     $q->bindValue(5, $now);
