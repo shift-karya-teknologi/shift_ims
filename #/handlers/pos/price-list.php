@@ -1,18 +1,88 @@
 <?php
 
+class ProductUom
+{
+  public $id;
+  public $productId;
+  public $name;
+  public $quantity;
+}
+
+class Product
+{
+  const Stocked = 0;
+  const NonStocked = 1;
+  const Service = 2;
+  const ShiftNetVoucher = 255;
+  
+  public $id;
+  public $type;
+  public $name;
+  public $quantity;
+  public $baseUom;
+  public $uoms = [];
+  public $prices = [];
+  
+  public function stockInfo() {
+    if ($this->type == Product::Stocked)
+      return format_number($this->quantity) . ' ' . $this->baseUom;
+    return '';
+  }
+  
+  public function priceInfo() {
+    $arr = [];
+    
+    foreach ($this->prices as $item) {
+      $str = '';
+      if ($item->quantityMin && $item->quantityMax) {
+        $str .= format_number($item->quantityMin) . ' - ' . format_number($item->quantityMax);
+      }
+      else if ($item->quantityMin != 0 && $item->quantityMax == 0) {
+        $str .= '>= ' . format_number($item->quantityMin);
+      }
+      
+      $str .= ' ' . $this->baseUom . ' : ';
+      $str .= $this->_priceInfo($item);
+      
+      $arr[] = $str;
+    }
+    
+    return implode('<br>', $arr);
+  }
+
+  private function _priceInfo($item) {
+    $arr = [];    
+    for ($i = 1; $i <=3; $i++) {
+      $min = "price{$i}Min";
+      $max = "price{$i}Max";
+    
+      $str = '';
+      if ($item->$min != $item->$max) {
+        $str .= format_number($item->$min) . ' - ' . format_number($item->$max);
+      }
+      else if ($item->$min != 0){
+        $str .= format_number($item->$min);
+      }
+      else
+        continue;
+      
+      $arr[] = $str;
+    }
+    
+    return implode(' / ', $arr);
+  }
+
+}
+
 // setup products
 $productByIds = [];
 $products = [];
-$q = $db->query('select p.id, p.type, p.name, p.quantity, p.baseUomId'
+$q = $db->query('select p.id, p.type, p.name, p.quantity, p.baseUom'
   . ' from products p'
-  . ' where p.active=1'
+  . ' where p.active=1 and p.type <= 200'
   . ' order by p.name asc');
 
-while ($product = $q->fetch(PDO::FETCH_OBJ)) {
-  $product->priceInfo = [];
-  $product->stockInfo = '';
-  $product->uoms = [];
-  $product->prices = [];
+while ($product = $q->fetchObject(Product::class)) {
   $productByIds[$product->id] = $product;
   $products[] = $product;
 }
@@ -20,7 +90,7 @@ while ($product = $q->fetch(PDO::FETCH_OBJ)) {
 $uomByIds = [];
 // setup uoms
 $q = $db->query('select * from product_uoms order by productId asc, quantity desc, name asc');
-while ($uom = $q->fetch(PDO::FETCH_OBJ)) {
+while ($uom = $q->fetchObject(ProductUom::class)) {
   $productByIds[$uom->productId]->uoms[$uom->id] = $uom;
   $uomByIds[$uom->id] = $uom;
 }
@@ -28,61 +98,9 @@ while ($uom = $q->fetch(PDO::FETCH_OBJ)) {
 // setup prices
 $q = $db->query('select *'
   . ' from product_prices'
-  . ' order by productId asc, qty0 asc');
+  . ' order by productId asc, quantityMin asc');
 while ($price = $q->fetch(PDO::FETCH_OBJ)) {
   $productByIds[$price->productId]->prices[] = $price;
-}
-
-foreach ($products as $product) {
-  $product->baseUom = $uomByIds[$product->baseUomId];
-  
-  if ($product->type == 1) {
-    $uoms = [];
-    foreach ($product->uoms as $uom) {
-      $uoms[$uom->quantity] = $uom;
-    }
-    krsort($uoms);
-    
-    $stockInfoArray = [];
-    $stock = $product->quantity;
-    foreach ($uoms as $uom) {
-      if ($stock == 0)
-        break;
-      
-      $result = floor($stock / $uom->quantity);
-      $stock -= ($result * $uom->quantity);
-      $stockInfoArray[] = format_number($result) . ' ' . $uom->name;
-    }
-    $product->stockInfo = implode(', ', $stockInfoArray);
-  }
-  
-  foreach ($product->prices as $price) {      
-    if ($price->qty0 && $price->qty1) {
-      $strQty = $price->qty0 . ' - ' . $price->qty1;
-    }
-    else {
-      $strQty = '≥ ' . $price->qty0;
-    }
-    $strQty .= ' ' . $product->baseUom->name;
-
-    if ($price->type == 0) {
-      $strPrice = format_number($price->p1);
-    }
-    else if ($price->type == 1) {
-      $strPrice = format_number($price->p2) . ' - ' . format_number($price->p1);
-    }
-    else {
-      $t = [];
-      for ($i = 5; $i >= 1; $i--) {
-        $col = 'p' . $i;
-        if ($price->{$col})
-          $t[] = format_number($price->{$col});
-      }
-      $strPrice = implode(' / ', $t);
-    }
-
-    $product->priceInfo[] = [$strQty, $strPrice];
-  }
 }
 
 render('layout', [
