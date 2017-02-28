@@ -63,15 +63,15 @@ function str_starts_with(string $str, string $prefix) {
 
 
 function format_number($value, int $decimal = 0) {
-  return number_format($value, $decimal, ',', '.');
+  return number_format((float)$value, $decimal, ',', '.');
 }
 
 function format_decimal($amount, $decimal) {
-  return number_format($amount, $decimal, ',', '.');
+  return number_format((float)$amount, $decimal, ',', '.');
 }
 
 function format_integer($amount) {
-  return number_format($amount, 0, ',', '.');
+  return number_format((float)$amount, 0, ',', '.');
 }
 
 function format_money($amount) {
