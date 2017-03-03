@@ -78,10 +78,22 @@
 }
 
 @media screen and (max-width: 767px) {
-.mdlx-data-table--responsive {
-  width: 100%;
-  overflow-y: hidden;
-}
+  .mdlx-data-table--responsive {
+    width: 100%;
+    overflow-y: hidden;
+  }
+  
+  .table-container .mdl-data-table thead {display:none;}
+  .table-container .mdl-data-table tr:first-child td { border-top: none;}
+  .table-container .mdl-data-table { margin: 0;}
+  .table-container.mdl-grid {padding:0;}
+  .table-container .mdl-cell{margin:0;}
+  .table-container .mdlx-data-table--responsive {border:none;}
+  .table-container .mdl-data-table>*>tr,
+  .table-container .mdl-data-table>*>tr>td{height:auto;}
+  .table-container .mdl-data-table>*>tr>*{padding:8px;}
+  .table-container .mdl-data-table>*>tr>*:first-child{padding-left:16px;}
+  .table-container .mdl-data-table>*>tr>*:last-child{padding-right:16px;}
 }
 
 .mdlx-data-table--responsive .mdl-data-table {
@@ -132,9 +144,9 @@ h6.mdl-cell {
 }
 
 @media (max-width: 839px) and (min-width: 480px) {
-.mdl-cell--6-col, .mdl-cell--6-col-tablet.mdl-cell--6-col-tablet {
-    width: calc(100% - 16px);
-}
+  .mdl-cell--6-col, .mdl-cell--6-col-tablet.mdl-cell--6-col-tablet {
+      width: calc(100% - 16px);
+  }  
 }
 
 .mdl-cell.buttons {
@@ -154,3 +166,6 @@ h6.mdl-cell {
   margin-right: 6px;
 }
 
+.mdl-data-table *>tr>* {
+  text-align: left;
+}
