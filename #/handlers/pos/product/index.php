@@ -1,7 +1,9 @@
 <?php
 
+require_once CORELIB_PATH . '/Product.php';
+
 $products = $db->query('select * from products order by name asc')
-  ->fetchAll(PDO::FETCH_OBJ);
+  ->fetchAll(PDO::FETCH_CLASS, Product::class);
 
 render('layout', [
   'title'   => 'Produk',
