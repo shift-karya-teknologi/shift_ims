@@ -1,35 +1,20 @@
 <?php
 
-class ProductUom
-{
-  public $id;
-  public $productId;
-  public $name;
-  public $quantity;
-}
+require_once CORELIB_PATH . './Product.php';
 
-class Product
+class PriceListItem extends Product
 {
-  const Stocked = 0;
-  const NonStocked = 1;
-  const Service = 2;
-  const ShiftNetVoucher = 255;
-  
-  public $id;
-  public $type;
-  public $name;
-  public $quantity;
-  public $uom;
-  public $uoms = [];
   public $prices = [];
   
-  public function stockInfo() {
-    if ($this->type == Product::Stocked)
-      return format_number($this->quantity) . ' ' . $this->uom;
-    return '';
-  }
-  
-  public function priceInfo() {
+  public function getPriceInfo() {
+    
+    if (empty($this->prices))
+      return '';
+    
+    if (count($this->prices == 1) && $this->prices[0]->quantityMin == 1 && $this->prices[0]->quantityMax == 0) {
+      return $this->_priceInfo($this->prices[0]);
+    }
+    
     $arr = [];
     
     foreach ($this->prices as $item) {
@@ -58,7 +43,7 @@ class Product
     
       $str = '';
       if ($item->$min != $item->$max) {
-        $str .= format_number($item->$min) . ' - ' . format_number($item->$max);
+        $str .= format_number($item->$max) . ' - ' . format_number($item->$min);
       }
       else if ($item->$min != 0){
         $str .= format_number($item->$min);
@@ -71,9 +56,7 @@ class Product
     
     return implode(' / ', $arr);
   }
-
 }
-
 // setup products
 $productByIds = [];
 $products = [];
@@ -82,7 +65,8 @@ $q = $db->query('select p.id, p.type, p.name, p.quantity, p.uom'
   . ' where p.active=1 and p.type <= 200'
   . ' order by p.name asc');
 
-while ($product = $q->fetchObject(Product::class)) {
+while ($product = $q->fetchObject(PriceListItem::class)) {
+  $product->prices = [];
   $productByIds[$product->id] = $product;
   $products[] = $product;
 }
