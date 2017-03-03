@@ -5,7 +5,7 @@
  * @param string $plain Password yang akan dienkripsi
  * @return string Password yang sudah terenkripsi
  */
-function encrypt_password(string $plain) {
+function encrypt_password($plain) {
   return sha1('$#' . $plain . '1FT');
 }
 
@@ -44,7 +44,7 @@ function render() {
  * @param mixed $default Nilai default jika variabel tidak ditemukan.
  * @return mixed Nilai variabel atau nilai default jika nama variabel tidak ditemukan.
  */
-function g(string $name, $default = null) {
+function g($name, $default = null) {
   return isset($GLOBALS[$name]) ? $GLOBALS[$name] : $default;
 }
 
@@ -57,12 +57,12 @@ function e($str) {
   return htmlentities((string)$str, ENT_COMPAT | ENT_HTML5, 'UTF-8', true);
 }
 
-function str_starts_with(string $str, string $prefix) {
+function str_starts_with($str, $prefix) {
   return mb_substr($str, 0, mb_strlen($prefix)) === $prefix;
 }
 
 
-function format_number($value, int $decimal = 0) {
+function format_number($value, $decimal = 0) {
   return number_format((float)$value, $decimal, ',', '.');
 }
 
@@ -111,4 +111,17 @@ function finance_get_sum_amount($accountId, $dateTime) {
   $q->bindValue(2, $dateTime->format('Y-m-d H:i:s'));
   $q->execute();
   return $q->fetch(PDO::FETCH_COLUMN);
+}
+
+function format_product_code($id) {
+  return 'P-' . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
+
+function format_stock_adjustment_code($id) {
+  return 'SA-' . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
+function format_stock_adjustment_status($status) {
+  return $status == 0 ? 'Disimpan' : ($status == 1 ? 'Selesai' : 'Dibatalkan');
 }
