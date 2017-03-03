@@ -2,8 +2,8 @@
 
 abstract class ProductTypes
 {
-  const NonStocked = 0;
-  const Stocked = 1;
+  const Stocked = 0;
+  const NonStocked = 1;
   const Service = 2;
   const ShiftNetVoucher = 255;
 }
@@ -18,6 +18,7 @@ abstract class ProductCostingMethods
 class ProductUom
 {
   public $id;
+  public $productId;
   public $name;
   public $quantity;
 }
@@ -28,6 +29,19 @@ class Product
   public $type;
   public $name;
   public $active;
-  public $baseUom;
+  public $quantity;
+  public $uom;
   public $costingMethod;
+  public $cost;
+  public $manualCost;
+  public $averageCost;
+  public $lastPurchaseCost;
+  
+  public function getStockInfo()
+  {
+    if ($this->type == ProductTypes::Stocked)
+      return format_number($this->quantity) . ' ' . e($this->uom);
+    
+    return '';
+  }
 }
