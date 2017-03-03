@@ -19,13 +19,13 @@ class Product
   public $type;
   public $name;
   public $quantity;
-  public $baseUom;
+  public $uom;
   public $uoms = [];
   public $prices = [];
   
   public function stockInfo() {
     if ($this->type == Product::Stocked)
-      return format_number($this->quantity) . ' ' . $this->baseUom;
+      return format_number($this->quantity) . ' ' . $this->uom;
     return '';
   }
   
@@ -41,7 +41,7 @@ class Product
         $str .= '>= ' . format_number($item->quantityMin);
       }
       
-      $str .= ' ' . $this->baseUom . ' : ';
+      $str .= ' ' . $this->uom . ' : ';
       $str .= $this->_priceInfo($item);
       
       $arr[] = $str;
@@ -77,7 +77,7 @@ class Product
 // setup products
 $productByIds = [];
 $products = [];
-$q = $db->query('select p.id, p.type, p.name, p.quantity, p.baseUom'
+$q = $db->query('select p.id, p.type, p.name, p.quantity, p.uom'
   . ' from products p'
   . ' where p.active=1 and p.type <= 200'
   . ' order by p.name asc');
