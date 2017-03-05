@@ -1,6 +1,6 @@
 <?php
 
-$status = isset($_GET['status']) ? (int)$_GET['status'] : -1;
+$status = isset($_GET['status']) ? (int)$_GET['status'] : 0;
 $sql = 'select * from stock_adjustments where ';
 
 if ($status <= -1)
@@ -21,7 +21,7 @@ $items = $q->fetchAll(PDO::FETCH_OBJ);
 render('layout', [
   'title'   => 'Penyesuaian Stok',
   'headnav' => '
-    <a href="./add" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+    <a href="./create" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
       <i class="material-icons">add</i>
     </a>',
   'sidenav' => render('pos/sidenav', true),

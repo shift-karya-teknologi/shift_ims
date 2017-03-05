@@ -1,0 +1,48 @@
+<form method="POST" class="mdl-grid">
+  <div class="mdl-cell mdl-cell--12-col">
+    <button class="mdl-button mdl-button--raised mdl-button--colored" type="submit"><i class="material-icons">check</i> Lanjutkan</button>
+  </div>
+  <div class="mdlx-data-table--responsive mdl-cell mdl-cell--12-col">
+    <table class="mdl-data-table">
+      <thead>
+        <tr>
+          <th style="width:50px;">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="table-header">
+              <input type="checkbox" id="table-header" class="mdl-checkbox__input" />
+            </label>
+          </th>
+          <th>Nama Produk</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach ($items as $i => $item): ?>
+        <tr data-product-id="<?= $item->id ?>">
+          <td>
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[<?= $i ?>]">
+              <input type="checkbox" id="row[<?= $i ?>]" class="mdl-checkbox__input" name="p[<?= $item->id ?>]">
+            </label>
+          </td>
+          <td><?= e($item->name) ?></td>
+        </tr>
+      <?php endforeach ?>
+      </tbody>
+    </table>
+  </div>
+</form>
+<script>
+  var table = document.querySelector('table');
+  var headerCheckbox = table.querySelector('thead .mdl-data-table__select input');
+  var boxes = table.querySelectorAll('tbody .mdl-data-table__select');
+  var headerCheckHandler = function(event) {
+    if (event.target.checked) {
+      for (var i = 0, length = boxes.length; i < length; i++) {
+        boxes[i].MaterialCheckbox.check();
+      }
+    } else {
+      for (var i = 0, length = boxes.length; i < length; i++) {
+        boxes[i].MaterialCheckbox.uncheck();
+      }
+    }
+  };
+  headerCheckbox.addEventListener('change', headerCheckHandler);
+</script>
