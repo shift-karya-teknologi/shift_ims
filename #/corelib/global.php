@@ -125,3 +125,48 @@ function format_stock_adjustment_code($id) {
 function format_stock_adjustment_status($status) {
   return $status == 0 ? 'Disimpan' : ($status == 1 ? 'Selesai' : 'Dibatalkan');
 }
+
+function update_product_quantity($productId) {
+  global $db;
+  $q = $db->prepare('update products set quantity=(select ifnull(sum(quantity), 0) from stock_update_details where productId=?) where id=?');
+  $q->bindValue(1, $productId);
+  $q->bindValue(2, $productId);
+  $q->execute();
+}
+
+function add_stock_update($type, $dateTime) {
+  global $db;
+  $q = $db->prepare('insert into stock_updates'
+    . ' ( type, dateTime) '
+    . ' values '
+    . ' (:type,:dateTime)');
+  $q->bindValue(':type', $type);
+  $q->bindValue(':dateTime', $dateTime);
+  $q->execute();
+  
+  return $db->lastInsertId();
+}
+
+function add_stock_update_detail($parentId, $productId, $quantity) {
+  global $db;
+  $q = $db->prepare('insert into stock_update_details'
+    . ' ( parentId, productId, quantity)'
+    . ' values '
+    . ' (:parentId,:productId,:quantity)');
+  $q->bindValue(':parentId', $parentId);
+  $q->bindValue(':productId', $productId);
+  $q->bindValue(':quantity', $quantity);
+  $q->execute();
+}
+
+function delete_stock_adjustment($id) {
+  global $db;
+  $db->query('delete from stock_adjustment_details where parentId=' . $id);
+  $db->query('delete from stock_adjustments where id=' . $id);
+}
+
+function delete_stock_update($id) {
+  global $db;
+  $db->query('delete from stock_update_details where parentId=' . $id);
+  $db->query('delete from stock_updates where id=' . $id);
+}
