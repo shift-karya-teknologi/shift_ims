@@ -126,7 +126,7 @@ function format_sales_order_code($id) {
   return 'SO-' . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
-function format_purchase_order_code($id) {
+function format_purchasing_order_code($id) {
   return 'PO-' . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
