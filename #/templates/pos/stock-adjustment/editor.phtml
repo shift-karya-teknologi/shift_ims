@@ -3,28 +3,21 @@
 </style>
 <form method="POST" class="mdl-grid" id="editor">
   <input type="hidden" name="id" value="<?= $data->id ?>">
+  <?php if ($data->status != 1): ?>
   <div class="mdl-cell mdl-cell--12-col buttons" style="min-height:0;margin-bottom:20px;">
     <?php if ($data->status == 0): ?>
-    <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
-            name="action" value="complete"><i class="material-icons">check</i> Selesai</button>
-    <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
+    <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit"
             name="action" value="save"><i class="material-icons">save</i> Simpan</button>
     <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
+            name="action" value="complete"><i class="material-icons">check</i> Selesai</button>
+    <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit"
             name="action" value="cancel"><i class="material-icons">delete</i> Batalkan</button>
-    <?php endif ?>
-    <?php if ($data->status == 1): ?>
-    <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
-        name="action" value="reopen"><i class="material-icons">edit</i> Ubah</button>
-    <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
-        name="action" value="cancel"><i class="material-icons">delete</i> Batalkan</button>
-    <?php endif ?>
-    <?php if ($data->status == 2): ?>
-    <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
-        name="action" value="reopen"><i class="material-icons">edit</i> Ubah</button>
-    <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
-        name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus Permanen</button>
+    <?php elseif ($data->status == 2): ?>
+    <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit"
+        name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus</button>
     <?php endif ?>
   </div>
+  <?php endif ?>
   <div class="mdl-cell mdl-cell--12-col">
     <table>
       <tr>
