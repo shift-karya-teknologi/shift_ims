@@ -8,7 +8,9 @@
           <tr>
             <th>Kode</th>
             <th>Nama</th>
-            <th>Aktif</th>
+            <th>Stok</th>
+            <th>Jenis</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -17,6 +19,7 @@
             <td><a href="./editor?id=<?= $product->id ?>"><?= format_product_code($product->id) ?></a></td>
             <td><?= e($product->name) ?></td>
             <td><?= e($product->getStockInfo()) ?></td>
+            <td><?= $product->getTypeName() ?></td>
             <td><?= $product->active ? 'Aktif' : 'Nonaktif' ?></td>
           </tr>
           <?php endforeach ?>
