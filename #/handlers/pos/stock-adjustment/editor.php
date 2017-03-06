@@ -25,7 +25,6 @@ $data->itemByIds = [];
 while ($item = $q->fetchObject()) {
   $data->items[] = $item;
   $data->itemByIds[$item->id] = $item;
-  
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? $_POST['action'] : 'save';
@@ -36,16 +35,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $qtyArray = (array)$_POST['i'];
 
     $db->beginTransaction();
+    $totalCost = $totalPrice = 0;
     foreach ($data->itemByIds as $id => $item) {
       if (!isset($qtyArray[$id]))
         continue;
+      
+      $qty = $qtyArray[$id];
 
       $q = $db->prepare('update stock_adjustment_details'
         . ' set quantity=? where id=?');
-      $q->bindValue(1, $qtyArray[$id]);
+      $q->bindValue(1, $qty);
       $q->bindValue(2, $item->id);
       $q->execute();
+      
+      $balance = $qty - $item->stock;
+      
+      $totalCost  += $balance * $item->cost;
+      $totalPrice += $balance * $item->price;
     }
+    
+    $q = $db->prepare('update stock_adjustments set totalCost=:totalCost, totalPrice=:totalPrice where id=:id');
+    $q->bindValue(':totalCost', $totalCost);
+    $q->bindValue(':totalPrice', $totalPrice);
+    $q->bindValue(':id', $data->id);
+    $q->execute();
 
     if ($action == 'save') {
       $db->commit();

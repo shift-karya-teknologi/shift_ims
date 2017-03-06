@@ -5,7 +5,11 @@ require_once CORELIB_PATH . '/Product.php';
 $items = [];
 $itemByIds = [];
 
-$q = $db->prepare('select * from products where type=0 and active=1 order by name asc');
+$q = $db->prepare('select p.*,'
+  . ' (select ifnull(max(pp.price1min), 0) from product_prices pp where pp.productId=p.id) price'
+  . ' from products p'
+  . ' where p.type=0 and p.active=1'
+  . ' order by p.name asc');
 $q->execute();
 while ($item = $q->fetchObject()) {
   $items[] = $item;
@@ -25,13 +29,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $stockAdjustmentId = $db->lastInsertId();
     foreach ($productIds as $productId) {
+      $item = $itemByIds[$productId];
       $q = $db->prepare('insert into stock_adjustment_details'
-        . ' ( parentId, productId, quantity)'
+        . ' ( parentId, productId, quantity, cost, price, subtotalCost, subtotalPrice)'
         . ' values'
-        . ' (:parentId,:productId,:quantity)');
+        . ' (:parentId,:productId,:quantity,:cost,:price,:subtotalCost,:subtotalPrice)');
       $q->bindValue(':parentId', $stockAdjustmentId);
       $q->bindValue(':productId', $productId);
-      $q->bindValue(':quantity', $itemByIds[$productId]->quantity);
+      $q->bindValue(':quantity', $item->quantity);
+      $q->bindValue(':cost', $item->cost);
+      $q->bindValue(':price', $item->price);
+      $q->bindValue(':subtotalCost', $item->cost * $item->quantity);
+      $q->bindValue(':subtotalPrice', $item->price * $item->quantity);
       $q->execute();
     }
     $db->commit();

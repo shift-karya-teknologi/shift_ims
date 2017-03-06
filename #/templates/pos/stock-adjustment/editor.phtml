@@ -3,7 +3,7 @@
 </style>
 <form method="POST" class="mdl-grid" id="editor">
   <input type="hidden" name="id" value="<?= $data->id ?>">
-  <div class="mdl-cell mdl-cell--12-col">
+  <div class="mdl-cell mdl-cell--12-col buttons" style="min-height:0;margin-bottom:20px;">
     <?php if ($data->status == 0): ?>
     <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
             name="action" value="complete"><i class="material-icons">check</i> Selesai</button>
@@ -14,16 +14,38 @@
     <?php endif ?>
     <?php if ($data->status == 1): ?>
     <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
-        name="action" value="reopen"><i class="material-icons">edit</i> Edit</button>
+        name="action" value="reopen"><i class="material-icons">edit</i> Ubah</button>
     <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
         name="action" value="cancel"><i class="material-icons">delete</i> Batalkan</button>
     <?php endif ?>
     <?php if ($data->status == 2): ?>
     <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
-        name="action" value="reopen"><i class="material-icons">edit</i> Edit</button>
+        name="action" value="reopen"><i class="material-icons">edit</i> Ubah</button>
     <button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit"
         name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus Permanen</button>
     <?php endif ?>
+  </div>
+  <div class="mdl-cell mdl-cell--12-col">
+    <table>
+      <tr>
+        <td>Waktu</td>
+        <td>:</td>
+        <td><?= date('d/m/Y H:i:s', strtotime($data->dateTime)) ?></td>
+        <td style="width:20px;"></td>
+        <td>Status</td>
+        <td>:</td>
+        <td><?= $data->status == 0 ? 'Disimpan' : ($data->status == 1 ? 'Selesai' : 'Dibatalkan') ?></td>
+      </tr>
+      <tr>
+        <td>Selisih Modal</td>
+        <td>:</td>
+        <td><?= format_money($data->totalCost) ?></td>
+        <td></td>
+        <td>Selisih Harga</td>
+        <td>:</td>
+        <td><?= format_money($data->totalPrice) ?></td>
+      </tr>
+    </table>
   </div>
   <div class="mdlx-data-table--responsive mdl-cell mdl-cell--12-col">
     <table class="mdl-data-table">

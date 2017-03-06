@@ -8,6 +8,8 @@ if ($status <= -1)
 else
   $sql .= 'status=:status';
 
+$sql .= ' order by dateTime desc';
+
 $q = $db->prepare($sql);
 
 if ($status >= 0) {
