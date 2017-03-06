@@ -4,13 +4,13 @@
 <a class="mdl-navigation__link<?= $_SERVER['PATH_INFO'] === '/pos/price-list' ? ' active' : '' ?>"
   href="<?= BASE_URL ?>/pos/price-list">Daftar Harga</a>
 <hr>
-<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/sales/') ? ' active' : '' ?>"
-  href="<?= BASE_URL ?>/pos/sales/">Penjualan</a>
+<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/sales-order/') ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/sales-order/">Penjualan</a>
 <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/sales-return/') ? ' active' : '' ?>"
   href="<?= BASE_URL ?>/pos/sales-return/">Retur Penjualan</a>
 <hr>
-<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/purchasing/') ? ' active' : '' ?>"
-  href="<?= BASE_URL ?>/pos/purchasing/">Pembelian</a>
+<a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/purchasing-order/') ? ' active' : '' ?>"
+  href="<?= BASE_URL ?>/pos/purchasing-order/">Pembelian</a>
 <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/purchasing-return/') ? ' active' : '' ?>"
   href="<?= BASE_URL ?>/pos/purchasing-return/">Retur Pembelian</a>
 <hr>
