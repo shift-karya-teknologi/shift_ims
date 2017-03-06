@@ -1,0 +1,47 @@
+<form class="mdl-grid" method="POST">
+  <?php if (!empty($order->items)): ?>
+    <div class="mdl-cell mdl-cell--12-col mdlx-data-table--responsive">
+    <table class="mdl-data-table mdl-js-data-table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($order->items as $item): ?>
+        <tr>
+          <td><a href="./item-editor?id=<?= $item->id ?>"><?= $item->quantity . ' ' . $item->productUom . ' ' . e($item->productName) ?> @ Rp. <?= format_number($item->price) ?></a></td>
+          <td><?= format_number($item->quantity * $item->price) ?></td>
+        </tr>
+        <?php endforeach ?>
+      </tbody>
+    </table>
+    </div>
+  <?php else: ?>
+  <p class="mdl-cell mdl-cell--12-col">Item masih kosong, silahkan tambahkan.</p>
+  <?php endif ?>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
+    <input class="mdl-textfield__input" type="text" id="grandTotal" value="<?= format_number($order->totalPrice) ?>" >
+    <label class="mdl-textfield__label" for="grandTotal">Grand Total</label>
+  </div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
+    <input class="mdl-textfield__input" id="status" type="text" value="<?= format_stock_adjustment_status($order->status) ?>" readonly>
+    <label class="mdl-textfield__label" for="status">Status</label>
+  </div>
+  <?php if ($order->status != 1): ?>
+  <div class="mdl-cell mdl-cell--12-col buttons">
+    <?php if ($order->status == 0): ?>
+      <?php if (count($order->items) > 0): ?>
+        <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="complete">
+          <i class="material-icons left">check</i>Selesai</button>
+      <?php endif ?>
+      <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="cancel">
+      <i class="material-icons left">delete</i>Batalkan</button>
+    <?php else: ?>
+      <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="delete">
+        <i class="material-icons left">delete_forever</i>Hapus</button>
+    <?php endif ?>
+  </div>
+  <?php endif ?>
+</form>
