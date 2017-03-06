@@ -122,6 +122,10 @@ function format_stock_adjustment_code($id) {
   return 'SA-' . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
+function format_sales_order_code($id) {
+  return 'SO-' . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
 function format_stock_adjustment_status($status) {
   return $status == 0 ? 'Disimpan' : ($status == 1 ? 'Selesai' : 'Dibatalkan');
 }
@@ -169,4 +173,13 @@ function delete_stock_update($id) {
   global $db;
   $db->query('delete from stock_update_details where parentId=' . $id);
   $db->query('delete from stock_updates where id=' . $id);
+}
+
+function update_sales_order_subtotal($id) {
+  global $db;
+  $q = $db->prepare('update sales_orders set totalCost=(select ifnull(sum(subtotalCost), 0) from sales_order_details where parentId=:id),'
+    . ' totalPrice=(select ifnull(sum(subtotalPrice), 0) from sales_order_details where parentId=:id)'
+    . ' where id=:id');
+  $q->bindValue(':id', $id);
+  $q->execute();
 }
