@@ -187,3 +187,11 @@ function update_sales_order_subtotal($id) {
   $q->bindValue(':id', $id);
   $q->execute();
 }
+
+function update_purchasing_order_subtotal($id) {
+  global $db;
+  $q = $db->prepare('update purchasing_orders set totalCost=(select ifnull(sum(subtotalCost), 0) from purchasing_order_details where parentId=:id)'
+    . ' where id=:id');
+  $q->bindValue(':id', $id);
+  $q->execute();
+}
