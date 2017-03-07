@@ -56,8 +56,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header('Location: ./');
     exit;
   }
-  else if ($action == 'delete' && $order->status == 2) {
-    $db->query('delete from sales_orders where id=' . $id);
+  else if ($action == 'delete') {
+    if ($order->status == 1 && $_SESSION['CURRENT_USER']->groupId == 1) {
+      $db->beginTransaction();
+      $db->query("delete from sales_orders where id=" . $order->id);
+      $db->query("delete from stock_updates where id=$order->updateId");
+      foreach ($order->items as $item) {
+        update_product_quantity($item->productId);
+      }
+      $db->commit();
+    }
+    else if ($order->status == 2) {
+      $db->query('delete from sales_orders where id=' . $id);
+    }
     $_SESSION['FLASH_MESSAGE'] = 'Penjualan #' . format_sales_order_code($id) . ' telah dihapus.';
     header('Location: ./');
     exit;

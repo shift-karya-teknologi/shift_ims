@@ -29,19 +29,22 @@
     <input class="mdl-textfield__input" id="status" type="text" value="<?= format_stock_adjustment_status($order->status) ?>" readonly>
     <label class="mdl-textfield__label" for="status">Status</label>
   </div>
-  <?php if ($order->status != 1): ?>
   <div class="mdl-cell mdl-cell--12-col buttons">
-    <?php if ($order->status == 0): ?>
-      <?php if (count($order->items) > 0): ?>
-        <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="complete">
-          <i class="material-icons left">check</i>Selesai</button>
-      <?php endif ?>
-      <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="cancel">
-      <i class="material-icons left">delete</i>Batalkan</button>
-    <?php else: ?>
+    <?php if ($order->status == 1 && $_SESSION['CURRENT_USER']->groupId == 1): ?>
       <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="delete">
-        <i class="material-icons left">delete_forever</i>Hapus</button>
+      <i class="material-icons left">delete_forever</i>Hapus</button>
+    <?php else: ?>
+      <?php if ($order->status == 0): ?>
+        <?php if (count($order->items) > 0): ?>
+          <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="complete">
+            <i class="material-icons left">check</i>Selesai</button>
+        <?php endif ?>
+        <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="cancel">
+        <i class="material-icons left">delete</i>Batalkan</button>
+      <?php else: ?>
+        <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="delete">
+          <i class="material-icons left">delete_forever</i>Hapus</button>
+      <?php endif ?>
     <?php endif ?>
   </div>
-  <?php endif ?>
 </form>
