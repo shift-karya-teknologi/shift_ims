@@ -11,6 +11,9 @@
             <th>Stok</th>
             <th>Jenis</th>
             <th>Status</th>
+            <th>Metode Modal</th>
+            <th>Modal</th>
+            <th>Harga</th>
           </tr>
         </thead>
         <tbody>
@@ -21,6 +24,9 @@
             <td><?= e($product->getStockInfo()) ?></td>
             <td><?= $product->getTypeName() ?></td>
             <td><?= $product->active ? 'Aktif' : 'Nonaktif' ?></td>
+            <td><?= $product->getCostingMethodName() ?></td>
+            <td><?= format_number($product->manualCost) ?> / <?= format_number($product->averageCost) ?> / <?= format_number($product->lastPurchaseCost) ?></td>
+            <td><?= $product->getPriceInfo() ?></td>
           </tr>
           <?php endforeach ?>
         </tbody>

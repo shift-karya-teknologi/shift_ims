@@ -2,8 +2,20 @@
 
 require_once CORELIB_PATH . '/Product.php';
 
-$products = $db->query('select * from products where type <= 200 order by name asc')
-  ->fetchAll(PDO::FETCH_CLASS, Product::class);
+$productByIds = [];
+$q = $db->query('select * from products where type <= 200 order by name asc');
+while ($product = $q->fetchObject(Product::class)) {
+  $products[] = $product;
+  $productByIds[$product->id] = $product;
+}
+
+$q = $db->query('select * from product_prices');
+while ($price = $q->fetchObject()) {
+  $productByIds[$price->productId]->prices[] = $price;
+  unset($price->id);
+  unset($price->productId);
+}
+unset($productByIds);
 
 render('layout', [
   'title'   => 'Produk',
