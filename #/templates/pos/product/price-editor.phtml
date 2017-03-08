@@ -13,7 +13,7 @@
   </div>
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['price1']) ? 'is-invalid' : '' ?>">
     <input class="mdl-textfield__input" type="text" value="<?=
-      $price->price1Min == $price->price1Max ? format_number($price->price1Min) : format_number($price->price1Max) . ' - ' . format_number($price->price1Max)
+      $price->price1Min == $price->price1Max ? format_number($price->price1Min) : format_number($price->price1Min) . ' - ' . format_number($price->price1Max)
     ?>" maxlength="20" id="price1" name="price1">
     <label class="mdl-textfield__label" for="price1">Harga 1</label>
     <?php if (!empty($errors['price1'])): ?>
@@ -22,7 +22,7 @@
   </div>
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['price2']) ? 'is-invalid' : '' ?>">
     <input class="mdl-textfield__input" type="text"value="<?=
-      $price->price2Min == $price->price2Max ? format_number($price->price2Min) : format_number($price->price2Max) . ' - ' . format_number($price->price2Max)
+      $price->price2Min == $price->price2Max ? format_number($price->price2Min) : format_number($price->price2Min) . ' - ' . format_number($price->price2Max)
     ?>" maxlength="20" id="price2" name="price2">
     <label class="mdl-textfield__label" for="price2">Harga 2</label>
     <?php if (!empty($errors['price2'])): ?>
@@ -31,7 +31,7 @@
   </div>
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['price3']) ? 'is-invalid' : '' ?>">
     <input class="mdl-textfield__input" type="text" value="<?=
-      $price->price3Min == $price->price3Max ? format_number($price->price3Min) : format_number($price->price3Max) . ' - ' . format_number($price->price3Max)
+      $price->price3Min == $price->price3Max ? format_number($price->price3Min) : format_number($price->price3Min) . ' - ' . format_number($price->price3Max)
     ?>" maxlength="20" id="price3" name="price3">
     <label class="mdl-textfield__label" for="price3">Harga 3</label>
     <?php if (!empty($errors['price3'])): ?>
