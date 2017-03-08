@@ -1,0 +1,45 @@
+<form method="POST" class="mdl-grid">
+  <input type="hidden" name="id" value="<?= $uom->id ?>">
+  <input type="hidden" name="productId" value="<?= $uom->productId ?>">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+    !empty($errors['name']) ? 'is-invalid' : '' ?>">
+    <input class="mdl-textfield__input" type="text" value="<?= e($uom->name) ?>" maxlength="100" id="name" name="name">
+    <label class="mdl-textfield__label" for="name">Nama Satuan</label>
+    <?php if (!empty($errors['name'])): ?>
+      <span class="form-error"><?= $errors['name'] ?></span>
+    <?php endif ?>
+  </div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['quantity']) ? 'is-invalid' : '' ?>">
+    <input class="mdl-textfield__input" type="number" min="0" step="1" value="<?= $uom->quantity ?>" maxlength="20" id="quantity" name="quantity">
+    <label class="mdl-textfield__label" for="quantity">Kwantitas</label>
+    <?php if (!empty($errors['quantity'])): ?>
+      <span class="form-error"><?= $errors['quantity'] ?></span>
+    <?php endif ?>
+  </div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?= !empty($errors['quantity']) ? 'is-invalid' : '' ?>">
+    <input class="mdl-textfield__input" type="text" readonly id="description">
+    <label class="mdl-textfield__label" for="description">Keterangan</label>
+  </div>
+  <div class="mdl-cell mdl-cell--12-col"></div>
+  <div class="mdl-cell mdl-cell--12-col buttons">
+    <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+            type="submit" name="action" value="save"><i class="material-icons left">check</i>Simpan</button>
+    <?php if ($uom->id): ?>
+      <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect"
+              type="submit" name="action" value="delete"><i class="material-icons left">delete</i>Hapus</button>
+    <?php endif ?>
+  </div>
+</form>
+<script>
+  var nameTextBox = document.querySelector('#name'),
+      quantityTextBox = document.querySelector('#quantity'),
+      descriptionTextBox = document.querySelector('#description');
+
+  function updateDescription() {
+    descriptionTextBox.value = '1 ' + nameTextBox.value + ' = ' + quantityTextBox.value + ' <?= $baseUom ?>';
+  }
+  
+  nameTextBox.addEventListener('change', updateDescription);
+  quantityTextBox.addEventListener('change', updateDescription);
+  updateDescription();
+</script>

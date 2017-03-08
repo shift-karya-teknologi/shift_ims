@@ -17,6 +17,8 @@ if ($id) {
     header('Location: ./');
     exit;
   }
+  $product->prices = $db->query('select * from product_prices where productId=' . $product->id)->fetchAll(PDO::FETCH_OBJ);
+  $product->uoms = $db->query('select * from product_uoms where productId=' . $product->id)->fetchAll(PDO::FETCH_OBJ);
 }
 else {
   $product = new Product();

@@ -8,6 +8,24 @@ class ProductUom
   public $quantity;
 }
 
+class ProductPrice
+{
+  public $id;
+  public $productId;
+  
+  public $quantityMin = 0;
+  public $quantityMax = 0;
+  
+  public $price1Min = 0;
+  public $price1Max = 0;
+  
+  public $price2Min = 0;
+  public $price2Max = 0;
+  
+  public $price3Min = 0;
+  public $price3Max = 0;
+}
+
 class Product
 {
   const Stocked = 0;

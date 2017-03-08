@@ -159,6 +159,7 @@ h6.mdl-cell {
 }
 
 .mdl-cell>.mdl-checkbox {
+  height: 63px;
   top: 20px;
 }
 
