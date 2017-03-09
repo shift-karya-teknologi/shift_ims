@@ -1,50 +1,83 @@
-<form method="POST" class="mdl-grid">
-  <input type="hidden" name="id" value="<?= $price->id ?>">
-  <input type="hidden" name="productId" value="<?= $price->productId ?>">
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
-    !empty($errors['name']) ? 'is-invalid' : '' ?>">
-    <input class="mdl-textfield__input" type="text" value="<?=
-      $price->quantityMax == 0 ? '>= ' . $price->quantityMin : $price->quantityMin . ' - ' . $price->quantityMax
-    ?>" maxlength="100" id="quantity" name="quantity">
-    <label class="mdl-textfield__label" for="quantity">Kwantitas</label>
-    <?php if (!empty($errors['quantity'])): ?>
-      <span class="form-error"><?= $errors['quantity'] ?></span>
-    <?php endif ?>
-  </div>
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['price1']) ? 'is-invalid' : '' ?>">
-    <input class="mdl-textfield__input" type="text" value="<?=
-      $price->price1Min == $price->price1Max ? format_number($price->price1Min) : format_number($price->price1Min) . ' - ' . format_number($price->price1Max)
-    ?>" maxlength="20" id="price1" name="price1">
-    <label class="mdl-textfield__label" for="price1">Harga 1</label>
-    <?php if (!empty($errors['price1'])): ?>
-      <span class="form-error"><?= $errors['price1'] ?></span>
-    <?php endif ?>
-  </div>
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['price2']) ? 'is-invalid' : '' ?>">
-    <input class="mdl-textfield__input" type="text"value="<?=
-      $price->price2Min == $price->price2Max ? format_number($price->price2Min) : format_number($price->price2Min) . ' - ' . format_number($price->price2Max)
-    ?>" maxlength="20" id="price2" name="price2">
-    <label class="mdl-textfield__label" for="price2">Harga 2</label>
-    <?php if (!empty($errors['price2'])): ?>
-      <span class="form-error"><?= $errors['price2'] ?></span>
-    <?php endif ?>
-  </div>
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['price3']) ? 'is-invalid' : '' ?>">
-    <input class="mdl-textfield__input" type="text" value="<?=
-      $price->price3Min == $price->price3Max ? format_number($price->price3Min) : format_number($price->price3Min) . ' - ' . format_number($price->price3Max)
-    ?>" maxlength="20" id="price3" name="price3">
-    <label class="mdl-textfield__label" for="price3">Harga 3</label>
-    <?php if (!empty($errors['price3'])): ?>
-      <span class="form-error"><?= $errors['price3'] ?></span>
-    <?php endif ?>
-  </div>
-  <div class="mdl-cell mdl-cell--12-col"></div>
-  <div class="mdl-cell mdl-cell--12-col buttons">
-    <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect"
-            type="submit" name="action" value="save"><i class="material-icons left">check</i>Simpan</button>
-    <?php if ($price->id): ?>
-      <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect"
-              type="submit" name="action" value="delete"><i class="material-icons left">delete</i>Hapus</button>
-    <?php endif ?>
-  </div>
-</form>
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  </head>
+  <body>
+    <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="./editor?id=<?= $product->id ?>" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title"><?= !$price->id ? 'Tambah' : 'Edit' ?> Satuan</span>
+          <div class="mdl-layout-spacer"></div>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
+            type="submit" name="action" value="save"><i class="material-icons left">save</i></button>
+          <?php if ($price->id): ?>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+            <li class="mdl-menu__item">
+              <button type="submit" name="action" value="delete"><i class="material-icons left">delete</i> Hapus</button>
+            </li>
+          </ul>
+          <?php endif ?>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <input type="hidden" name="id" value="<?= $price->id ?>">
+        <input type="hidden" name="productId" value="<?= $price->productId ?>">
+        <div class="mdl-grid">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+            <input class="mdl-textfield__input" type="text" readonly id="productName" value="<?= e($product->name) ?>">
+            <label class="mdl-textfield__label" for="productName">Nama Produk</label>
+          </div>
+        </div>
+        <div class="mdl-grid">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+            !empty($errors['name']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?=
+              $price->quantityMax == 0 ? '>= ' . $price->quantityMin : $price->quantityMin . ' - ' . $price->quantityMax
+            ?>" maxlength="100" id="quantity" name="quantity">
+            <label class="mdl-textfield__label" for="quantity">Kwantitas</label>
+            <?php if (!empty($errors['quantity'])): ?>
+              <span class="form-error"><?= $errors['quantity'] ?></span>
+            <?php endif ?>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['price1']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?=
+              $price->price1Min == $price->price1Max ? format_number($price->price1Min) : format_number($price->price1Min) . ' - ' . format_number($price->price1Max)
+            ?>" maxlength="20" id="price1" name="price1">
+            <label class="mdl-textfield__label" for="price1">Harga 1</label>
+            <?php if (!empty($errors['price1'])): ?>
+              <span class="form-error"><?= $errors['price1'] ?></span>
+            <?php endif ?>
+          </div>
+        </div>
+        <div class="mdl-grid">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['price2']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text"value="<?=
+              $price->price2Min == $price->price2Max ? format_number($price->price2Min) : format_number($price->price2Min) . ' - ' . format_number($price->price2Max)
+            ?>" maxlength="20" id="price2" name="price2">
+            <label class="mdl-textfield__label" for="price2">Harga 2</label>
+            <?php if (!empty($errors['price2'])): ?>
+              <span class="form-error"><?= $errors['price2'] ?></span>
+            <?php endif ?>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['price3']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?=
+              $price->price3Min == $price->price3Max ? format_number($price->price3Min) : format_number($price->price3Min) . ' - ' . format_number($price->price3Max)
+            ?>" maxlength="20" id="price3" name="price3">
+            <label class="mdl-textfield__label" for="price3">Harga 3</label>
+            <?php if (!empty($errors['price3'])): ?>
+              <span class="form-error"><?= $errors['price3'] ?></span>
+            <?php endif ?>
+          </div>
+        </div>
+      </main>
+    </form>
+    <?= render('foot') ?>
+  </body>
+</html>

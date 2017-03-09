@@ -1,3 +1,6 @@
+<div id="submit-progress" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;display:none;">
+  <div class="mdl-progress mdl-js-progress mdl-progress__indeterminate mdl-spinner--single-color" style="width:100%;height:5px;"></div>
+</div>
 <script src="<?= JS_BASE_URL ?>material.min.js"></script>
 <script src="<?= JS_BASE_URL ?>material.selectfield.min.js"></script>
 <?php if (isset($_SESSION['FLASH_MESSAGE'])): ?>
@@ -21,3 +24,4 @@
   </script>
   <?php unset($_SESSION['FLASH_MESSAGE']) ?>
 <?php endif ?>
+<script>function showSubmitProgress(){document.querySelector('#submit-progress').style.display='block';}</script>

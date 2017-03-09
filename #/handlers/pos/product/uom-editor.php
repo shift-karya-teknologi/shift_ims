@@ -53,16 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 
-render('layout', [
-  'title'   => format_product_code($uom->productId) . ' : ' . ($id ? 'Edit' : 'Tambah') . ' Satuan',
-  'sidenav' => render('pos/sidenav', true),
-  'headnav' => '
-    <a href="./editor?id=' . $uom->productId . '" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </a>',
-  'content' => render('pos/product/uom-editor', [
-    'uom'     => $uom,
-    'baseUom' => $product->uom,
-    'errors'  => $errors,
-  ], true),
+render('pos/product/uom-editor', [
+  'uom'     => $uom,
+  'product' => $product,
+  'errors'  => $errors,
 ]);

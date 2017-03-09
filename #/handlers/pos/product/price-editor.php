@@ -95,15 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 
-render('layout', [
-  'title'   => format_product_code($price->productId) . ' : ' . ($id ? 'Edit' : 'Tambah') . ' Harga',
-  'sidenav' => render('pos/sidenav', true),
-  'headnav' => '
-    <a href="./editor?id=' . $price->productId . '" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </a>',
-  'content' => render('pos/product/price-editor', [
-    'price'  => $price,
-    'errors' => $errors,
-  ], true),
+render('pos/product/price-editor', [
+  'price'   => $price,
+  'product' => $product,
+  'errors'  => $errors,
 ]);

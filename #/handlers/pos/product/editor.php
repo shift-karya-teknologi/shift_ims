@@ -49,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
   $product->name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
   $product->active = (int)filter_input(INPUT_POST, 'active', FILTER_VALIDATE_INT);
-  $product->type = (int)filter_input(INPUT_POST, 'type', FILTER_VALIDATE_INT);
+  if (!$product->id)
+    $product->type = (int)filter_input(INPUT_POST, 'type', FILTER_VALIDATE_INT);
   $product->costingMethod = (int)filter_input(INPUT_POST, 'costingMethod', FILTER_VALIDATE_INT);
   $product->manualCost = (string)filter_input(INPUT_POST, 'manualCost', FILTER_SANITIZE_STRING);
   $product->uom = filter_input(INPUT_POST, 'uom', FILTER_SANITIZE_STRING);
@@ -139,15 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
-render('layout', [
-  'title'   => $product->id ? format_product_code($product->id) : 'Tambah Produk',
-  'sidenav' => render('pos/sidenav', true),
-  'headnav' => '
-    <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </a>',
-  'content' => render('pos/product/editor', [
-    'product' => $product,
-    'errors' => $errors,
-  ], true),
+render('pos/product/editor', [
+  'product' => $product,
+  'errors' => $errors,
 ]);

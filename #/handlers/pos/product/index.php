@@ -2,8 +2,26 @@
 
 require_once CORELIB_PATH . '/Product.php';
 
+$filter = [];
+
+$filter['type']   = isset($_GET['type'])   ? (int)$_GET['type']   : -1;
+$filter['status'] = isset($_GET['status']) ? (int)$_GET['status'] : -1;
+
+$where = [];
+$sql = 'select * from products';
+if ($filter['type'] !== -1)
+  $where[] = 'type=' . $filter['type'];
+if ($filter['status'] !== -1)
+  $where[] = 'active=' . $filter['status'];
+if (!empty($where))
+  $sql .= ' where ' . implode(' and ', $where);
+
+$sql .= ' order by name asc';
+
+$products = [];
+
 $productByIds = [];
-$q = $db->query('select * from products where type <= 200 order by name asc');
+$q = $db->query($sql);
 while ($product = $q->fetchObject(Product::class)) {
   $products[] = $product;
   $productByIds[$product->id] = $product;
@@ -17,14 +35,7 @@ while ($price = $q->fetchObject()) {
 }
 unset($productByIds);
 
-render('layout', [
-  'title'   => 'Produk',
-  'headnav' => '
-    <a href="./editor" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">add</i>
-    </a>',
-  'sidenav' => render('pos/sidenav', true),
-  'content' => render('pos/product/list', [
-    'products' => $products
-  ], true),
+render('pos/product/list', [
+  'products' => $products,
+  'filter'   => $filter
 ]);
