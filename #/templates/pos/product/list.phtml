@@ -35,14 +35,14 @@
               <a href="./editor?id=<?= $product->id ?>">
                 <div class="name"><?= e($product->name) ?></div>
                 <div class="info">
+                  <?php if ($product->type != Product::ShiftNetVoucher): ?>
                   <div><span><?= format_product_code($product->id) ?></span>
                     <?php if ($product->type == Product::Stocked): ?>
-                      <span>Stok: <?= $product->getStockInfo() ?></span>
+                      | <span>Stok: <?= $product->getStockInfo() ?></span>
                     <?php endif ?>
-                    <?php if ($product->type != Product::ShiftNetVoucher): ?>
-                      <span><?= $product->getCostingMethodName() ?>: <?= format_number($product->cost) ?></span>
-                    <?php endif ?>
+                      | <span><?= $product->getCostingMethodName() ?>: <?= format_number($product->cost) ?></span>
                   </div>
+                  <?php endif ?>
                   <?php if ($info = $product->getPriceInfo()): ?>
                     <div><?= $info ?></div>
                   <?php endif ?>
