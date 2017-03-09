@@ -1,4 +1,4 @@
 <?php
 
-header('Location: ./price-list');
+header('Location: ./sales-order/');
 exit;
