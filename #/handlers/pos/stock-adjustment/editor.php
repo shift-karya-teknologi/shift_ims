@@ -91,36 +91,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
   else if ($action == 'cancel') {
-    $db->beginTransaction();
-    $db->query('update stock_adjustments set status=2, updateId=null where id=' . $data->id);
-    if ($data->updateId) {
-      delete_stock_update($data->updateId);
-      foreach ($data->items as $item)
-        update_product_quantity($item->productId);
-    }
-    $db->commit();
-
+    $db->query('update stock_adjustments set status=2 where id=' . $data->id);
     $_SESSION['FLASH_MESSAGE'] = 'Penyesuaian stok #' . format_stock_adjustment_code($data->id) . ' telah dibatalkan.';
     header('Location: ./');
     exit;
-  }
-  else if ($action == 'reopen') {
-    $db->beginTransaction();
-    $db->query('update stock_adjustments set status=0, updateId=null where id=' . $data->id);
-    if ($data->updateId) {
-      delete_stock_update($data->updateId);
-      foreach ($data->items as $item)
-        update_product_quantity($item->productId);
-    }
-    $db->commit();
-    header('Location: ?id=' . $data->id);
-    exit;      
   }
   else if ($action == 'delete') {
     $db->beginTransaction();
     delete_stock_adjustment($data->id);
     if ($data->updateId) {
       delete_stock_update($data->updateId);
+      foreach ($data->items as $item)
+        update_product_quantity($item->productId);
     }
     $db->commit();
 
@@ -130,14 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   } 
 }
 
-render('layout', [
-  'title'   => '#' . format_stock_adjustment_code($data->id),
-  'headnav' => '
-    <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </a>',
-  'sidenav' => render('pos/sidenav', true),
-  'content' => render('pos/stock-adjustment/editor', [
-    'data' => $data
-  ], true),
+render('pos/stock-adjustment/editor', [
+  'data' => $data
 ]);

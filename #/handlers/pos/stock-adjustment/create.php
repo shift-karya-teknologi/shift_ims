@@ -2,14 +2,24 @@
 
 require_once CORELIB_PATH . '/Product.php';
 
+$filter['categoryId'] = isset($_GET['categoryId']) ? (int)$_GET['categoryId'] : -1;
 $items = [];
 $itemByIds = [];
 
-$q = $db->prepare('select p.*,'
+$sql = 'select p.*,'
   . ' (select ifnull(max(pp.price1min), 0) from product_prices pp where pp.productId=p.id) price'
   . ' from products p'
-  . ' where p.type=0 and p.active=1'
-  . ' order by p.name asc');
+  . ' where p.type=0 and p.active=1';
+
+if ($filter['categoryId'] !== -1) {
+  if ($filter['categoryId'] == 0)
+    $sql .= ' and categoryId is null';
+  else
+    $sql .= ' and categoryId='. $filter['categoryId'];
+}
+
+$sql .= ' order by p.name asc';
+$q = $db->prepare($sql);
 $q->execute();
 while ($item = $q->fetchObject()) {
   $items[] = $item;
@@ -47,15 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ./editor?id=' . $stockAdjustmentId);
     exit;
   }
+  
+  header('Location: ?');
+  exit;
 }
-render('layout', [
-  'title'   => 'Pilih Produk',
-  'headnav' => '
-    <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </a>',
-  'sidenav' => render('pos/sidenav', true),
-  'content' => render('pos/stock-adjustment/create', [
-    'items'  => $items
-  ], true),
+
+$categories = $db->query('select * from product_categories order by name asc')->fetchAll(PDO::FETCH_OBJ);
+
+render('pos/stock-adjustment/create', [
+  'items' => $items,
+  'filter' => $filter,
+  'categories' => $categories,
 ]);
