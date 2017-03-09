@@ -44,8 +44,10 @@ while ($price = $q->fetchObject()) {
 unset($productByIds);
 
 $categories = $db->query('select * from product_categories order by name asc')->fetchAll(PDO::FETCH_OBJ);
+$productCount = $db->query('select count(0) from products')->fetchColumn();
 
 render('pos/product/list', [
+  'productCount' => $productCount,
   'products'   => $products,
   'categories' => $categories,
   'filter'     => $filter
