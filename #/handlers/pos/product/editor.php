@@ -128,11 +128,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q->bindValue(':categoryId', $product->categoryId ? $product->categoryId : null);
       $q->execute();
       
-      if (!$product->id)
+      if (!$product->id) {
         $product->id = $db->lastInsertId();
-      
-      $_SESSION['FLASH_MESSAGE'] = 'Produk telah disimpan.';
-      header('Location: ./editor?id=' . $product->id);
+        $_SESSION['FLASH_MESSAGE'] = 'Produk telah disimpan. Silahkan perbarui harga dan satuan alternatif.';
+        header('Location: ./editor?id=' . $product->id);
+      }
+      else {
+        $_SESSION['FLASH_MESSAGE'] = 'Produk ' . format_product_code($product->id). ' telah disimpan.';
+        header('Location: ./');
+      }
       exit;
     }
   }
