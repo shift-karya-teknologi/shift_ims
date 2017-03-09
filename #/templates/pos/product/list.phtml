@@ -39,7 +39,9 @@
                     <?php if ($product->type == Product::Stocked): ?>
                       <span>Stok: <?= $product->getStockInfo() ?></span>
                     <?php endif ?>
-                    <span><?= $product->getCostingMethodName() ?>: <?= format_number($product->cost) ?></span>
+                    <?php if ($product->type != Product::ShiftNetVoucher): ?>
+                      <span><?= $product->getCostingMethodName() ?>: <?= format_number($product->cost) ?></span>
+                    <?php endif ?>
                   </div>
                   <?php if ($info = $product->getPriceInfo()): ?>
                     <div><?= $info ?></div>
@@ -54,22 +56,31 @@
     <form method="GET">
       <dialog id="filter-dialog" class="mdl-dialog">
         <h4 class="mdl-dialog__title">Penyaringan</h4>
-        <div class="mdl-dialog__content" style="display:flex;justify-content:center;">
-          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:48%;">
+        <div class="mdl-dialog__content">
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:100%;">
+            <select id="categoryId" class="mdl-selectfield__select" name="categoryId">
+              <option value="-1" <?= $filter['categoryId'] === -1 ? 'selected' : '' ?>>Semua Kategori</option>
+              <option value="0" <?= $filter['categoryId'] === 0 ? 'selected' : '' ?>>Tanpa Kategori</option>
+              <?php foreach ($categories as $category): ?>
+                <option value="<?= $category->id ?>" <?= $filter['categoryId'] === (int)$category->id ? 'selected' : '' ?>><?= e($category->name) ?></option>
+              <?php endforeach ?>
+            </select>
+            <label class="mdl-selectfield__label" for="categoryId">Kategori</label>
+          </div>
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:100%;">
             <select id="type" name="type" class="mdl-selectfield__select">
               <option value="-1" <?= $filter['type'] === -1 ? 'selected' : '' ?>>Semua</option>
-              <?php $productTypes = Product::getTypes(); unset($productTypes[Product::ShiftNetVoucher]) ?>
-              <?php foreach ($productTypes as $k => $v): ?>
+              <?php foreach (Product::getTypes() as $k => $v): ?>
                 <option value="<?= $k ?>" <?= $filter['type'] === $k ? 'selected' : '' ?>><?= $v ?></option>
               <?php endforeach ?>
             </select>
             <label class="mdl-selectfield__label" for="type">Jenis</label>
           </div>
-          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:48%;">
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:100%;">
             <select id="status" name="status" class="mdl-selectfield__select">
                 <option value="-1" <?= $filter['status'] === -1 ? 'selected' : '' ?>>Semua</option>
-                <option value="1"  <?= $filter['status'] === 1 ? 'selected' : '' ?>>Aktif</option>
-                <option value="0"  <?= $filter['status'] === 0 ? 'selected' : '' ?>>Tidak Aktif</option>
+                <option value="1" <?= $filter['status'] === 1 ? 'selected' : '' ?>>Aktif</option>
+                <option value="0" <?= $filter['status'] === 0 ? 'selected' : '' ?>>Tidak Aktif</option>
             </select>
             <label class="mdl-selectfield__label" for="status">Status</label>
           </div>

@@ -38,6 +38,7 @@ class Product
   const LastPurchaseCostingMethod = 2;
   
   public $id;
+  public $categoryId;
   public $type;
   public $name;
   public $active;

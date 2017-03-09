@@ -24,6 +24,8 @@ else {
 }
 $errors = [];
 
+$categories = $db->query('select * from product_categories order by name asc')->fetchAll(PDO::FETCH_OBJ);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? (string)$_POST['action'] : 'save';
   if ($action === 'delete') {
@@ -48,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $product->costingMethod = (int)filter_input(INPUT_POST, 'costingMethod', FILTER_VALIDATE_INT);
   $product->manualCost = (string)filter_input(INPUT_POST, 'manualCost', FILTER_SANITIZE_STRING);
   $product->uom = filter_input(INPUT_POST, 'uom', FILTER_SANITIZE_STRING);
+  $product->categoryId = (int)filter_input(INPUT_POST, 'categoryId', FILTER_VALIDATE_INT);
   
   if (empty($product->name)) {
     $errors['name'] = 'Nama produk harus diisi.';
@@ -96,9 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       
       if ($product->id == 0) {
         $q = $db->prepare('insert into products'
-          . ' ( name, type, active, costingMethod, uom, cost, manualCost, averageCost, lastPurchaseCost)'
+          . ' ( name, type, active, costingMethod, uom, cost, manualCost, averageCost, lastPurchaseCost, categoryId)'
           . ' values'
-          . ' (:name,:type,:active,:costingMethod,:uom,:cost,:manualCost,:averageCost,:lastPurchaseCost)');
+          . ' (:name,:type,:active,:costingMethod,:uom,:cost,:manualCost,:averageCost,:lastPurchaseCost,:categoryId)');
         $q->bindValue(':lastPurchaseCost', $product->cost);
         $q->bindValue(':averageCost', $product->cost);
       }
@@ -110,7 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           . ' costingMethod=:costingMethod,'
           . ' uom=:uom,'
           . ' cost=:cost,'
-          . ' manualCost=:manualCost'
+          . ' manualCost=:manualCost,'
+          . ' categoryId=:categoryId'
           . ' where id=:id');
         $q->bindValue(':id', $product->id);
       }
@@ -122,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q->bindValue(':cost', $product->cost);
       $q->bindValue(':uom', $product->uom);
       $q->bindValue(':manualCost', $product->manualCost);
+      $q->bindValue(':categoryId', $product->categoryId ? $product->categoryId : null);
       $q->execute();
       
       if (!$product->id)
@@ -136,5 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 render('pos/product/editor', [
   'product' => $product,
+  'categories' => $categories,
   'errors' => $errors,
 ]);

@@ -4,12 +4,11 @@
     <span class="my-account-name"><a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a></span>
   </header>
   <nav class="mdl-navigation">
-    <a class="mdl-navigation__link<?= $_SERVER['PATH_INFO'] === '/pos/price-list' ? ' active' : '' ?>"
-      href="<?= BASE_URL ?>/pos/price-list">Daftar Harga</a>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/sales-order/') ? ' active' : '' ?>"
       href="<?= BASE_URL ?>/pos/sales-order/">Penjualan</a>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/purchasing-order/') ? ' active' : '' ?>"
       href="<?= BASE_URL ?>/pos/purchasing-order/">Pembelian</a>
+    <hr>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/stock-adjustment/') ? ' active' : '' ?>"
       href="<?= BASE_URL ?>/pos/stock-adjustment/">Penyesuaian Stok</a>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/product/') ? ' active' : '' ?>"
