@@ -134,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: ./editor?id=' . $product->id);
       }
       else {
+        update_product_quantity($product->id);
         $_SESSION['FLASH_MESSAGE'] = 'Produk ' . format_product_code($product->id). ' telah disimpan.';
         header('Location: ./');
       }
