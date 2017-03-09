@@ -24,8 +24,6 @@ else {
 }
 $errors = [];
 
-$categories = $db->query('select * from product_categories order by name asc')->fetchAll(PDO::FETCH_OBJ);
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? (string)$_POST['action'] : 'save';
   if ($action === 'delete') {
@@ -48,7 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!$product->id)
     $product->type = (int)filter_input(INPUT_POST, 'type', FILTER_VALIDATE_INT);
   $product->costingMethod = (int)filter_input(INPUT_POST, 'costingMethod', FILTER_VALIDATE_INT);
-  $product->manualCost = (string)filter_input(INPUT_POST, 'manualCost', FILTER_SANITIZE_STRING);
+  if ($product->type != Product::ShiftNetVoucher)
+    $product->manualCost = (string)filter_input(INPUT_POST, 'manualCost', FILTER_SANITIZE_STRING);
   $product->uom = filter_input(INPUT_POST, 'uom', FILTER_SANITIZE_STRING);
   $product->categoryId = (int)filter_input(INPUT_POST, 'categoryId', FILTER_VALIDATE_INT);
   
@@ -60,16 +59,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors['uom'] = 'Nama satuan dasar harus diisi.';
   }
   
-  
-  if (!preg_match('/^((?:\d{1,3}[\.]?)+\d*)$/', $product->manualCost)) {
-    $errors['manualCost'] = 'Nilai modal tidak valid.';
-  }
-  else {
-    $product->manualCost = (int)str_replace('.', '', $product->manualCost);
+  if ($product->type != Product::ShiftNetVoucher) {
+    if (!preg_match('/^((?:\d{1,3}[\.]?)+\d*)$/', $product->manualCost)) {
+      $errors['manualCost'] = 'Nilai modal tidak valid.';
+    }
+    else {
+      $product->manualCost = (int)str_replace('.', '', $product->manualCost);
+    }
   }
   
   if (empty($errors)) {
-    
     if ($product->id == 0) {
       $q = $db->prepare('select count(0) from products where name=:name');
     }
@@ -138,6 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
+
+$categories = $db->query('select * from product_categories order by name asc')->fetchAll(PDO::FETCH_OBJ);
 
 render('pos/product/editor', [
   'product' => $product,

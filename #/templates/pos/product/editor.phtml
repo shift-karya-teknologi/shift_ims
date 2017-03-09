@@ -194,15 +194,16 @@
     <?= render('foot') ?>
     <script>      
       document.querySelector('#save-button').addEventListener('click', showSubmitProgress);
-      <?php if ($product->id): ?>
-      document.querySelector('#delete-button').addEventListener('click', function(e) {
-        if (!confirm('Hapus produk?')) {
-          e.preventDefault();
-          return;
-        }
-        showSubmitProgress();
-      });
-      <?php endif ?>
+      var deleteButton = document.querySelector('#delete-button');
+      if (deleteButton) {
+        deleteButton.addEventListener('click', function(e) {
+          if (!confirm('Hapus produk?')) {
+            e.preventDefault();
+            return;
+          }
+          showSubmitProgress();
+        });
+      }
     </script>
   </body>
 </html>
