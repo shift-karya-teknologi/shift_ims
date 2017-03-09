@@ -4,13 +4,7 @@ require_once CORELIB_PATH . '/Product.php';
 
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
-if ($id) {
-  if ($_SESSION['CURRENT_USER']->groupId != 1) {
-    http_response_code(403);
-    render('error/403');
-    exit;
-  }
-  
+if ($id) { 
   $product = $db->query('select * from products where id=' . $id)->fetchObject(Product::class);
   if (!$product) {
     $_SESSION['FLASH_MESSAGE'] = 'Produk ' . format_product_code($id) . ' tidak ditemukan';
