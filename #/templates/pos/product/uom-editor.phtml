@@ -74,15 +74,13 @@
       quantityTextBox.addEventListener('change', updateDescription);
       updateDescription();
       
-      document.querySelector('#save-button').addEventListener('click', showSubmitProgress);
       <?php if ($uom->id): ?>
-      document.querySelector('#delete-button').addEventListener('click', function(e) {
-        if (!confirm('Hapus Satuan?')) {
-          e.preventDefault();
-          return;
-        }
-        showSubmitProgress();
-      });
+        document.querySelector('#delete-button').addEventListener('click', function(e) {
+          if (!confirm('Hapus Satuan?')) {
+            e.preventDefault();
+            return;
+          }
+        });
       <?php endif ?>
     </script>
   </body>

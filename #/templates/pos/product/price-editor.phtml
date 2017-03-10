@@ -80,15 +80,13 @@
     </form>
     <?= render('foot') ?>
     <script>
-      document.querySelector('#save-button').addEventListener('click', showSubmitProgress);
       <?php if ($price->id): ?>
-      document.querySelector('#delete-button').addEventListener('click', function(e) {
-        if (!confirm('Hapus Harga?')) {
-          e.preventDefault();
-          return;
-        }
-        showSubmitProgress();
-      });
+        document.querySelector('#delete-button').addEventListener('click', function(e) {
+          if (!confirm('Hapus Harga?')) {
+            e.preventDefault();
+            return;
+          }
+        });
       <?php endif ?>
     </script>
   </body>

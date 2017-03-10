@@ -24,4 +24,7 @@
   </script>
   <?php unset($_SESSION['FLASH_MESSAGE']) ?>
 <?php endif ?>
-<script>function showSubmitProgress(){document.querySelector('#submit-progress').style.display='block';}</script>
+<script>
+  function showSubmitProgress(){document.querySelector('#submit-progress').style.display='block';}
+  document.querySelectorAll('form').forEach(function(form) { form.addEventListener('submit', showSubmitProgress); });
+</script>

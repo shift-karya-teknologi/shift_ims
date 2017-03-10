@@ -43,17 +43,15 @@
       </main>
     </form>
     <?= render('foot') ?>
-    <script>      
-      document.querySelector('#save-button').addEventListener('click', showSubmitProgress);
-      <?php if ($category->id): ?>
+    <?php if ($category->id): ?>
+    <script>
       document.querySelector('#delete-button').addEventListener('click', function(e) {
         if (!confirm('Hapus Kategori Produk?')) {
           e.preventDefault();
           return;
         }
-        showSubmitProgress();
       });
-      <?php endif ?>
     </script>
+    <?php endif ?>
   </body>
 </html>
