@@ -31,10 +31,10 @@
             </button>
             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
               <li class="mdl-menu__item">
-                <button type="submit" name="action" value="complete"><i class="material-icons">check</i> Selesai</button>
+                <button id="complete-button" type="submit" name="action" value="complete"><i class="material-icons">check</i> Selesai</button>
               </li>
               <li class="mdl-menu__item">
-                <button type="submit" name="action" value="cancel"><i class="material-icons">delete</i> Batalkan</button>
+                <button id="cancel-button" type="submit" name="action" value="cancel"><i class="material-icons">delete</i> Batalkan</button>
               </li>
             </ul>
           <?php else: ?>
@@ -43,7 +43,7 @@
             </button>
             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
               <li class="mdl-menu__item">
-                <button type="submit" name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus</button>
+                <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus</button>
               </li>
             </ul>
           <?php endif ?>
@@ -116,6 +116,36 @@
             row.children[3].innerHTML = actualQuantity - storedQuantity;
         })
       });
+      
+      var deleteButton = document.querySelector('#delete-button');
+      if (deleteButton) {
+        deleteButton.addEventListener('click', function(e) {
+          if (!confirm('Hapus Penyesuaian Stok?')) {
+            e.preventDefault();
+            return;
+          }
+        });
+      }
+      
+      var completeButton = document.querySelector('#complete-button');
+      if (completeButton) {
+        completeButton.addEventListener('click', function(e) {
+          if (!confirm('Penyesuaian Stok telah selesai?')) {
+            e.preventDefault();
+            return;
+          }
+        });
+      }
+      
+      var cancelButton = document.querySelector('#cancel-button');
+      if (cancelButton) {
+        cancelButton.addEventListener('click', function(e) {
+          if (!confirm('Batalkan penyesuaian stok?')) {
+            e.preventDefault();
+            return;
+          }
+        });
+      }
     </script>
   </body>
 </html>
