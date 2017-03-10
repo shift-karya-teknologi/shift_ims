@@ -27,25 +27,35 @@
             <input type="hidden" name="id" value="<?= $item->id ?>">
           <?php endif ?>
           <input type="hidden" name="parentId" value="<?= $item->parentId ?>">
-          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--12-col">
-            <select id="productId" name="productId" class="mdl-selectfield__select">
-              <?php foreach ($products as $product): ?>
-              <option value="<?= $product->id ?>" <?= $item->productId == $product->id ? 'selected' : '' ?>><?= $product->name ?></option>
-              <?php endforeach ?>
-            </select>
-            <label class="mdl-selectfield__label" for="productId">Produk</label>
+          <input type="hidden" id="productId" name="productId" value="<?= $item->productId ?>">
+          <datalist id="product-list">
+            <?php foreach ($products as $product): ?>
+              <option value="<?= e($product->name) ?>">
+            <?php endforeach; ?>
+          </datalist>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?= !empty($errors['productId']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?= e($item->productName) ?>" id="productName" name="productName" list="product-list">
+            <label class="mdl-textfield__label" for="productName">Produk</label>
+            <?php if (!empty($errors['productId'])): ?>
+              <span class="form-error"><?= $errors['productId'] ?></span>
+            <?php endif ?>
           </div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
-            <input class="mdl-textfield__input" type="text" value="<?= format_number($item->quantity) ?>" min="0" max="1000" id="quantity" name="quantity"
-                   pattern="[0-9]+([\.][0-9]+)?" step="any">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['quantity']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($item->quantity) ?>" id="quantity" name="quantity">
             <label class="mdl-textfield__label" for="quantity">Kwantitas</label>
+            <?php if (!empty($errors['quantity'])): ?>
+              <span class="form-error"><?= $errors['quantity'] ?></span>
+            <?php endif ?>
           </div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
-            <input class="mdl-textfield__input" type="text" value="<?= format_number($item->cost) ?>" min="0" id="cost" name="cost">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['cost']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($item->cost) ?>" id="cost" name="cost">
             <label class="mdl-textfield__label" for="cost">Harga</label>
+            <?php if (!empty($errors['cost'])): ?>
+              <span class="form-error"><?= $errors['cost'] ?></span>
+            <?php endif ?>
           </div>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-            <input class="mdl-textfield__input" type="number" value="<?= format_number($item->subtotalCost) ?>" min="0" id="subtotal" readonly>
+            <input class="mdl-textfield__input" type="text" value="<?= format_number($item->subtotalCost) ?>" id="subtotal" readonly>
             <label class="mdl-textfield__label" for="subtotal">Subtotal</label>
           </div>
         </div>
@@ -53,39 +63,46 @@
     </form>
     <?= render('foot') ?>
     <script>
-      var costByProductIds = <?= json_encode($costByProductIds) ?>;
+      var products = <?= json_encode($products) ?>;
+      var productsByIds = new Map();
+      var productsByNames = new Map();
+      
+      var i;
+      for (i = 0; i < products.length; i++) {
+        var p = products[i];
+        productsByIds.set(p.id, p);
+        productsByNames.set(p.name.toLowerCase(), p);
+      }
 
-      Number.prototype.toLocale = function(c, d, t){
-      var n = this, 
-          c = isNaN(c = Math.abs(c)) ? 0 : c, 
-          d = d == undefined ? "," : d, 
-          t = t == undefined ? "." : t, 
-          s = n < 0 ? "-" : "", 
-          i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))), 
-          j = (j = i.length) > 3 ? j % 3 : 0;
-         return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-       };
-
-      var productSelect = document.querySelector('#productId');
+      var productNameTextBox = document.querySelector('#productName');
       var quantityTextBox = document.querySelector('#quantity');
       var costTextBox = document.querySelector('#cost');
       var subtotalTextBox = document.querySelector('#subtotal');
+      var productIdInput = document.querySelector('#productId');
 
       function updateSubtotal() {
-        subtotalTextBox.value =  (quantityTextBox.value.replace(".", "") * costTextBox.value.replace(".", "")).toLocale();
+        var quantity = parseInt(quantityTextBox.value.replace(".", ""));
+        var cost = parseInt(costTextBox.value.replace(".", ""));
+        subtotalTextBox.value = (quantity * cost).toLocale();
       }
-
-      function updatePrice() {
-        costTextBox.value = parseInt(costByProductIds[productSelect.value]).toLocale();
-      }
-
-      productSelect.addEventListener('change', updatePrice);
+      
+      productNameTextBox.addEventListener('change', function() {
+        productIdInput.value = "0";
+         
+        var selectedProductName = productNameTextBox.value.trim().toLowerCase();
+        var selectedProduct = productsByNames.get(selectedProductName);
+        if (selectedProduct) {
+          productIdInput.value = selectedProduct.id;
+          var cost = parseInt(costTextBox.value);
+          if (isNaN(cost) || cost === 0) {
+            costTextBox.value = parseInt(selectedProduct.cost).toLocale();
+          }
+        }         
+      });
+      
       quantityTextBox.addEventListener('change', updateSubtotal);
       costTextBox.addEventListener('change', updateSubtotal);
-      quantityTextBox.addEventListener('focus', function () { this.select(); } );
-      costTextBox.addEventListener('focus', function () { this.select(); } );
-
-      updatePrice();
+      
       updateSubtotal();
 
       var deleteButton = document.querySelector('#delete-button');
