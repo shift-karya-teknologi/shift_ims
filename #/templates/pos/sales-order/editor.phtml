@@ -25,9 +25,11 @@
               <i class="material-icons">more_vert</i>
             </button>
             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
-              <li class="mdl-menu__item">
-                <button id="complete-button" type="submit" name="action" value="complete"><i class="material-icons">check</i> Selesai</button>
-              </li>
+              <?php if (count($order->items) > 0): ?>
+                <li class="mdl-menu__item">
+                  <button id="complete-button" type="submit" name="action" value="complete"><i class="material-icons">check</i> Selesai</button>
+                </li>
+              <?php endif ?>
               <li class="mdl-menu__item">
                 <button id="cancel-button" type="submit" name="action" value="cancel"><i class="material-icons">delete</i> Batalkan</button>
               </li>
