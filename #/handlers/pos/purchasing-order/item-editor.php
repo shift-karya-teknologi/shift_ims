@@ -57,9 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       . " where parentId=$item->parentId and productId=$item->productId";
           
     if ($item->id)
-      $sql = " and id<>$item->id";
-    
-    if ($db->query($sql)->fetchColumn() !== 0)
+      $sql .= " and id<>$item->id";
+    if ((int)$db->query($sql)->fetchColumn() !== 0)
       $errors['productId'] = 'Produk sudah ada.';
   }
   
