@@ -2,11 +2,17 @@
 
 require_once CORELIB_PATH . '/Product.php';
 
+if (!isset($_SESSION['PRODUCT_MANAGER_FILTER'])) $_SESSION['PRODUCT_MANAGER_FILTER'] = [];
+if (!isset($_SESSION['PRODUCT_MANAGER_FILTER']['type'])) $_SESSION['PRODUCT_MANAGER_FILTER']['type'] = -1;
+if (!isset($_SESSION['PRODUCT_MANAGER_FILTER']['status'])) $_SESSION['PRODUCT_MANAGER_FILTER']['status'] = -1;
+if (!isset($_SESSION['PRODUCT_MANAGER_FILTER']['categoryId'])) $_SESSION['PRODUCT_MANAGER_FILTER']['categoryId'] = -1;
+  
 $filter = [];
+$filter['type'] = isset($_GET['type']) ? (int)$_GET['type'] : $_SESSION['PRODUCT_MANAGER_FILTER']['type'];
+$filter['status'] = isset($_GET['status']) ? (int)$_GET['status'] : $_SESSION['PRODUCT_MANAGER_FILTER']['status'];
+$filter['categoryId'] = isset($_GET['categoryId']) ? (int)$_GET['categoryId'] : $_SESSION['PRODUCT_MANAGER_FILTER']['categoryId'];
 
-$filter['type'] = isset($_GET['type']) ? (int)$_GET['type']   : -1;
-$filter['status'] = isset($_GET['status']) ? (int)$_GET['status'] : -1;
-$filter['categoryId'] = isset($_GET['categoryId']) ? (int)$_GET['categoryId'] : -1;
+$_SESSION['PRODUCT_MANAGER_FILTER'] = $filter;
 
 $where = [];
 $sql = 'select * from products';
