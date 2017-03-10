@@ -61,10 +61,12 @@
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--12-col">
             <h5 style="position:relative">Daftar Item
-              <a href="./item-editor?orderId=<?= $order->id ?>" style="position:absolute; margin-left: 30px; top:8px;"
-                class="mdl-button mdl-button--accent mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
-               <i class="material-icons">add</i>
-             </a>
+              <?php if ($order->status == 0): ?>
+                <a href="./item-editor?orderId=<?= $order->id ?>" style="position:absolute; margin-left: 30px; top:8px;"
+                   class="mdl-button mdl-button--accent mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
+                  <i class="material-icons">add</i>
+                </a>
+              <?php endif ?>
             </h5>
             <?php if (empty($order->items)): ?>
               <p>Tidak ada item.</p>
