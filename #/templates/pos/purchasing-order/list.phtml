@@ -3,8 +3,8 @@
   <head>
   <?= render('head') ?>
   <style>
-    #stock-adjustment-list .detail { line-height: 14px; font-size: 12px; }
-    #stock-adjustment-list .title { font-weight: bold; }
+    #po-list .detail { line-height: 14px; font-size: 12px; }
+    #po-list .title { font-weight: bold; }
   </style>
   </head>
   <body>
@@ -23,7 +23,7 @@
       </header>
       <?= render('pos/drawer') ?>
       <main class="mdl-layout__content">
-        <div id="stock-adjustment-list" class="mdlx-data-list">
+        <div id="po-list" class="mdlx-data-list">
           <?php foreach ($items as $item): ?>
             <div class="mdlx-data-list__item">
               <a href="./editor?id=<?= $item->id ?>">
@@ -71,7 +71,7 @@
     <?= render('foot') ?>
     <script>      
       var filterDialog = document.querySelector('#filter-dialog');
-      if (! filterDialog.showModal) {
+      if (!filterDialog.showModal) {
         dialogPolyfill.registerDialog(filterDialog);
       }
       
