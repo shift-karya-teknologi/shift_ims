@@ -1,10 +1,16 @@
 <?php
 
-$filter = [];
-$filter['status'] = isset($_GET['status']) ? (int)$_GET['status'] : 0;
-$filter['lastmod'] = isset($_GET['lastmod']) ? (string)$_GET['lastmod'] : 'anytime';
+if (!isset($_SESSION['PURCHASING_ORDER_MANAGER'])) $_SESSION['PURCHASING_ORDER_MANAGER'] = [];
+if (!isset($_SESSION['PURCHASING_ORDER_MANAGER']['status'])) $_SESSION['PURCHASING_ORDER_MANAGER']['status'] = 0;
+if (!isset($_SESSION['PURCHASING_ORDER_MANAGER']['lastmod'])) $_SESSION['PURCHASING_ORDER_MANAGER']['lastmod'] = 'anytime';
 
-$sql = 'select * from purchasing_orders ';
+$filter = [];
+$filter['status'] = isset($_GET['status']) ? (int)$_GET['status'] : $_SESSION['PURCHASING_ORDER_MANAGER']['status'];
+$filter['lastmod'] = isset($_GET['lastmod']) ? (string)$_GET['lastmod'] : $_SESSION['PURCHASING_ORDER_MANAGER']['lastmod'];
+
+$_SESSION['PURCHASING_ORDER_MANAGER'] = $filter;
+
+$sql = 'select * from purchasing_orders';
 $where = [];
 
 if ($filter['status'] !== -1) {
@@ -61,7 +67,7 @@ if ($filter['lastmod'] !== 'anytime') {
 
 $where = implode(' and ', $where);
 if (!empty($where))
-  $sql .= "where $where";
+  $sql .= " where $where";
 $sql .= ' order by lastModDateTime desc';
 
 $items = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
