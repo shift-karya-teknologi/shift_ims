@@ -18,7 +18,7 @@ else {
   $product = new Product();
   $product->active = 1;
   $product->type = Product::Stocked;
-  $product->costingMethod = Product::ManualCostingMethod;
+  $product->costingMethod = Product::LastPurchaseCostingMethod;
   $product->cost = 0;
   $product->uom = 'bh';
 }

@@ -83,7 +83,13 @@
             <h5 class="mdl-cell mdl-cell--12-col">Modal</h5>
             <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col">
               <select id="costingMethod" name="costingMethod" class="mdl-selectfield__select">
-                <?php foreach (Product::getCostingMethods() as $k => $v): ?>
+                <?php
+                  $costingMethods = Product::getCostingMethods();
+                  
+                  // Cara hitung moving average cost masih salah, disable sementara
+                  unset($costingMethods[Product::AverageCostingMethod]);
+                ?>
+                <?php foreach ($costingMethods as $k => $v): ?>
                 <option value="<?= $k ?>" <?= $product->costingMethod == $k ? 'selected' : '' ?>><?= $v ?></option>
                 <?php endforeach ?>
               </select>
