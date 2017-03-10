@@ -71,7 +71,7 @@
             <?php if (empty($order->items)): ?>
               <p>Tidak ada item.</p>
             <?php else: ?>
-              <div id="purchasing-order-list" class="mdlx-data-list" style="border:1px solid #ddd; border-bottom:none;">
+              <div id="sales-order-list" class="mdlx-data-list" style="border:1px solid #ddd; border-bottom:none;">
                 <?php foreach ($order->items as $item): ?>
                   <div class="mdlx-data-list__item">
                     <a href="./item-editor?id=<?= $item->id ?>">
@@ -95,7 +95,7 @@
       var deleteButton = document.querySelector('#delete-button');
       if (deleteButton) {
         deleteButton.addEventListener('click', function(e) {
-          if (!confirm('Hapus order pembelian?')) {
+          if (!confirm('Hapus order penjualan?')) {
             e.preventDefault();
             return;
           }
@@ -105,7 +105,7 @@
       var completeButton = document.querySelector('#complete-button');
       if (completeButton) {
         completeButton.addEventListener('click', function(e) {
-          if (!confirm('Order pembelian telah selesai?')) {
+          if (!confirm('Order penjualan telah selesai?')) {
             e.preventDefault();
             return;
           }
@@ -115,7 +115,7 @@
       var cancelButton = document.querySelector('#cancel-button');
       if (cancelButton) {
         cancelButton.addEventListener('click', function(e) {
-          if (!confirm('Batalkan order pembelian?')) {
+          if (!confirm('Batalkan order penjualan?')) {
             e.preventDefault();
             return;
           }
