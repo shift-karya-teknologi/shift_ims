@@ -14,39 +14,45 @@ class SalesOrderItem {
 }
 
 $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
-$orderId = (int)(isset($_REQUEST['pid']) ? $_REQUEST['pid'] : 0);
-
 if (!$id) {
   $item = new SalesOrderItem();
-  $item->parentId = $orderId;
+  $item->parentId = (int)(isset($_REQUEST['orderId']) ? $_REQUEST['orderId'] : 0);
 }
 else {
-  $item = $db->query('select * from sales_order_details where id='.$id)->fetchObject(SalesOrderItem::class);
-  $orderId = $item->parentId;
+  $item = $db->query('select d.*, p.name productName'
+    . ' from sales_order_details d'
+    . ' inner join products p on p.id = d.productId'
+    . ' where d.id='.$id
+    )->fetchObject(SalesOrderItem::class);
 }
 
-$order = $db->query('select * from sales_orders where id=' . $orderId)->fetchObject();
+$order = $db->query('select * from sales_orders where id=' . $item->parentId)->fetchObject();
 if (!$order || $order->status != 0) {
-  header('Location: ./editor?id=' . $orderId);
+  header('Location: ./editor?id=' . $item->parentId);
   exit;
 }
 
 $products = [];
+$productByIds = [];
 $q = $db->query('select id, name from products where active=1 and type <= 200 order by name asc');
-while ($r = $q->fetchObject()) {
-  $products[] = $r;
-  $productByIds[$r->id] = $r;
+while ($product = $q->fetchObject()) {
+  $product->code = format_product_code($product->id);
+  $product->prices = [];
+  $products[] = $product;
+  $productByIds[$product->id] = $product;
 }
+
+$errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = $_POST['action'];
   if ($action == 'delete') {
     $db->beginTransaction();
     $db->query('delete from sales_order_details where id=' . $id);
-    update_sales_order_subtotal($orderId);
+    update_sales_order_subtotal($item->parentId);
     $db->commit();
     
-    header('Location: ./editor?id=' . $orderId);
+    header('Location: ./editor?id=' . $item->parentId);
     exit;
   }
   
@@ -54,59 +60,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $item->quantity = str_replace('.', '', (string)$_POST['quantity']);
   $item->price = str_replace('.', '', (string)$_POST['price']);
   $item->cost = $db->query('select cost from products where id=' . $item->productId)->fetch(PDO::FETCH_COLUMN);
-  $db->beginTransaction();
-  if (!$item->id) {
-    $q = $db->prepare('insert into sales_order_details'
-      . ' ( parentId, productId, quantity, cost, price, subtotalCost, subtotalPrice)'
-      . ' values '
-      . ' (:parentId,:productId,:quantity,:cost,:price,:subtotalCost,:subtotalPrice)');
-    $q->bindValue(':parentId', $item->parentId);
-  }
-  else {
-    $q = $db->prepare('update sales_order_details set'
-      . ' productId=:productId,'
-      . ' quantity=:quantity,'
-      . ' cost=:cost,'
-      . ' price=:price,'
-      . ' subtotalCost=:subtotalCost,'
-      . ' subtotalPrice=:subtotalPrice'
-      . ' where id=:id');
-    $q->bindValue(':id', $item->id);
-  }
-  $q->bindValue(':productId', $item->productId);
-  $q->bindValue(':quantity', $item->quantity);
-  $q->bindValue(':cost', $item->cost);
-  $q->bindValue(':price', $item->price);
-  $q->bindValue(':subtotalCost', $item->cost * $item->quantity);
-  $q->bindValue(':subtotalPrice', $item->price * $item->quantity);
-  $q->execute();
   
-  update_sales_order_subtotal($orderId);
+  if (!$item->productId) {
+    $item->productName = '';
+    $errors['productId'] = 'Silahkan pilih produk.';
+  }
   
-  $db->commit();
-  header('Location: ./editor?id='.$orderId);
-  exit;
+  if ($item->quantity <= 0) {
+    $errors['quantity'] = 'Kwantitas harus diisi.';
+  }
+  
+  if (empty($errors)) {
+    $db->beginTransaction();
+    if (!$item->id) {
+      $q = $db->prepare('insert into sales_order_details'
+        . ' ( parentId, productId, quantity, cost, price, subtotalCost, subtotalPrice)'
+        . ' values '
+        . ' (:parentId,:productId,:quantity,:cost,:price,:subtotalCost,:subtotalPrice)');
+      $q->bindValue(':parentId', $item->parentId);
+    }
+    else {
+      $q = $db->prepare('update sales_order_details set'
+        . ' productId=:productId,'
+        . ' quantity=:quantity,'
+        . ' cost=:cost,'
+        . ' price=:price,'
+        . ' subtotalCost=:subtotalCost,'
+        . ' subtotalPrice=:subtotalPrice'
+        . ' where id=:id');
+      $q->bindValue(':id', $item->id);
+    }
+    $q->bindValue(':productId', $item->productId);
+    $q->bindValue(':quantity', $item->quantity);
+    $q->bindValue(':cost', $item->cost);
+    $q->bindValue(':price', $item->price);
+    $q->bindValue(':subtotalCost', $item->cost * $item->quantity);
+    $q->bindValue(':subtotalPrice', $item->price * $item->quantity);
+    $q->execute();
+
+    update_sales_order_subtotal($item->parentId);
+
+    $db->commit();
+    header('Location: ./editor?id=' . $item->parentId);
+    exit;
+  }
 }
 
-$priceByProductIds = [];
 $q = $db->query('select * from product_prices order by productId asc, quantityMin asc');
-while ($r = $q->fetchObject()) {
-  unset($r->id);
-  $priceByProductIds[$r->productId][] = $r;
-  unset($r->productId);
+while ($price = $q->fetchObject()) {
+  $productByIds[$price->productId]->prices[] = $price;
+  unset($price->id);
+  unset($price->productId);
+  foreach ($price as $key => $value) {
+    $price->{$key} = $value == 0 ? null : (int)$value;
+  }
 }
 
-render('layout', [
-  'title'   => $id ? 'Edit Item' : 'Tambah Item',
-  'headnav' => '
-    <a href="./editor?id=' . $orderId . '" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </a>'
-  ,
-  'sidenav' => render('pos/sidenav', true),
-  'content' => render('pos/sales-order/item-editor', [
-    'item' => $item,
-    'products' => $products,
-    'priceByProductIds' => $priceByProductIds,
-  ], true),
+render('pos/sales-order/item-editor', [
+  'item' => $item,
+  'products' => $products,
+  'productByIds' => $productByIds,
+  'errors' => $errors,
 ]);
