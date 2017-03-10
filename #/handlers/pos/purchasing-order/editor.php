@@ -131,10 +131,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           $oldCost = $product->manualCost;
 
         $newCost = $item->cost;
-        $averageCost = floor(
-          (($oldCost * $product->quantity) - ($item->quantity * $item->cost))
-          / ($product->quantity - $item->quantity)
-        );
+        
+        $totalCost = ($oldCost * $product->quantity) - ($item->quantity * $item->cost);
+        $totalQty  = ($product->quantity - $item->quantity);
+        if ($totalCost && $totalQty)
+          $averageCost = floor($totalCost / $totalQty);
+        else
+          $averageCost = $product->manualCost;
+        
         $lastPurchaseCost = (int)$db->query(
             'select d.cost'
           . ' from purchasing_order_details d'
@@ -143,7 +147,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           . ' order by o.closeDateTime desc'
           . ' limit 1')
           ->fetchColumn();
-
+        if ($lastPurchaseCost == 0)
+          $lastPurchaseCost = $product->manualCost;
+        
         if ($product->costingMethod == Product::ManualCostingMethod)
           $newCost = $product->manualCost;
         else if ($product->costingMethod == Product::AverageCostingMethod)
