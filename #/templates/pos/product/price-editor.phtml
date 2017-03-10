@@ -80,6 +80,10 @@
     </form>
     <?= render('foot') ?>
     <script>
+      document.querySelectorAll('input[type=text]').forEach(function (input) {
+        input.addEventListener('focus', function() { this.select(); })
+      });
+      
       <?php if ($price->id): ?>
         document.querySelector('#delete-button').addEventListener('click', function(e) {
           if (!confirm('Hapus Harga?')) {
