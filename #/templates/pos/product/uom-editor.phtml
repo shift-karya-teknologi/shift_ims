@@ -45,7 +45,8 @@
             <?php endif ?>
           </div>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?= !empty($errors['quantity']) ? 'is-invalid' : '' ?>">
-            <input class="mdl-textfield__input" type="number" min="0" step="1" value="<?= $uom->quantity ?>" maxlength="20" id="quantity" name="quantity">
+            <input class="mdl-textfield__input" type="number" min="0" step="1" value="<?= $uom->quantity ?>" maxlength="20" id="quantity" name="quantity"
+                   pattern="[0-9]{1,5}">
             <label class="mdl-textfield__label" for="quantity">Kwantitas</label>
             <?php if (!empty($errors['quantity'])): ?>
               <span class="form-error"><?= $errors['quantity'] ?></span>
@@ -72,6 +73,10 @@
 
       nameTextBox.addEventListener('change', updateDescription);
       quantityTextBox.addEventListener('change', updateDescription);
+      
+      nameTextBox.addEventListener('focus', function() { this.select() });
+      quantityTextBox.addEventListener('focus', function() { this.select() });
+      
       updateDescription();
       
       <?php if ($uom->id): ?>
