@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
   
-  $product->name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+  $product->name = isset($_POST['name']) ? (string)$_POST['name'] : '';
   $product->active = (int)filter_input(INPUT_POST, 'active', FILTER_VALIDATE_INT);
   if (!$product->id)
     $product->type = (int)filter_input(INPUT_POST, 'type', FILTER_VALIDATE_INT);
