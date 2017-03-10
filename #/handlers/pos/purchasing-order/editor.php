@@ -1,8 +1,34 @@
 <?php
 
+$_now = date('Y-m-d H:i:s');
+
 require_once CORELIB_PATH . '/Product.php';
 
-$now = date('Y-m-d H:i:s');
+function _update_purchasing_order($id, $status, $updateId = null) {
+  global $db;
+  $q = $db->prepare('update purchasing_orders set'
+    . ' status=:status, closeDateTime=:dateTime, lastModDateTime=:dateTime, updateId=:updateId'
+    . ' where id=' . $id);
+  $q->bindValue(':status', $status);
+  $q->bindValue(':dateTime', g('_now'));
+  $q->bindValue(':updateId', $updateId);
+  $q->execute();
+}
+
+function _query_products($productIds) {
+  global $db;
+  return $db->query(
+      "select id, costingMethod, cost, manualCost, averageCost, lastPurchaseCost, quantity"
+    . " from products where id in ('" . implode("','", $productIds) . "')");
+}
+
+function _update_product_costs($productId, $newCost, $averageCost, $lastPurchaseCost) {
+  global $db;
+  $db->query("update products set"
+  . " cost=$newCost, averageCost=$averageCost, lastPurchaseCost=$lastPurchaseCost"
+  . " where id=$productId");
+}
+
 $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
 $order = $db->query('select * from purchasing_orders where id=' . $id)->fetchObject();
 if (!$order) {
@@ -22,29 +48,52 @@ $order->items = $db->query('select d.*,'
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $action = $_POST['action'];
   
-  if ($order->status == 0 && $action == 'complete') {
-    $productByIds = [];
-    
+  if ($order->status == 0 && $action == 'complete') {   
+    $order->itemsByProductIds = [];
     $db->beginTransaction();
     
-    $updateId = add_stock_update(3, $now);
-    $productIds = [];
+    // update stock_updates
+    $updateId = add_stock_update(3, $_now);
+    
     foreach ($order->items as $item) {
       add_stock_update_detail($updateId, $item->productId, $item->quantity);
-      update_product_quantity($item->productId);
-      $productIds[] = $item->productId;
+      $order->itemsByProductIds[$item->productId] = $item;
     }
     
-    $q = $db->prepare('update purchasing_orders set'
-      . ' status=1, closeDateTime=:dateTime, lastModDateTime=:dateTime, updateId=:updateId'
-      . ' where id=' . $id);
-    $q->bindValue(':dateTime', $now);
-    $q->bindValue(':updateId', $updateId);
-    $q->execute();
+    // update purchasing_orders
+    _update_purchasing_order($order->id, 1, $updateId);
     
-    require_once CORELIB_PATH . '/Product.php';
+    // update products
+    $q = _query_products(array_keys($order->itemsByProductIds));
     
-    update_product_cost($productIds);
+    while ($product = $q->fetchObject()) {
+      $item = $order->itemsByProductIds[$product->id];
+      
+      if ($product->costingMethod == Product::ManualCostingMethod)
+        $oldCost = $product->manualCost;
+      else if ($product->costingMethod == Product::AverageCostingMethod)
+        $oldCost = $product->averageCost;
+      else if ($product->costingMethod == Product::LastPurchaseCostingMethod)
+        $oldCost = $product->lastPurchaseCost;
+      
+      if ($oldCost == 0)
+        $oldCost = $product->manualCost;
+      
+      $newCost = $item->cost;
+      $averageCost = floor((($item->quantity * $item->cost) + ($oldCost * $product->quantity))
+                     / ($item->quantity + $product->quantity));
+      $lastPurchaseCost = $item->cost;
+      
+      if ($product->costingMethod == Product::ManualCostingMethod)
+        $newCost = $product->manualCost;
+      else if ($product->costingMethod == Product::AverageCostingMethod)
+        $newCost = $averageCost;
+      else if ($product->costingMethod == Product::LastPurchaseCostingMethod)
+        $newCost = $lastPurchaseCost;
+      
+      update_product_quantity($product->id);
+      _update_product_costs($product->id, $newCost, $averageCost, $lastPurchaseCost);
+    }
     
     $db->commit();
     
@@ -53,28 +102,66 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
   }
   else if ($order->status == 0 && $action == 'cancel') {
-    $db->beginTransaction();
-    $q = $db->prepare('update purchasing_orders set'
-      . ' status=2, closeDateTime=:dateTime, lastModDateTime=:dateTime'
-      . ' where id=' . $id);
-    $q->bindValue(':dateTime', $now);
-    $q->execute();
-    
-    $db->commit();
+    _update_purchasing_order($order->id, 2);    
     $_SESSION['FLASH_MESSAGE'] = 'Pembelian #' . format_purchasing_order_code($id) . ' telah dibatalkan.';
     header('Location: ./');
     exit;
   }
-  else if ($action == 'delete' && $order->status > 0) {
+  else if ($action == 'delete') {
     $db->beginTransaction();
     $db->query('delete from purchasing_orders where id=' . $id);
-    $productIds = [];
-    foreach ($order->items as $item) {
-      update_product_quantity($item->productId);
-      $productIds[] = $item->productId;
+
+    if ($order->status == 1) {
+      $order->itemsByProductIds = [];
+      foreach ($order->items as $item)
+        $order->itemsByProductIds[$item->productId] = $item;
+
+      $q = _query_products(array_keys($order->itemsByProductIds));
+      while ($product = $q->fetchObject()) {
+        $item = $order->itemsByProductIds[$product->id];
+
+        if ($product->costingMethod == Product::ManualCostingMethod)
+          $oldCost = $product->manualCost;
+        else if ($product->costingMethod == Product::AverageCostingMethod)
+          $oldCost = $product->averageCost;
+        else if ($product->costingMethod == Product::LastPurchaseCostingMethod)
+          $oldCost = $product->lastPurchaseCost;
+
+        if ($oldCost == 0)
+          $oldCost = $product->manualCost;
+
+        $newCost = $item->cost;
+        $averageCost = floor(
+          (($oldCost * $product->quantity) - ($item->quantity * $item->cost))
+          / ($product->quantity - $item->quantity)
+        );
+        $lastPurchaseCost = (int)$db->query(
+            'select d.cost'
+          . ' from purchasing_order_details d'
+          . ' inner join purchasing_orders o on o.id=d.parentId'
+          . " where o.status=1 and d.productId=$product->id"
+          . ' order by o.closeDateTime desc'
+          . ' limit 1')
+          ->fetchColumn();
+
+        if ($product->costingMethod == Product::ManualCostingMethod)
+          $newCost = $product->manualCost;
+        else if ($product->costingMethod == Product::AverageCostingMethod)
+          $newCost = $averageCost;
+        else if ($product->costingMethod == Product::LastPurchaseCostingMethod)
+          $newCost = $lastPurchaseCost;
+        
+        _update_product_costs($product->id, $newCost, $averageCost, $lastPurchaseCost);
+      }
     }
     
-    update_product_cost($productIds);
+    if ($order->updateId) {
+      delete_stock_update($order->updateId);
+      foreach ($order->items as $item) {
+        update_product_quantity($item->productId);
+      }
+    }
+    
     $db->commit();
     
     $_SESSION['FLASH_MESSAGE'] = 'Pembelian #' . format_purchasing_order_code($id) . ' telah dihapus.';
