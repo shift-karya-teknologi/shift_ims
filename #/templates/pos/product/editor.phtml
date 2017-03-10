@@ -118,8 +118,8 @@
           <div class="mdl-grid">
             <?php if ($product->id): ?>
               <div class="mdl-cell mdl-cell--8-col">
-                <h5>Harga
-                  <a href="./price-editor?productId=<?= $product->id ?>" style="float:right;top:-10px;"
+                <h5 style="position:relative">Harga
+                  <a href="./price-editor?productId=<?= $product->id ?>" style="position:absolute; margin-left: 30px; top:8px;"
                      class="mdl-button mdl-button--accent mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
                     <i class="material-icons">add</i>
                   </a>
@@ -166,8 +166,8 @@
                 <?php endif ?>
               </div>
             <div class="mdl-cell mdl-cell--4-col">
-              <h5>
-                Satuan Lainnya <a href="./uom-editor?productId=<?= $product->id ?>" style="float:right;top:-10px;"
+              <h5 style="position:relative;">
+                Satuan Lainnya <a href="./uom-editor?productId=<?= $product->id ?>" style="position:absolute; margin-left: 30px; top:8px;"
                          class="mdl-button mdl-button--accent mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
                   <i class="material-icons">add</i>
                 </a>
