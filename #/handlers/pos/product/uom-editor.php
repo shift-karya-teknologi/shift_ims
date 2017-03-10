@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   
   if ($action == 'save') {
     $uom->name = (string)$_POST['name'];
-    $uom->quantity = (int)$_POST['quantity'];
+    $uom->quantity = (int)str_replace('.', '', (string)$_POST['quantity']);
     
     if (!$uom->id) {
       $q = $db->prepare('insert into product_uoms( productId, name, quantity) values (:productId,:name,:quantity)');
