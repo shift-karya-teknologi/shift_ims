@@ -18,6 +18,9 @@
             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="save">
               <i class="material-icons">save</i>
             </button>
+            <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" href="./item-editor?orderId=<?= $order->id ?>">
+              <i class="material-icons">add</i>
+            </a>
             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
               <i class="material-icons">more_vert</i>
             </button>
@@ -60,26 +63,23 @@
         </div>
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--12-col">
-            <h5 style="position:relative">Daftar Item
-              <?php if ($order->status == 0): ?>
-                <a href="./item-editor?orderId=<?= $order->id ?>" style="position:absolute; margin-left: 30px; top:8px;"
-                   class="mdl-button mdl-button--accent mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
-                  <i class="material-icons">add</i>
-                </a>
-              <?php endif ?>
-            </h5>
+            <h5>Daftar Item</h5>
             <?php if (empty($order->items)): ?>
               <p>Tidak ada item.</p>
             <?php else: ?>
               <div id="purchasing-order-list" class="mdlx-data-list" style="border:1px solid #ddd; border-bottom:none;">
                 <?php foreach ($order->items as $item): ?>
                   <div class="mdlx-data-list__item">
-                    <a href="./item-editor?id=<?= $item->id ?>">
+                    <?php if ($order->status == 0): ?>
+                      <a href="./item-editor?id=<?= $item->id ?>">
+                    <?php endif ?>
                       <div class="title"><?= $item->productName ?></div>
                       <div class="detail">
                         <?= format_number($item->quantity) . ' ' . e($item->productUom) . ' x Rp. ' . format_number($item->cost) . ' = Rp. ' . format_number($item->subtotalCost) ?>
                       </div>
-                    </a>
+                    <?php if ($order->status == 0): ?>
+                      </a>
+                    <?php endif ?>
                   </div>
                 <?php endforeach ?>
               </div>
