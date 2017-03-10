@@ -134,6 +134,14 @@ function format_stock_adjustment_status($status) {
   return $status == 0 ? 'Disimpan' : ($status == 1 ? 'Selesai' : 'Dibatalkan');
 }
 
+function format_purchasing_order_status($status) {
+  return format_stock_adjustment_status($status);
+}
+
+function format_sales_order_status($status) {
+  return format_stock_adjustment_status($status);
+}
+
 function update_product_quantity($productId) {
   global $db;
   $q = $db->prepare('update products set quantity=(select ifnull(sum(quantity), 0) from stock_update_details where productId=?) where id=?');
