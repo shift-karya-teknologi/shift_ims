@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     update_sales_order_subtotal($orderId);
     $db->commit();
     
+    $_SESSION['FLASH_MESSAGE'] = 'Item telah dihapus';
     header('Location: ./editor?id=' . $orderId);
     exit;
   }
@@ -78,21 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   update_purchasing_order_subtotal($orderId);
   
   $db->commit();
+  
+  $_SESSION['FLASH_MESSAGE'] = 'Item telah disimpan';
   header('Location: ./editor?id='.$orderId);
   exit;
 }
 
-render('layout', [
-  'title'   => $id ? 'Edit Item' : 'Tambah Item',
-  'headnav' => '
-    <a href="./editor?id=' . $orderId . '" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </a>'
-  ,
-  'sidenav' => render('pos/sidenav', true),
-  'content' => render('pos/purchasing-order/item-editor', [
+render('pos/purchasing-order/item-editor', [
     'item' => $item,
     'products' => $products,
     'costByProductIds' => $costByProductIds,
-  ], true),
 ]);
