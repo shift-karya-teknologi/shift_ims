@@ -1,5 +1,7 @@
 <?php
 
+require_once CORELIB_PATH . '/Product.php';
+
 $now = date('Y-m-d H:i:s');
 $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
 $order = $db->query('select * from purchasing_orders where id=' . $id)->fetchObject();
@@ -27,12 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     $updateId = add_stock_update(3, $now);
     $productIds = [];
-    $lastPurchaseCostsByProductIds = [];
     foreach ($order->items as $item) {
       add_stock_update_detail($updateId, $item->productId, $item->quantity);
       update_product_quantity($item->productId);
       $productIds[] = $item->productId;
-      $lastPurchaseCostsByProductIds[$item->productId] = $item->cost;
     }
     
     $q = $db->prepare('update purchasing_orders set'
@@ -44,32 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     require_once CORELIB_PATH . '/Product.php';
     
-    // update harga
-    $q = $db->query("select id, costingMethod, cost, manualCost, averageCost, lastPurchaseCost from products"
-      . " where id in ('" . implode("','", $productIds) . "')");
-    
-    while ($product = $q->fetchObject()) {
-      $averageCost = $db->query("select sum(d.subtotalCost) / sum(d.quantity)"
-          . " from purchasing_order_details d"
-          . " inner join purchasing_orders o on o.id = d.parentId"
-          . " where o.status=1 and d.productId=$product->id")->fetch(PDO::FETCH_COLUMN);
-      $lastPurchaseCost = $lastPurchaseCostsByProductIds[$product->id];
-      $cost = 0;
-      
-      if ($product->costingMethod == Product::ManualCostingMethod) {
-        $cost = $product->manualCost;
-      }
-      else if ($product->costingMethod == Product::AverageCostingMethod) {
-        $cost = $averageCost;
-      }
-      else if ($product->costingMethod == Product::LastPurchaseCostingMethod) {
-        $cost = $lastPurchaseCost;
-      }
-      
-      $db->query("update products set"
-        . " cost=$cost, averageCost=$averageCost, lastPurchaseCost=$lastPurchaseCost"
-        . " where id=$product->id");
-    }
+    update_product_cost($productIds);
     
     $db->commit();
     
@@ -90,27 +65,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header('Location: ./');
     exit;
   }
-  else if ($action == 'delete' && $order->status == 2) {
+  else if ($action == 'delete' && $order->status > 0) {
+    $db->beginTransaction();
     $db->query('delete from purchasing_orders where id=' . $id);
+    $productIds = [];
+    foreach ($order->items as $item) {
+      update_product_quantity($item->productId);
+      $productIds[] = $item->productId;
+    }
+    
+    update_product_cost($productIds);
+    $db->commit();
+    
     $_SESSION['FLASH_MESSAGE'] = 'Pembelian #' . format_purchasing_order_code($id) . ' telah dihapus.';
     header('Location: ./');
     exit;
   }
 }
 
-render('layout', [
-  'title'   => format_purchasing_order_code($order->id),
-  'headnav' => ($order->status == 0 ? '
-    <a href="./item-editor?orderId=' . $order->id . '" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">add</i>
-    </a>' : '')
-  .
-    '<a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </a>'
-  ,
-  'sidenav' => render('pos/sidenav', true),
-  'content' => render('pos/purchasing-order/editor', [
-    'order' => $order
-  ], true),
+render('pos/purchasing-order/editor', [
+  'order' => $order
 ]);
