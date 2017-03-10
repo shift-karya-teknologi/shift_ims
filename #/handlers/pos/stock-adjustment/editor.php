@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($data->itemByIds as $id => $item) {
       if (!isset($qtyArray[$id]))
         continue;
-
+      
       add_stock_update_detail($updateId, $item->productId, $qtyArray[$id] - $item->stock);
       update_product_quantity($item->productId);
     }
