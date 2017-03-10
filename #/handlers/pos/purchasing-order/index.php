@@ -1,34 +1,72 @@
 <?php
 
-$status = isset($_GET['status']) ? (int)$_GET['status'] : 0;
-$sql = 'select * from purchasing_orders where ';
+$filter = [];
+$filter['status'] = isset($_GET['status']) ? (int)$_GET['status'] : 0;
+$filter['lastmod'] = isset($_GET['lastmod']) ? (string)$_GET['lastmod'] : 'anytime';
 
-if ($status <= -1)
-  $sql .= '1';
-else
-  $sql .= 'status=:status';
+$sql = 'select * from purchasing_orders ';
+$where = [];
 
-$sql .= ' order by lastModDateTime desc';
-
-$q = $db->prepare($sql);
-
-if ($status >= 0) {
-  $q->bindValue(':status', $status);
+if ($filter['status'] !== -1) {
+  $where[] = 'status=' . $filter['status'];
 }
 
-$q->execute();
+if ($filter['lastmod'] !== 'anytime') {
+  $today = new DateTime(date('Y-m-d 00:00:00'));
+  $startDateTime = clone $today;
+  
+  if ($filter['lastmod'] === 'thisweek') {
+    $dayNum = $today->format('N');
+    $startDateTime->sub(new DateInterval('P' . ($dayNum - 1) . 'D'));
+    $endDateTime = clone $startDateTime;
+    $endDateTime->add(new DateInterval('P6D'));
+  }
+  else if ($filter['lastmod'] === 'prevweek') {
+    $dayNum = $today->format('N');
+    $startDateTime->sub(new DateInterval('P' . (7 + $dayNum - 1) . 'D'));
+    $endDateTime = clone $startDateTime;
+    $endDateTime->add(new DateInterval('P6D'));
+  }
+  else if ($filter['lastmod'] === 'thismonth') {
+    $startDateTime = new DateTime($today->format('Y-m-01 00:00:00'));
+    $endDateTime = clone $startDateTime;
+    $endDateTime->add(new DateInterval('P1M'));
+    $endDateTime->sub(new DateInterval('P1D'));
+  }
+  else if ($filter['lastmod'] === 'prevmonth') {
+    $startDateTime = new DateTime($today->format('Y-m-01 00:00:00'));
+    $startDateTime->sub(new DateInterval('P1M'));
+    $endDateTime = clone $startDateTime;
+    $endDateTime->add(new DateInterval('P1M'));
+    $endDateTime->sub(new DateInterval('P1D'));
+  }
+  else if ($filter['lastmod'] === 'thisyear') {
+    $startDateTime = new DateTime($today->format('Y-01-01 00:00:00'));
+    $endDateTime = clone $startDateTime;
+    $endDateTime->add(new DateInterval('P1Y'));
+    $endDateTime->sub(new DateInterval('P1D'));
+  }
+  else {
+    // bad request
+    header('Location: ?');
+    exit;
+  }
+  
+  $startDateTime = $startDateTime->format('Y-m-d 00:00:00');
+  $endDateTime = $endDateTime->format('Y-m-d 23:59:59');
+  
+  $where[] = "(lastModDateTime>='$startDateTime' and lastModDateTime<='$endDateTime')";
 
-$items = $q->fetchAll(PDO::FETCH_OBJ);
+}
 
-render('layout', [
-  'title'   => 'Daftar Pembelian',
-  'headnav' => '
-    <a href="./create" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">add</i>
-    </a>',
-  'sidenav' => render('pos/sidenav', true),
-  'content' => render('pos/purchasing-order/list', [
-    'status' => $status,
-    'items'  => $items
-  ], true),
+$where = implode(' and ', $where);
+if (!empty($where))
+  $sql .= "where $where";
+$sql .= ' order by lastModDateTime desc';
+
+$items = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
+
+render('pos/purchasing-order/list', [
+    'filter' => $filter,
+    'items'  => $items,
 ]);
