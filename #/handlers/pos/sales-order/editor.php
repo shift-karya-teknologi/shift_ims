@@ -56,38 +56,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header('Location: ./');
     exit;
   }
-  else if ($action == 'delete') {
-    if ($order->status == 1 && $_SESSION['CURRENT_USER']->groupId == 1) {
-      $db->beginTransaction();
-      $db->query("delete from sales_orders where id=" . $order->id);
-      $db->query("delete from stock_updates where id=$order->updateId");
-      foreach ($order->items as $item) {
+  else if ($order->status != 0 && $action == 'delete') {
+    $db->beginTransaction();
+    $db->query("delete from sales_orders where id=$order->id");
+    if ($order->updateId) {
+      delete_stock_update($order->updateId);
+      foreach ($order->items as $item)
         update_product_quantity($item->productId);
-      }
-      $db->commit();
     }
-    else if ($order->status == 2) {
-      $db->query('delete from sales_orders where id=' . $id);
-    }
+    $db->commit();
+    
     $_SESSION['FLASH_MESSAGE'] = 'Penjualan #' . format_sales_order_code($id) . ' telah dihapus.';
     header('Location: ./');
     exit;
   }
 }
 
-render('layout', [
-  'title'   => format_sales_order_code($order->id),
-  'headnav' => ($order->status == 0 ? '
-    <a href="./item-editor?pid=' . $order->id . '" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">add</i>
-    </a>' : '')
-  .
-    '<a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </a>'
-  ,
-  'sidenav' => render('pos/sidenav', true),
-  'content' => render('pos/sales-order/editor', [
-    'order' => $order
-  ], true),
+render('pos/sales-order/editor', [
+  'order' => $order
 ]);

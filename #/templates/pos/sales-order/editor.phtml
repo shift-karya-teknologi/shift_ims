@@ -1,50 +1,126 @@
-<form class="mdl-grid" method="POST">
-  <?php if (!empty($order->items)): ?>
-    <div class="mdl-cell mdl-cell--12-col mdlx-data-table--responsive">
-    <table class="mdl-data-table mdl-js-data-table">
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($order->items as $item): ?>
-        <tr>
-          <td><a href="./item-editor?id=<?= $item->id ?>"><?= $item->quantity . ' ' . $item->productUom . ' ' . e($item->productName) ?> @ Rp. <?= format_number($item->price) ?></a></td>
-          <td><?= format_number($item->quantity * $item->price) ?></td>
-        </tr>
-        <?php endforeach ?>
-      </tbody>
-    </table>
-    </div>
-  <?php else: ?>
-  <p class="mdl-cell mdl-cell--12-col">Item masih kosong, silahkan tambahkan.</p>
-  <?php endif ?>
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
-    <input class="mdl-textfield__input" type="text" id="grandTotal" value="<?= format_number($order->totalPrice) ?>" >
-    <label class="mdl-textfield__label" for="grandTotal">Grand Total</label>
-  </div>
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
-    <input class="mdl-textfield__input" id="status" type="text" value="<?= format_stock_adjustment_status($order->status) ?>" readonly>
-    <label class="mdl-textfield__label" for="status">Status</label>
-  </div>
-  <div class="mdl-cell mdl-cell--12-col buttons">
-    <?php if ($order->status == 1 && $_SESSION['CURRENT_USER']->groupId == 1): ?>
-      <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="delete">
-      <i class="material-icons left">delete_forever</i>Hapus</button>
-    <?php else: ?>
-      <?php if ($order->status == 0): ?>
-        <?php if (count($order->items) > 0): ?>
-          <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="complete">
-            <i class="material-icons left">check</i>Selesai</button>
-        <?php endif ?>
-        <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="cancel">
-        <i class="material-icons left">delete</i>Batalkan</button>
-      <?php else: ?>
-        <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="delete">
-          <i class="material-icons left">delete_forever</i>Hapus</button>
-      <?php endif ?>
-    <?php endif ?>
-  </div>
-</form>
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  <style>
+  </style>
+  </head>
+  <body>
+    <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title">#<?= format_sales_order_code($order->id) ?></span>
+          <div class="mdl-layout-spacer"></div>
+          <?php if ($order->status == 0): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="save">
+              <i class="material-icons">save</i>
+            </button>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+              <li class="mdl-menu__item">
+                <button id="complete-button" type="submit" name="action" value="complete"><i class="material-icons">check</i> Selesai</button>
+              </li>
+              <li class="mdl-menu__item">
+                <button id="cancel-button" type="submit" name="action" value="cancel"><i class="material-icons">delete</i> Batalkan</button>
+              </li>
+            </ul>
+          <?php else: ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+              <li class="mdl-menu__item">
+                <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus</button>
+              </li>
+            </ul>
+          <?php endif ?>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <h5 class="mdl-cell mdl-cell--12-col">Informasi Order</h5>
+          <input type="hidden" name="id" value="<?= $order->id ?>">
+          <div class="mdl-cell mdl-cell--12-col">
+            <table style="width: 100%;">
+              <tr>
+                <td style="width:50px;">Status</td>
+                <td>: <?= format_sales_order_status($order->status) ?> tanggal <?= date('d/m/Y H:i:s', strtotime($order->lastModDateTime)) ?></td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td>: <?= format_money($order->totalPrice) ?></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <h5 style="position:relative">Daftar Item
+              <?php if ($order->status == 0): ?>
+                <a href="./item-editor?orderId=<?= $order->id ?>" style="position:absolute; margin-left: 30px; top:8px;"
+                   class="mdl-button mdl-button--accent mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
+                  <i class="material-icons">add</i>
+                </a>
+              <?php endif ?>
+            </h5>
+            <?php if (empty($order->items)): ?>
+              <p>Tidak ada item.</p>
+            <?php else: ?>
+              <div id="purchasing-order-list" class="mdlx-data-list" style="border:1px solid #ddd; border-bottom:none;">
+                <?php foreach ($order->items as $item): ?>
+                  <div class="mdlx-data-list__item">
+                    <a href="./item-editor?id=<?= $item->id ?>">
+                      <div class="title"><?= $item->productName ?></div>
+                      <div class="detail">
+                        <?= format_number($item->quantity) . ' ' . e($item->productUom)
+                            . ' x Rp. ' . format_number($item->price)
+                            . ' = Rp. ' . format_number($item->subtotalPrice) ?>
+                      </div>
+                    </a>
+                  </div>
+                <?php endforeach ?>
+              </div>
+            <?php endif ?>
+          </div>
+        </div>
+      </main>
+    </form>
+    <?= render('foot') ?>
+    <script>      
+      var deleteButton = document.querySelector('#delete-button');
+      if (deleteButton) {
+        deleteButton.addEventListener('click', function(e) {
+          if (!confirm('Hapus order pembelian?')) {
+            e.preventDefault();
+            return;
+          }
+        });
+      }
+      
+      var completeButton = document.querySelector('#complete-button');
+      if (completeButton) {
+        completeButton.addEventListener('click', function(e) {
+          if (!confirm('Order pembelian telah selesai?')) {
+            e.preventDefault();
+            return;
+          }
+        });
+      }
+      
+      var cancelButton = document.querySelector('#cancel-button');
+      if (cancelButton) {
+        cancelButton.addEventListener('click', function(e) {
+          if (!confirm('Batalkan order pembelian?')) {
+            e.preventDefault();
+            return;
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
