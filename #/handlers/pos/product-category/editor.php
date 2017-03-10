@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q->bindValue(':name', $category->name);
       $q->execute();
       
-      $_SESSION['FLASH_MESSAGE'] = 'Kategori ' . e($category->name). 'telah disimpan.';
+      $_SESSION['FLASH_MESSAGE'] = 'Kategori ' . e($category->name). ' telah disimpan.';
       header('Location: ./');
       exit;
     }
