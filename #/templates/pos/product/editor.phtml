@@ -3,6 +3,18 @@
   <head>
   <?= render('head') ?>
   </head>
+  <style>
+    h5 { position: relative; }
+    h5 .mdl-button--fab.mdl-button--mini-fab {
+      position: absolute;
+      margin-left: 10px;
+      top: 15px;
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+    }
+    h5 .material-icons { font-size: 16px; }
+  </style>
   <body>
     <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
       <header class="mdl-layout__header">
@@ -20,7 +32,9 @@
             </button>
             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
               <li class="mdl-menu__item">
-                <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons left">delete</i> Hapus</button>
+                <button id="delete-button" type="submit" name="action" value="delete">
+                  <i class="material-icons left">delete</i> Hapus
+                </button>
               </li>
             </ul>
           <?php endif ?>
@@ -34,13 +48,14 @@
           <h5 class="mdl-cell mdl-cell--12-col">Info Umum</h5>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
             !empty($errors['name']) ? 'is-invalid' : '' ?>">
-            <input class="mdl-textfield__input" type="text" value="<?= e($product->name) ?>" maxlength="100" id="name" name="name">
+            <input class="mdl-textfield__input" type="text" value="<?= e($product->name) ?>"
+                   maxlength="100" id="name" name="name">
             <label class="mdl-textfield__label" for="name">Nama Produk</label>
             <?php if (!empty($errors['name'])): ?>
               <span class="form-error"><?= $errors['name'] ?></span>
             <?php endif ?>
           </div>
-          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col">
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--2-col">
             <select id="type" class="mdl-selectfield__select" <?= $product->id ? 'disabled' : 'name="type"' ?>>
               <?php
                 $productTypes = Product::getTypes();
@@ -53,34 +68,38 @@
             </select>
             <label class="mdl-selectfield__label" for="type">Jenis</label>
           </div>
-          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col">
-            <select id="categoryId" class="mdl-selectfield__select" name="categoryId">
-              <option value="0">Pilih Kategori</option>
-              <?php foreach ($categories as $category): ?>
-                <option value="<?= $category->id ?>" <?= $product->categoryId == $category->id ? 'selected' : '' ?>><?= e($category->name) ?></option>
-              <?php endforeach ?>
-            </select>
-            <label class="mdl-selectfield__label" for="categoryId">Kategori</label>
-          </div>
-        </div>
-        <div class="mdl-grid">
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?= !empty($errors['uom']) ? 'is-invalid' : '' ?>">
-            <input class="mdl-textfield__input" type="text" value="<?= e($product->uom) ?>" maxlength="20" id="uom" name="uom">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+              !empty($errors['uom']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?= e($product->uom) ?>"
+                   maxlength="20" id="uom" name="uom">
             <label class="mdl-textfield__label" for="uom">Satuan Dasar</label>
             <?php if (!empty($errors['uom'])): ?>
               <span class="form-error"><?= $errors['uom'] ?></span>
             <?php endif ?>
           </div>
-          <div class="mdl-cell mdl-cell--4-col">
+        </div>
+        <div class="mdl-grid">
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col">
+            <select id="categoryId" class="mdl-selectfield__select" name="categoryId">
+              <option value="0">Pilih Kategori</option>
+              <?php foreach ($categories as $category): ?>
+                <option value="<?= $category->id ?>" <?=
+                  $product->categoryId == $category->id ? 'selected' : '' ?>><?= e($category->name) ?></option>
+              <?php endforeach ?>
+            </select>
+            <label class="mdl-selectfield__label" for="categoryId">Kategori</label>
+          </div>
+          <div class="mdl-cell mdl-cell--1-col">
             <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="active">
-              <input type="checkbox" id="active" class="mdl-checkbox__input" value="1" name="active" <?= $product->active ? 'checked' : '' ?>>
+              <input type="checkbox" id="active" class="mdl-checkbox__input" value="1"
+                     name="active" <?= $product->active ? 'checked' : '' ?>>
               <span class="mdl-checkbox__label">Aktif</span>
             </label>
           </div>
         </div>
         <?php if ($product->type != Product::ShiftNetVoucher): ?>
-          <div class="mdl-grid">
-            <h5 class="mdl-cell mdl-cell--12-col">Modal</h5>
+          <div id="cost-container" class="mdl-grid">
+            <h5 class="mdl-cell mdl-cell--12-col">Modal / Harga Beli</h5>
             <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col">
               <select id="costingMethod" name="costingMethod" class="mdl-selectfield__select">
                 <?php foreach (Product::getCostingMethods() as $k => $v): ?>
@@ -89,38 +108,24 @@
               </select>
               <label class="mdl-selectfield__label" for="costingMethod">Metode Penentuan Modal</label>
             </div>
-            <?php if ($product->id): ?>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
-                <input class="mdl-textfield__input" type="text" id="cost" value="<?= format_number($product->cost) ?>" disabled>
-                <label class="mdl-textfield__label" for="cost">Nilai Modal</label>
-              </div>
-            <?php endif ?>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
               !empty($errors['manualCost']) ? 'is-invalid' : '' ?>">
-              <input class="mdl-textfield__input" type="text" value="<?= format_number($product->manualCost) ?>"
+              <input class="mdl-textfield__input numberEditor" type="text" readonly
+                     value="<?= format_number($product->manualCost) ?>" 
                      maxlength="10" id="manualCost" name="manualCost">
-              <label class="mdl-textfield__label" for="manualCost">Harga Beli Manual</label>
+              <label class="mdl-textfield__label" for="manualCost">Harga Beli</label>
               <?php if (!empty($errors['manualCost'])): ?>
                 <span class="form-error"><?= $errors['manualCost'] ?></span>
               <?php endif ?>
             </div>
-            <?php if ($product->id): ?>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
-                <input class="mdl-textfield__input" type="text" id="averageCost" value="<?= format_number($product->averageCost) ?>" disabled>
-                <label class="mdl-textfield__label" for="averageCost">Harga Beli Rata-Rata</label>
-              </div>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
-                <input class="mdl-textfield__input" type="text" id="lastPurchaseCost" value="<?= format_number($product->lastPurchaseCost) ?>" disabled>
-                <label class="mdl-textfield__label" for="lastPurchaseCost">Harga Beli Terakhir</label>
-              </div>
-            <?php endif ?>
           </div>
+        <?php endif ?>
           <div class="mdl-grid">
             <?php if ($product->id): ?>
-              <div class="mdl-cell mdl-cell--8-col">
-                <h5 style="position:relative">Harga
-                  <a href="./price-editor?productId=<?= $product->id ?>" style="position:absolute; margin-left: 30px; top:8px;"
-                     class="mdl-button mdl-button--accent mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
+              <div id="price-list-container" class="mdl-cell mdl-cell--6-col mdl-cell--4-col-mobile">
+                <h5>Harga Jual
+                  <a href="./price-editor?productId=<?= $product->id ?>"
+                     class="mdl-button mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
                     <i class="material-icons">add</i>
                   </a>
                 </h5>
@@ -131,7 +136,7 @@
                     <table class="mdl-data-table condensed">
                       <thead>
                         <tr>
-                          <th>Kwantitas</th>
+                          <th>Qty</th>
                           <th>Harga 1</th>
                           <th>Harga 2</th>
                           <th>Harga 3</th>
@@ -165,42 +170,82 @@
                   </div>
                 <?php endif ?>
               </div>
-            <div class="mdl-cell mdl-cell--4-col">
-              <h5 style="position:relative;">
-                Satuan Lainnya <a href="./uom-editor?productId=<?= $product->id ?>" style="position:absolute; margin-left: 30px; top:8px;"
-                         class="mdl-button mdl-button--accent mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
-                  <i class="material-icons">add</i>
-                </a>
-              </h5>
-              <?php if (empty($product->uoms)): ?>
-                <p>Satuan tidak tersedia.</p>
-              <?php else: ?>
-                <table class="mdl-data-table condensed" style="width:100%;">
-                  <tbody>
-                    <?php foreach ($product->uoms as $uom): ?>
-                      <tr>
-                        <td><a href="./uom-editor?id=<?= $uom->id ?>"><?= '1 ' . e($uom->name) . ' = ' . format_number($uom->quantity) . ' ' . e($product->uom) ?></a></td>
-                      </tr>
-                    <?php endforeach ?>
-                  </tbody>
-                </table>
-              <?php endif ?>
-            </div>
+              <div id="uom-list-container" class="mdl-cell mdl-cell--2-col mdl-cell--4-col-mobile">
+                <h5 style="position:relative;">
+                  Satuan Alternatif <a href="./uom-editor?productId=<?= $product->id ?>"
+                           class="mdl-button mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">add</i>
+                  </a>
+                </h5>
+                <?php if (empty($product->uoms)): ?>
+                  <p>Satuan tidak tersedia.</p>
+                <?php else: ?>
+                  <table class="mdl-data-table condensed" style="width:100%;">
+                    <tbody>
+                      <?php foreach ($product->uoms as $uom): ?>
+                        <tr>
+                          <td>
+                            <a href="./uom-editor?id=<?= $uom->id ?>">
+                              <?= '1 ' . e($uom->name) . ' = ' . format_number($uom->quantity) . ' ' . e($product->uom) ?>
+                            </a>
+                          </td>
+                        </tr>
+                      <?php endforeach ?>
+                    </tbody>
+                  </table>
+                <?php endif ?>
+              </div>
             <?php endif ?>
           </div>
-        <?php endif ?>
       </main>
     </form>
     <?= render('foot') ?>
-    <?php if ($product->id): ?>
     <script>
-      document.querySelector('#delete-button').addEventListener('click', function(e) {
-        if (!confirm('Hapus produk?')) {
-          e.preventDefault();
-          return;
+      var productId = <?= (int)$product->id ?>
+        , averageCost = <?= (int)$product->averageCost ?>
+        , manualCost =  <?= (int)$product->manualCost ?>
+        , lastPurchaseCost = <?= (int)$product->lastPurchaseCost ?>
+        , costingMethodSelect = document.querySelector('#costingMethod')
+        , manualCostTextBox = document.querySelector('#manualCost')
+        , deleteButton = document.querySelector('#delete-button');
+        
+      function updateCost() {
+        if (productId) {
+          manualCostTextBox.removeAttribute('name');
+          manualCostTextBox.setAttribute('readonly', true);
+          manualCostTextBox.value = manualCost.toLocale();
         }
-      });
+        else {
+          manualCostTextBox.setAttribute('name', 'manualCost');
+          manualCostTextBox.removeAttribute('readonly');
+        }
+        
+        var costingMethod = parseInt(costingMethodSelect.value);
+        
+        if (costingMethod === 0) {
+          manualCostTextBox.setAttribute('name', 'manualCost');
+          manualCostTextBox.removeAttribute('readonly');
+        }
+        else if (costingMethod === 1) {
+          manualCostTextBox.value = averageCost.toLocale();
+        }
+        else if (costingMethod === 2) {
+          manualCostTextBox.value = lastPurchaseCost.toLocale();
+        }
+      }
+      
+      costingMethodSelect.addEventListener('change', updateCost);
+      
+      if (deleteButton) {
+        deleteButton.addEventListener('click', function(e) {
+          if (!confirm('Hapus produk?')) {
+            e.preventDefault();
+            return;
+          }
+        });
+      }
+      
+      updateCost();
     </script>
-    <?php endif ?>
   </body>
 </html>
