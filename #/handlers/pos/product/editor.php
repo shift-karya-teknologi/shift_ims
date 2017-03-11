@@ -11,6 +11,7 @@ if ($id) {
     header('Location: ./');
     exit;
   }
+  
   $product->prices = $db->query('select * from product_prices where productId=' . $product->id)->fetchAll(PDO::FETCH_OBJ);
   $product->uoms = $db->query('select * from product_uoms where productId=' . $product->id)->fetchAll(PDO::FETCH_OBJ);
 }
@@ -43,13 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
   $product->name = isset($_POST['name']) ? (string)$_POST['name'] : '';
   $product->active = (int)filter_input(INPUT_POST, 'active', FILTER_VALIDATE_INT);
-  if (!$product->id)
-    $product->type = (int)filter_input(INPUT_POST, 'type', FILTER_VALIDATE_INT);
   $product->costingMethod = (int)filter_input(INPUT_POST, 'costingMethod', FILTER_VALIDATE_INT);
-  if ($product->type != Product::ShiftNetVoucher)
-    $product->manualCost = (string)filter_input(INPUT_POST, 'manualCost', FILTER_SANITIZE_STRING);
   $product->uom = filter_input(INPUT_POST, 'uom', FILTER_SANITIZE_STRING);
   $product->categoryId = (int)filter_input(INPUT_POST, 'categoryId', FILTER_VALIDATE_INT);
+  
+  if (!$product->id)
+    $product->type = (int)filter_input(INPUT_POST, 'type', FILTER_VALIDATE_INT);
+  
+  if (isset($_POST['manualCost']))
+    $product->manualCost = (string)$_POST['manualCost'];
   
   if (empty($product->name)) {
     $errors['name'] = 'Nama produk harus diisi.';
