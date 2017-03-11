@@ -51,8 +51,7 @@ class Product
   public $lastPurchaseCost;
   
   private static $_types = [
-    self::Stocked => "Stok",
-    self::NonStocked => "Non Stok",
+    self::Stocked => "Barang",
     self::Service => "Jasa",
     self::ShiftNetVoucher => "Voucher ShiftNet",
   ];
