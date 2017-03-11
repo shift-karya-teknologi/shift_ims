@@ -19,7 +19,8 @@ if (!$id) {
   $item->parentId = (int)(isset($_REQUEST['orderId']) ? $_REQUEST['orderId'] : 0);
 }
 else {
-  $item = $db->query('select d.*, p.name productName'
+  $item = $db->query('select'
+    . ' d.*, p.name productName'
     . ' from sales_order_details d'
     . ' inner join products p on p.id = d.productId'
     . ' where d.id='.$id
@@ -30,16 +31,6 @@ $order = $db->query('select * from sales_orders where id=' . $item->parentId)->f
 if (!$order || $order->status != 0) {
   header('Location: ./editor?id=' . $item->parentId);
   exit;
-}
-
-$products = [];
-$productByIds = [];
-$q = $db->query('select id, name from products where active=1 and type <= 200 order by name asc');
-while ($product = $q->fetchObject()) {
-  $product->code = format_product_code($product->id);
-  $product->prices = [];
-  $products[] = $product;
-  $productByIds[$product->id] = $product;
 }
 
 $errors = [];
@@ -104,6 +95,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ./editor?id=' . $item->parentId);
     exit;
   }
+}
+
+$products = [];
+$productByIds = [];
+$q = $db->query('select id, name from products where active=1 and type <= 200 order by name asc');
+while ($product = $q->fetchObject()) {
+  $product->code = format_product_code($product->id);
+  $product->prices = [];
+  $products[] = $product;
+  $productByIds[$product->id] = $product;
 }
 
 $q = $db->query('select * from product_prices order by productId asc, quantityMin asc');
