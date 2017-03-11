@@ -28,7 +28,6 @@ if (!$order || $order->status != 0) {
   exit;
 }
 
-$products = $db->query('select id, name, cost from products where active=1 and type=0 order by name asc')->fetchAll(PDO::FETCH_OBJ);
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -106,6 +105,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if ($item->productId)
   $item->productName = $db->query("select name from products where id=$item->productId")->fetchColumn();
+
+$products = $db->query('select'
+  . ' id, name, cost'
+  . ' from products'
+  . ' where active=1 and type=0'
+  . ' order by name asc'
+  )->fetchAll(PDO::FETCH_OBJ);
 
 render('pos/purchasing-order/item-editor', [
   'item' => $item,
