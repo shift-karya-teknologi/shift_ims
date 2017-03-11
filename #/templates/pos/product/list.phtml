@@ -39,8 +39,8 @@
                   <div><span><?= format_product_code($product->id) ?></span>
                     <?php if ($product->type == Product::Stocked): ?>
                       | <span>Stok: <?= $product->getStockInfo() ?></span>
-                    <?php endif ?>
                       | <span><?= $product->getCostingMethodName() ?>: <?= format_number($product->cost) ?></span>
+                    <?php endif ?>
                   </div>
                   <?php endif ?>
                   <?php if ($info = $product->getPriceInfo()): ?>
