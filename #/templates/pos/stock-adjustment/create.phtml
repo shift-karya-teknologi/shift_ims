@@ -16,6 +16,12 @@
           </a>
           <span class="mdl-layout-title">Sesuaikan Stok</span>
           <div class="mdl-layout-spacer"></div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+            <label class="mdl-button mdl-js-button mdl-button--icon" for="search-product-textbox"><i class="material-icons">search</i></label>
+            <div class="mdl-textfield__expandable-holder">
+              <input class="mdl-textfield__input" type="text" id="search-product-textbox" onkeyup="applyFilter()">
+            </div>
+          </div>
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
             <i class="material-icons">filter_list</i>
           </button>
@@ -26,8 +32,7 @@
       </header>
       <main class="mdl-layout__content">
         <div class="mdlx-data-table--responsive">
-
-            <table class="mdl-data-table">
+            <table id="prodct-list" class="mdl-data-table">
               <thead>
                 <tr>
                   <th style="width:30px;">
@@ -40,7 +45,7 @@
               </thead>
               <tbody>
               <?php foreach ($items as $i => $item): ?>
-                <tr data-product-id="<?= $item->id ?>">
+                <tr>
                   <td>
                     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="row[<?= $i ?>]">
                       <input type="checkbox" id="row[<?= $i ?>]" class="mdl-checkbox__input" name="p[<?= $item->id ?>]">
@@ -51,7 +56,6 @@
               <?php endforeach ?>
               </tbody>
             </table>
-
         </div>
       </main>
     </form>
@@ -78,6 +82,24 @@
     </form>
     <?= render('foot') ?>
     <script>
+      function applyFilter() {
+        var input, filter, rows, productNameElement, i;
+        input = document.getElementById("search-product-textbox");
+        filter = input.value.toUpperCase();
+        rows = document.querySelectorAll("#prodct-list tbody tr");
+
+        for (i = 0; i < rows.length; i++) {
+          productNameElement = rows[i].children[1];
+          if (productNameElement) {
+            if (productNameElement.innerHTML.toUpperCase().indexOf(filter) > -1) {
+              rows[i].style.display = "";
+            } else {
+              rows[i].style.display = "none";
+            }
+          } 
+        }
+      }
+      
       // checkbox handler
       var table = document.querySelector('table');
       var headerCheckbox = table.querySelector('thead .mdl-data-table__select input');
