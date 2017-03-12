@@ -122,6 +122,10 @@ function format_stock_adjustment_code($id) {
   return 'SA-' . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
+function format_operational_cost_code($id) {
+  return 'OC-' . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
 function format_sales_order_code($id) {
   return 'SO-' . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
@@ -202,4 +206,32 @@ function update_purchasing_order_subtotal($id) {
     . ' where id=:id');
   $q->bindValue(':id', $id);
   $q->execute();
+}
+
+function extract_locale_date($date, $sep = '/') {
+  $a = explode($sep, $date);
+  return [isset($a[0]) ? $a[0] : '00', isset($a[1]) ? $a[1] : '00', isset($a[2]) ? $a[2] : '0000'];
+}
+
+function to_mysql_date($date) {
+  list($dd, $mm, $yyyy) = extract_locale_date($date);
+  if (!checkdate((int)$mm, (int)$dd, (int)$yyyy)) {
+    return false;
+  }
+  return "$yyyy-$mm-$dd";
+}
+
+function to_locale_date($mysql_date) {
+  list($y, $m, $d) = explode('-', $mysql_date);
+  return "$d/$m/$y";  
+}
+
+function to_locale_datetime($mysql_datetime) {
+  list($date, $time) = explode(' ', $mysql_datetime);
+  list($y, $m, $d) = explode('-', $date);
+  return "$d/$m/$y $time";
+}
+
+function from_locale_number($number) {
+  return (int)str_replace('.', '', $number);
 }
