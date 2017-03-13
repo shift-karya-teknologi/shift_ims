@@ -1,0 +1,14 @@
+<div class="mdl-grid apps">
+  <a href="<?= BASE_URL ?>/shiftnet/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">device_hub</i><br>ShiftNet</a>
+  <a href="<?= BASE_URL ?>/pos/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">store</i><br>POS</a>
+  <a href="<?= BASE_URL ?>/service/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">build</i><br>Servis</a>
+  <a href="<?= BASE_URL ?>/finance/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">local_atm</i><br>Keuangan</a>
+  <a href="<?= BASE_URL ?>/contacts/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">contacts</i><br>Kontak</a>
+  <a href="<?= BASE_URL ?>/todo/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">list</i><br>Todo</a>
+</div>
+<?php if ($_SESSION['CURRENT_USER']->groupId == 1): ?>
+<div class="mdl-grid apps">
+  <a href="<?= BASE_URL ?>/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">show_chart</i><br>Laporan</a>
+  <a href="<?= BASE_URL ?>/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">settings</i><br>Sistem</a>
+</div>
+<?php endif ?>

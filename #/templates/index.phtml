@@ -1,0 +1,60 @@
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--8-col">
+    <h6>Penjualan Hari Ini</h6>
+    <style>
+      table{border-collapse: collapse;}
+      td,th{padding:0 8px;border:1px solid #ddd;}
+      td,tfoot th{text-align:right;}
+      tr>*:first-child{text-align:left;}
+    </style>
+    <table>
+      <thead>
+        <tr>
+          <th>Jenis</th>
+          <th>Siang (Rp.)</th>
+          <th>Malam (Rp.)</th>
+          <th>Total (Rp.)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Toko</td>
+          <td><?= format_number($data['shiftkom']['total_sales_1']) ?></td>
+          <td><?= format_number($data['shiftkom']['total_sales_2']) ?></td>
+          <td><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftkom']['total_sales_2']) ?></td>
+        </tr>
+        <tr>
+          <td>ShiftNet</td>
+          <td><?= format_number($data['shiftnet']['total_sales_1']) ?></td>
+          <td><?= format_number($data['shiftnet']['total_sales_2']) ?></td>
+          <td><?= format_number($data['shiftnet']['total_sales_1']+$data['shiftnet']['total_sales_2']) ?></td>
+        </tr>
+        <tr>
+          <td>Kudo</td>
+          <td>?</td>
+          <td>?</td>
+          <td>?</td>
+        </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+        <th>Total (Rp.)</th>
+        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftnet']['total_sales_1']) ?></th>
+        <th><?= format_number($data['shiftkom']['total_sales_2']+$data['shiftnet']['total_sales_2']) ?></th>
+        <th><?= format_number($data['shiftkom']['total_sales_1']
+                             +$data['shiftnet']['total_sales_1']
+                             +$data['shiftkom']['total_sales_2']
+                             +$data['shiftnet']['total_sales_2']) ?></th>
+      </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="mdl-cell mdl-cell--4-col">
+    <h6>Akses Cepat</h6>
+    <ul>
+      <li><a href="./pos/product/">Daftar Harga</a></li>
+      <li><a href="./pos/sales-order/create">Catat Penjualan</a></li>
+      <li><a href="./shiftnet/voucher/create">Buat Voucher ShiftNet</a></li>
+    </ul>
+  </div>
+</div>
