@@ -35,10 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     $q = $db->prepare('update sales_orders set'
-      . ' status=1, closeDateTime=:dateTime, lastModDateTime=:dateTime, updateId=:updateId'
+      . ' status=1, closeDateTime=:dateTime, lastModDateTime=:dateTime, updateId=:updateId, closeUserId=:userId, lastModUserId=:userId'
       . ' where id=' . $id);
     $q->bindValue(':dateTime', $now);
     $q->bindValue(':updateId', $updateId);
+    $q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
     $q->execute();
     
     $db->commit();
@@ -50,9 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   else if ($order->status == 0 && $action == 'cancel') {
     $db->beginTransaction();
     $q = $db->prepare('update sales_orders set'
-      . ' status=2, closeDateTime=:dateTime, lastModDateTime=:dateTime'
+      . ' status=2, closeDateTime=:dateTime, lastModDateTime=:dateTime, closeUserId=:userId, lastModUserId=:userId'
       . ' where id=' . $id);
     $q->bindValue(':dateTime', $now);
+    $q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
     $q->execute();
     
     $db->commit();

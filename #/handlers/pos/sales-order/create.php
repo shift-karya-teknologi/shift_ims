@@ -1,11 +1,12 @@
 <?php
 
 $q = $db->prepare('insert into sales_orders'
-  . ' ( openDateTime, lastModDateTime)'
+  . ' (openDateTime,lastModDateTime,openUserId,lastModUserId)'
   . ' values '
-  . ' (:openDateTime,:openDateTime)');
+  . ' (:dateTime,:dateTime,:userId,:userId)');
 
-$q->bindValue(':openDateTime', date('Y-m-d H:i:s'));
+$q->bindValue(':dateTime', date('Y-m-d H:i:s'));
+$q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
 $q->execute();
 
 $id = $db->lastInsertId();

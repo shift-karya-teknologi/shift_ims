@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->beginTransaction();
     $db->query('delete from sales_order_details where id=' . $id);
     update_sales_order_subtotal($item->parentId);
+    update_sales_order_lastmod($item->parentId);
     $db->commit();
     
     header('Location: ./editor?id=' . $item->parentId);
@@ -90,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $q->execute();
 
     update_sales_order_subtotal($item->parentId);
+    update_sales_order_lastmod($item->parentId);
 
     $db->commit();
     header('Location: ./editor?id=' . $item->parentId);

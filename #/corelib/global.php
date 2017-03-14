@@ -200,6 +200,15 @@ function update_sales_order_subtotal($id) {
   $q->execute();
 }
 
+function update_sales_order_lastmod($id) {
+  global $db;
+  $q = $db->prepare('update sales_orders set lastModDateTime=:dateTime, lastModUserId=:userId where id=:id');
+  $q->bindValue(':dateTime', date('Y-m-d H:i:s'));
+  $q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
+  $q->bindValue(':id', $id);
+  $q->execute();
+}
+
 function update_purchasing_order_subtotal($id) {
   global $db;
   $q = $db->prepare('update purchasing_orders set totalCost=(select ifnull(sum(subtotalCost), 0) from purchasing_order_details where parentId=:id)'
@@ -219,6 +228,26 @@ function to_mysql_date($date) {
     return false;
   }
   return "$yyyy-$mm-$dd";
+}
+
+function to_mysql_datetime($datetime) {
+  $a = explode(' ', $datetime);
+  if (count($a) != 2)
+    return false;
+  
+  list($dd, $mm, $yyyy) = extract_locale_date($a[0]);
+  if (!checkdate((int)$mm, (int)$dd, (int)$yyyy)) {
+    return false;
+  }
+  
+  if (!preg_match("/(2[0-3]|[01][0-9]):([0-5][0-9])(:[0-5][0-9])?/", $a[1])) {
+    return false;
+  }
+  
+  if (strlen($a[1]) == 5)
+    $a[1] .= ':00';
+  
+  return "$yyyy-$mm-$dd $a[1]";
 }
 
 function to_locale_date($mysql_date) {
