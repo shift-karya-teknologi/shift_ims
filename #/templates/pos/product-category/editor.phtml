@@ -14,15 +14,9 @@
           <div class="mdl-layout-spacer"></div>
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
             type="submit" name="action" value="save"><i class="material-icons left">save</i></button>
-          <?php if ($category->id): ?>
-            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
-              <i class="material-icons">more_vert</i>
-            </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
-              <li class="mdl-menu__item">
-                <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons left">delete</i> Hapus</button>
-              </li>
-            </ul>
+          <?php if ($category->id && current_user_can('delete-product-category')): ?>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
+            type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
           <?php endif ?>
         </div>
       </header>

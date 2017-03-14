@@ -7,6 +7,10 @@ $__ACL__ = [
     'delete-product',
     'view-product-cost',
     
+    'add-product-category',
+    'edit-product-category',
+    'delete-product-category',
+    
     'delete-sales-order',
     
     'delete-purchase-order',
@@ -17,9 +21,12 @@ $__ACL__ = [
     'add-product',
     'edit-product',
     'view-product-cost',
+    
+    'add-product-category',
+    'edit-product-category',
   ],
   3 => [
-    
+    'add-product-category',
   ],
   4 => [
     

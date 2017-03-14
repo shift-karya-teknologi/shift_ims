@@ -11,9 +11,11 @@
         <div class="mdl-layout__header-row">
           <span class="mdl-layout-title">Kategori Produk (<?= count($categories) ?>)</span>
           <div class="mdl-layout-spacer"></div>
+          <?php if(current_user_can('add-product-category')): ?>
           <a href="./editor" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">add</i>
           </a>
+          <?php endif ?>
         </div>
       </header>
       <?= render('pos/drawer') ?>
@@ -21,7 +23,11 @@
         <div id="product-list" class="mdlx-data-list">
           <?php foreach ($categories as $category): ?>
             <div class="mdlx-data-list__item">
-              <a href="./editor?id=<?= $category->id ?>"><?= e($category->name) ?></a>
+              <?php if(current_user_can('edit-product-category')): ?>
+                <a href="./editor?id=<?= $category->id ?>"><?= e($category->name) ?></a>
+              <?php else: ?>
+                <?= e($category->name) ?>
+              <?php endif ?>
             </div>
           <?php endforeach ?>
         </div>

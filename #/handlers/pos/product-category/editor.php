@@ -20,6 +20,9 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? (string)$_POST['action'] : 'save';
   if ($action === 'delete') {
+    if (!current_user_can('delete-product-category'))
+      exit(render('error/403'));
+    
     try {
       $db->query('delete from product_categories where id=' . $category->id);
     }
@@ -41,11 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
     
   if (empty($errors)) {
-    
-    if ($category->id == 0) {
+    if ($category->id == 0) {      
       $q = $db->prepare('select count(0) from product_categories where name=:name');
     }
     else {
+
+      
       $q = $db->prepare('select count(0) from product_categories where name=:name and id<>:id');
       $q->bindValue(':id', $category->id);
     }
@@ -55,11 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($q->fetch(PDO::FETCH_COLUMN) > 0) {
       $errors['name'] = 'Nama kategori sudah digunakan.';
     }
-    else {      
+    else {
       if ($category->id == 0) {
+        if (!current_user_can('add-product-category'))
+          exit(render('error/403'));
+      
         $q = $db->prepare('insert into product_categories (name) values(:name)');
       }
       else {
+        if (!current_user_can('edit-product-category'))
+          exit(render('error/403'));
+      
         $q = $db->prepare('update product_categories set name=:name where id=:id');
         $q->bindValue(':id', $category->id);
       }
@@ -72,6 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
+
+if ($category->id == 0 && !current_user_can('add-product-category'))
+  exit(render('error/403'));
+else if ($category->id != 0 && !current_user_can('edit-product-category'))
+  exit(render('error/403'));
 
 render('pos/product-category/editor', [
   'category' => $category,
