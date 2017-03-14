@@ -1,5 +1,7 @@
 <?php
 
+require_once CORELIB_PATH . '/Product.php';
+
 $now = date('Y-m-d H:i:s');
 $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
 $order = $db->query('select * from sales_orders where id=' . $id)->fetchObject();
@@ -12,7 +14,7 @@ if (!$order) {
 }
 
 $order->items = $db->query('select d.*,'
-  . ' p.name productName, p.uom productUom'
+  . ' p.name productName, p.uom productUom, p.type productType'
   . ' from sales_order_details d'
   . ' inner join products p on p.id = d.productId'
   . ' where parentId=' . $order->id)->fetchAll(PDO::FETCH_OBJ);
@@ -26,8 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $updateId = add_stock_update(1, $now);
     
     foreach ($order->items as $item) {
-      add_stock_update_detail($updateId, $item->productId, -$item->quantity);
-      update_product_quantity($item->productId);
+      if ($item->productType == Product::Stocked) {
+        add_stock_update_detail($updateId, $item->productId, -$item->quantity);
+        update_product_quantity($item->productId);
+      }
     }
     
     $q = $db->prepare('update sales_orders set'
@@ -61,8 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $db->query("delete from sales_orders where id=$order->id");
     if ($order->updateId) {
       delete_stock_update($order->updateId);
-      foreach ($order->items as $item)
-        update_product_quantity($item->productId);
+      foreach ($order->items as $item) {
+        if ($item->productType == Product::Stocked) {
+          update_product_quantity($item->productId);
+        }
+      }
     }
     $db->commit();
     
