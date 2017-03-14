@@ -5,7 +5,7 @@ class OperationalCost
   public $id;
   public $categoryId;
   public $categoryName;
-  public $date;
+  public $dateTime;
   public $description;
   public $amount;
   public $ref;
@@ -35,7 +35,7 @@ if ($id) {
 }
 else {
   $item = new OperationalCost();
-  $item->date = date('Y-m-d');
+  $item->dateTime = date('Y-m-d H:i:s');
 }
 $errors = [];
 
@@ -60,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $item->description = isset($_POST['description']) ? trim((string)$_POST['description']) : '';
   $item->amount = from_locale_number(isset($_POST['amount']) ? trim((string)$_POST['amount']) : '0');
   $item->ref = isset($_POST['ref']) ? trim((string)$_POST['ref']) : '';
-  $item->date = to_mysql_date(isset($_POST['date']) ? trim((string)$_POST['date']) : '');
+  $item->dateTime = to_mysql_datetime(isset($_POST['dateTime']) ? trim((string)$_POST['dateTime']) : '');
   
   if (empty($item->description))
     $errors['description'] = 'Deskripsi harus diisi.';
   
-  if (!$item->date)
-    $errors['date'] = 'Format tanggal tidak valid.';
+  if (!$item->dateTime)
+    $errors['dateTime'] = 'Format tanggal dan waktu tidak valid.';
   
   if ($item->amount === 0)
     $errors['amount'] = 'Nominal tidak valid.';
@@ -77,9 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->beginTransaction();
     if ($item->id == 0) {
       $q = $db->prepare('insert into operational_costs'
-        . ' ( categoryId, date, description, amount, ref, creationUserId, creationDateTime, lastModUserId, lastModDateTime)'
+        . ' ( categoryId, dateTime, description, amount, ref, creationUserId, creationDateTime, lastModUserId, lastModDateTime)'
         . ' values'
-        . ' (:categoryId,:date,:description,:amount,:ref,:creationUserId,:creationDateTime,:lastModUserId,:lastModDateTime)'
+        . ' (:categoryId,:dateTime,:description,:amount,:ref,:creationUserId,:creationDateTime,:lastModUserId,:lastModDateTime)'
       );
       $q->bindValue(':creationUserId', $_SESSION['CURRENT_USER']->id);
       $q->bindValue(':creationDateTime', $now);
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     else {
       $q = $db->prepare('update operational_costs set'
         . ' categoryId=:categoryId,'
-        . ' date=:date,'
+        . ' dateTime=:dateTime,'
         . ' description=:description,'
         . ' amount=:amount,'
         . ' ref=:ref'
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     $q->bindValue(':categoryId', $item->categoryId);
-    $q->bindValue(':date', $item->date);
+    $q->bindValue(':dateTime', $item->dateTime);
     $q->bindValue(':description', $item->description);
     $q->bindValue(':amount', $item->amount);
     $q->bindValue(':ref', $item->ref);

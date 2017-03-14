@@ -25,7 +25,7 @@
           <?php foreach ($items as $item): ?>
             <div class="mdlx-data-list__item">
               <a href="./editor?id=<?= $item->id ?>">
-                <?= '#' . format_operational_cost_code($item->id) . ' ' . to_locale_date($item->date) ?>
+                <?= '#' . format_operational_cost_code($item->id) . ' ' . to_locale_datetime($item->dateTime) ?>
                 <span style="float:right;"><?= format_money($item->amount) ?></span>
                 <br><?= e($item->categoryName) . ': ' . e($item->description) ?>
                 <?= $item->ref ? '<br>Ref: ' . e($item->ref) : '' ?>

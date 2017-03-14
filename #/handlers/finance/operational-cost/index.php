@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($_SESSION['OPERATIONAL_COST_MANAGER'])) $_SESSION['OPERATIONAL_COST_MANAGER'] = [];
-if (!isset($_SESSION['OPERATIONAL_COST_MANAGER']['date'])) $_SESSION['OPERATIONAL_COST_MANAGER']['date'] = 'anytime';
+if (!isset($_SESSION['OPERATIONAL_COST_MANAGER']['date'])) $_SESSION['OPERATIONAL_COST_MANAGER']['date'] = 'today';
 if (!isset($_SESSION['OPERATIONAL_COST_MANAGER']['categoryId'])) $_SESSION['OPERATIONAL_COST_MANAGER']['categoryId'] = -1;
 
 $filter = [];
@@ -63,10 +63,10 @@ if ($filter['date'] !== 'anytime') {
     exit;
   }
   
-  $startDateTime = $startDateTime->format('Y-m-d');
-  $endDateTime = $endDateTime->format('Y-m-d');
+  $startDateTime = $startDateTime->format('Y-m-d H:i:s');
+  $endDateTime = $endDateTime->format('Y-m-d H:i:s');
   
-  $where[] = "(o.date>='$startDateTime' and o.date<='$endDateTime')";
+  $where[] = "(o.dateTime>='$startDateTime' and o.dateTime<='$endDateTime')";
 }
 
 if ($filter['categoryId'] !== -1) {
@@ -77,7 +77,7 @@ $where = implode(' and ', $where);
 if (!empty($where))
   $sql .= " where $where";
 
-$sql .= ' order by o.date desc';
+$sql .= ' order by o.dateTime desc';
 
 $items = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
 $categories = $db->query('select * from operational_cost_categories')->fetchAll(PDO::FETCH_OBJ);

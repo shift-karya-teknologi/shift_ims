@@ -66,12 +66,12 @@
             <label class="mdl-textfield__label" for="ref">No. Bukti / Referensi</label>
           </div>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
-            !empty($errors['date']) ? 'is-invalid' : '' ?>">
-            <input class="mdl-textfield__input" type="text" value="<?= date('d/m/Y', strtotime($item->date)) ?>" maxlength="10" id="date" name="date"
+            !empty($errors['dateTime']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?= date('d/m/Y H:i:s', strtotime($item->dateTime)) ?>" id="dateTime" name="dateTime"
                    <?= $_SESSION['CURRENT_USER']->groupId == 1 ? '' : 'readonly' ?>>
-            <label class="mdl-textfield__label" for="date">Tanggal</label>
-            <?php if (!empty($errors['date'])): ?>
-              <span class="form-error"><?= $errors['date'] ?></span>
+            <label class="mdl-textfield__label" for="dateTime">Waktu</label>
+            <?php if (!empty($errors['dateTime'])): ?>
+              <span class="form-error"><?= $errors['dateTime'] ?></span>
             <?php endif ?>
           </div>
         </div>
