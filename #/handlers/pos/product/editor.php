@@ -86,6 +86,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
   
+  if ($product->type == Product::MultiPayment) {
+    $product->multiPaymentAccountId = (int)$_POST['multiPaymentAccountId'];
+    if (!$product->multiPaymentAccountId)
+      $errors['multiPaymentAccountId'] = 'Akun Multi Payment tidak valid.';
+  }
+  
+  switch ($product->costingMethod) {
+    case Product::ManualCostingMethod: $product->cost = $product->manualCost; break;
+    case Product::AverageCostingMethod: $product->cost = $product->averageCost; break;
+    case Product::LastPurchaseCostingMethod: $product->cost = $product->lastPurchaseCost; break;
+  }
+
+  if (!$product->cost && $product->manualCost != 0)
+    $product->cost = $product->manualCost;
+  if (!$product->averageCost && $product->manualCost != 0)
+    $product->averageCost = $product->manualCost;
+  if (!$product->lastPurchaseCost && $product->manualCost != 0)
+    $product->lastPurchaseCost = $product->manualCost;
+
+  if (empty($product->cost)) {
+    $errors['manualCost'] = 'Nilai modal tidak valid.';
+  }
+  
   if (empty($errors)) {
     if ($product->id == 0) {
       $q = $db->prepare('select count(0) from products where name=:name');
@@ -100,25 +123,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($q->fetch(PDO::FETCH_COLUMN) > 0) {
       $errors['name'] = 'Nama produk sudah digunakan.';
     }
-    else {
-      switch ($product->costingMethod) {
-        case Product::ManualCostingMethod: $product->cost = $product->manualCost; break;
-        case Product::AverageCostingMethod: $product->cost = $product->averageCost; break;
-        case Product::LastPurchaseCostingMethod: $product->cost = $product->lastPurchaseCost; break;
-      }
-      
-      if ($product->cost == 0 && $product->manualCost != 0)
-        $product->cost = $product->manualCost;
-      if ($product->averageCost == 0 && $product->manualCost != 0)
-        $product->averageCost = $product->manualCost;
-      if ($product->lastPurchaseCost == 0 && $product->manualCost != 0)
-        $product->lastPurchaseCost = $product->manualCost;
-      
+    else {      
       if ($product->id == 0) {
         $q = $db->prepare('insert into products'
-          . ' ( name, type, active, costingMethod, uom, cost, manualCost, averageCost, lastPurchaseCost, categoryId)'
+          . ' ( name, type, active, costingMethod, uom, cost, manualCost, averageCost, lastPurchaseCost, categoryId, multiPaymentAccountId)'
           . ' values'
-          . ' (:name,:type,:active,:costingMethod,:uom,:cost,:manualCost,:averageCost,:lastPurchaseCost,:categoryId)');
+          . ' (:name,:type,:active,:costingMethod,:uom,:cost,:manualCost,:averageCost,:lastPurchaseCost,:categoryId,:multiPaymentAccountId)');
         $q->bindValue(':lastPurchaseCost', $product->cost);
         $q->bindValue(':averageCost', $product->cost);
       }
@@ -131,7 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           . ' uom=:uom,'
           . ' cost=:cost,'
           . ' manualCost=:manualCost,'
-          . ' categoryId=:categoryId'
+          . ' categoryId=:categoryId,'
+          . ' multiPaymentAccountId=:multiPaymentAccountId'
           . ' where id=:id');
         $q->bindValue(':id', $product->id);
       }
@@ -144,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q->bindValue(':uom', $product->uom);
       $q->bindValue(':manualCost', $product->manualCost);
       $q->bindValue(':categoryId', $product->categoryId ? $product->categoryId : null);
+      $q->bindValue(':multiPaymentAccountId', $product->multiPaymentAccountId ? $product->multiPaymentAccountId : null);
       $q->execute();
       
       if (!$product->id) {
@@ -164,9 +176,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 _ensure_user_can_access();
 
 $categories = $db->query('select * from product_categories order by name asc')->fetchAll(PDO::FETCH_OBJ);
+$multiPaymentAccounts = $db->query('select * from multipayment_accounts order by name asc')->fetchAll(PDO::FETCH_OBJ);
 
 render('pos/product/editor', [
   'product' => $product,
   'categories' => $categories,
+  'multipaymentAccounts' => $multiPaymentAccounts,
   'errors' => $errors,
 ]);

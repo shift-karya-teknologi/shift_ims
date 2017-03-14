@@ -31,6 +31,7 @@ class Product
   const Stocked = 0;
   const NonStocked = 1;
   const Service = 2;
+  const MultiPayment = 101;
   const ShiftNetVoucher = 255;
   
   const ManualCostingMethod = 0;
@@ -49,10 +50,12 @@ class Product
   public $manualCost;
   public $averageCost;
   public $lastPurchaseCost;
+  public $multiPaymentAccountId;
   
   private static $_types = [
     self::Stocked => "Barang",
     self::Service => "Jasa",
+    self::MultiPayment => "Multi Payment",
     self::ShiftNetVoucher => "Voucher ShiftNet",
   ];
   
