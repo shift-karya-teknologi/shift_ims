@@ -35,16 +35,23 @@
           <td>?</td>
           <td>?</td>
         </tr>
+        <tr>
+          <td>Pengeluaran</td>
+          <td><?= format_number($data['costs']['shift_1']) ?></td>
+          <td><?= format_number($data['costs']['shift_2']) ?></td>
+          <td><?= format_number($data['costs']['shift_1'] + $data['costs']['shift_2']) ?></td>
+        </tr>
       </tbody>
       <tfoot>
       <tr>
         <th>Total (Rp.)</th>
-        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftnet']['total_sales_1']) ?></th>
-        <th><?= format_number($data['shiftkom']['total_sales_2']+$data['shiftnet']['total_sales_2']) ?></th>
+        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftnet']['total_sales_1']-$data['costs']['shift_1']) ?></th>
+        <th><?= format_number($data['shiftkom']['total_sales_2']+$data['shiftnet']['total_sales_2']-$data['costs']['shift_2']) ?></th>
         <th><?= format_number($data['shiftkom']['total_sales_1']
                              +$data['shiftnet']['total_sales_1']
                              +$data['shiftkom']['total_sales_2']
-                             +$data['shiftnet']['total_sales_2']) ?></th>
+                             +$data['shiftnet']['total_sales_2']
+                             -($data['costs']['shift_1'] + $data['costs']['shift_2'])) ?></th>
       </tr>
       </tfoot>
     </table>
@@ -57,4 +64,10 @@
       <li><a href="./shiftnet/voucher/create">Buat Voucher ShiftNet</a></li>
     </ul>
   </div>
+  <?php if ($_SESSION['CURRENT_USER']->groupId == 1): ?>
+    <div class="mdl-cell mdl-cell--4-col">
+      <h6>Statistik</h6>
+      <p>Nilai Stok <?= format_money($data['stock']) ?></p>
+    </div>
+  <?php endif ?>
 </div>
