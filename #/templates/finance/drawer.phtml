@@ -4,6 +4,13 @@
     <span class="my-account-name"><a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a></span>
   </header>
   <nav class="mdl-navigation">
+    <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/finance/transaction/') ? ' active' : '' ?>"
+      href="<?= BASE_URL ?>/finance/transaction/">Transaksi Keuangan</a>
+    <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/finance/transaction-category/') ? ' active' : '' ?>"
+      href="<?= BASE_URL ?>/finance/transaction-category/">Kategori Transaksi</a>
+    <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/finance/account/') ? ' active' : '' ?>"
+      href="<?= BASE_URL ?>/finance/account/">Akun / Rekening</a>
+    <hr>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/finance/operational-cost/') ? ' active' : '' ?>"
       href="<?= BASE_URL ?>/finance/operational-cost/">Biaya Operasional</a>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/finance/operational-cost-category/') ? ' active' : '' ?>"
