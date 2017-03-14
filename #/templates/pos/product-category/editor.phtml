@@ -37,15 +37,14 @@
       </main>
     </form>
     <?= render('foot') ?>
-    <?php if ($category->id): ?>
     <script>
-      document.querySelector('#delete-button').addEventListener('click', function(e) {
+      var deleteButton = document.querySelector('#delete-button');
+      deleteButton.addEventListener('click', function(e) {
         if (!confirm('Hapus Kategori Produk?')) {
           e.preventDefault();
           return;
         }
       });
     </script>
-    <?php endif ?>
   </body>
 </html>
