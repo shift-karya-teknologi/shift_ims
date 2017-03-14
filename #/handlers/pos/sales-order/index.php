@@ -2,8 +2,8 @@
 
 
 if (!isset($_SESSION['SALES_ORDER_MANAGER'])) $_SESSION['SALES_ORDER_MANAGER'] = [];
-if (!isset($_SESSION['SALES_ORDER_MANAGER']['status'])) $_SESSION['SALES_ORDER_MANAGER']['status'] = 0;
-if (!isset($_SESSION['SALES_ORDER_MANAGER']['lastmod'])) $_SESSION['SALES_ORDER_MANAGER']['lastmod'] = 'anytime';
+if (!isset($_SESSION['SALES_ORDER_MANAGER']['status'])) $_SESSION['SALES_ORDER_MANAGER']['status'] = -1;
+if (!isset($_SESSION['SALES_ORDER_MANAGER']['lastmod'])) $_SESSION['SALES_ORDER_MANAGER']['lastmod'] = 'today';
 
 $filter = [];
 $filter['status'] = isset($_GET['status']) ? (int)$_GET['status'] : $_SESSION['SALES_ORDER_MANAGER']['status'];
