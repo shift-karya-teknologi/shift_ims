@@ -19,12 +19,11 @@ if (!$id) {
 }
 else {
   $item = $db->query('select * from purchasing_order_details where id='.$id)->fetchObject(PurchaseOrderItem::class);
-  $orderId = $item->parentId;
 }
 
-$order = $db->query('select * from purchasing_orders where id=' . $orderId)->fetchObject();
+$order = $db->query('select * from purchasing_orders where id=' . $item->parentId)->fetchObject();
 if (!$order || $order->status != 0) {
-  header('Location: ./editor?id=' . $orderId);
+  header('Location: ./editor?id=' . $item->parentId);
   exit;
 }
 
@@ -35,11 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($action == 'delete') {
     $db->beginTransaction();
     $db->query('delete from purchasing_order_details where id=' . $id);
-    update_sales_order_subtotal($orderId);
+    update_purchasing_order_subtotal($item->parentId);
     $db->commit();
     
     $_SESSION['FLASH_MESSAGE'] = 'Item telah dihapus';
-    header('Location: ./editor?id=' . $orderId);
+    header('Location: ./editor?id=' . $item->parentId);
     exit;
   }
   
@@ -93,12 +92,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $q->bindValue(':subtotalCost', $item->cost * $item->quantity);
     $q->execute();
 
-    update_purchasing_order_subtotal($orderId);
+    update_purchasing_order_subtotal($item->parentId);
 
     $db->commit();
       
     $_SESSION['FLASH_MESSAGE'] = 'Item telah disimpan';
-    header('Location: ./editor?id='.$orderId);
+    header('Location: ./editor?id='.$item->parentId);
     exit;
   }
 }

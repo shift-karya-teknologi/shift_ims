@@ -81,8 +81,8 @@
       var productIdInput = document.querySelector('#productId');
 
       function updateSubtotal() {
-        var quantity = parseInt(quantityTextBox.value.replace(".", ""));
-        var cost = parseInt(costTextBox.value.replace(".", ""));
+        var quantity = parseInt(quantityTextBox.value.replace(/\./g, '').replace(/,/g, '.'));
+        var cost = parseInt(costTextBox.value.replace(/\./g, '').replace(/,/g, '.'));
         subtotalTextBox.value = (quantity * cost).toLocale();
       }
       
