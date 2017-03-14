@@ -63,6 +63,7 @@ else {
     }
     else {
       unset($_SESSION['CURRENT_USER']->active);
+      require CORELIB_PATH . '/acl.php';
     }
   }
 }
