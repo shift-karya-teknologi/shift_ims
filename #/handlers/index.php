@@ -36,13 +36,13 @@ $q = $db->prepare('select sum(amount) from operational_costs where (dateTime >=?
 $q->bindValue(1, $shiftStart->format('Y-m-d H:i:s'));
 $q->bindValue(2, $shiftMid->format('Y-m-d H:i:s'));
 $q->execute();
-$data['costs']['shift_1'] = $q->fetch(PDO::FETCH_COLUMN);
+$data['costs']['shift_1'] = -$q->fetch(PDO::FETCH_COLUMN);
 
 $q = $db->prepare('select sum(amount) from operational_costs where (dateTime >=? and dateTime<?)');
 $q->bindValue(1, $shiftMid->format('Y-m-d H:i:s'));
 $q->bindValue(2, $shiftEnd->format('Y-m-d H:i:s'));
 $q->execute();
-$data['costs']['shift_2'] = $q->fetch(PDO::FETCH_COLUMN);
+$data['costs']['shift_2'] = -$q->fetch(PDO::FETCH_COLUMN);
 
 $data['stock'] = $db->query('select sum(cost*quantity) from products')->fetch(PDO::FETCH_COLUMN);
 

@@ -45,13 +45,13 @@
       <tfoot>
       <tr>
         <th>Total (Rp.)</th>
-        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftnet']['total_sales_1']-$data['costs']['shift_1']) ?></th>
-        <th><?= format_number($data['shiftkom']['total_sales_2']+$data['shiftnet']['total_sales_2']-$data['costs']['shift_2']) ?></th>
+        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftnet']['total_sales_1']+$data['costs']['shift_1']) ?></th>
+        <th><?= format_number($data['shiftkom']['total_sales_2']+$data['shiftnet']['total_sales_2']+$data['costs']['shift_2']) ?></th>
         <th><?= format_number($data['shiftkom']['total_sales_1']
                              +$data['shiftnet']['total_sales_1']
                              +$data['shiftkom']['total_sales_2']
                              +$data['shiftnet']['total_sales_2']
-                             -($data['costs']['shift_1'] + $data['costs']['shift_2'])) ?></th>
+                             +$data['costs']['shift_1']+$data['costs']['shift_2']) ?></th>
       </tr>
       </tfoot>
     </table>
