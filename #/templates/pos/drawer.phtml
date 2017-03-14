@@ -9,6 +9,15 @@
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/purchasing-order/') ? ' active' : '' ?>"
       href="<?= BASE_URL ?>/pos/purchasing-order/">Pembelian</a>
     <hr>
+    <?php if (current_user_can('view-multipayment-transactions')): ?>
+    <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/multipayment-transaction/') ? ' active' : '' ?>"
+      href="<?= BASE_URL ?>/pos/multipayment-transaction/">Transaksi Multi Payment</a>
+    <?php endif ?>
+    <?php if (current_user_can('view-multipayment-accounts')): ?>
+    <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/multipayment-account/') ? ' active' : '' ?>"
+      href="<?= BASE_URL ?>/pos/multipayment-account/">Akun Multi Payment</a>
+    <?php endif ?>
+    <hr>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/stock-adjustment/') ? ' active' : '' ?>"
       href="<?= BASE_URL ?>/pos/stock-adjustment/">Penyesuaian Stok</a>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/product/') ? ' active' : '' ?>"
