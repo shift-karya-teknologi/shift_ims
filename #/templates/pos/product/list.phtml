@@ -22,24 +22,30 @@
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
             <i class="material-icons">filter_list</i>
           </button>
+          <?php if (current_user_can('add-product')): ?>
           <a href="./editor" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">add</i>
           </a>
+          <?php endif ?>
         </div>
       </header>
       <?= render('pos/drawer') ?>
       <main class="mdl-layout__content">
         <div id="product-list" class="mdlx-data-list">
           <?php foreach ($products as $product): ?>
-            <div class="mdlx-data-list__item">
-              <a href="./editor?id=<?= $product->id ?>">
+            <div class="mdlx-data-list__item <?= $product->active ? '' : 'r' ?>">
+              <?php if (current_user_can('edit-product')): ?>
+                <a href="./editor?id=<?= $product->id ?>">
+              <?php endif ?>
                 <div class="name"><?= e($product->name) ?></div>
                 <div class="info">
                   <?php if ($product->type != Product::ShiftNetVoucher): ?>
                   <div><span><?= format_product_code($product->id) ?></span>
                     <?php if ($product->type == Product::Stocked): ?>
                       | <span>Stok: <?= $product->getStockInfo() ?></span>
+                      <?php if (current_user_can('view-product-cost')): ?>
                       | <span><?= $product->getCostingMethodName() ?>: <?= format_number($product->cost) ?></span>
+                      <?php endif ?>
                     <?php endif ?>
                   </div>
                   <?php endif ?>
@@ -47,7 +53,9 @@
                     <div><?= $info ?></div>
                   <?php endif ?>
                 </div>
-              </a>
+              <?php if (current_user_can('edit-product')): ?>
+                </a>
+              <?php endif ?>
             </div>
           <?php endforeach ?>
         </div>

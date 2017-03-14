@@ -1,5 +1,13 @@
 <?php
 
+function _ensure_user_can_access() {
+  global $product;
+  if ($product->id == 0 && !current_user_can('add-product'))
+    exit(render('error/403'));
+  else if ($product->id != 0 && !current_user_can('edit-product'))
+    exit(render('error/403'));
+}
+
 require_once CORELIB_PATH . '/Product.php';
 
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
@@ -28,6 +36,9 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? (string)$_POST['action'] : 'save';
   if ($action === 'delete') {
+    if (!current_user_can('delete-product'))
+      exit(render('error/403'));
+    
     try {
       $db->query('delete from products where id='.$product->id);
     }
@@ -42,17 +53,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
   
-  $product->name = isset($_POST['name']) ? (string)$_POST['name'] : '';
+  _ensure_user_can_access();
+  
+  $product->name = isset($_POST['name']) ? trim((string)$_POST['name']) : '';
   $product->active = (int)filter_input(INPUT_POST, 'active', FILTER_VALIDATE_INT);
   $product->costingMethod = (int)filter_input(INPUT_POST, 'costingMethod', FILTER_VALIDATE_INT);
-  $product->uom = filter_input(INPUT_POST, 'uom', FILTER_SANITIZE_STRING);
+  $product->uom = isset($_POST['uom']) ? trim((string)$_POST['uom']) : '';
   $product->categoryId = (int)filter_input(INPUT_POST, 'categoryId', FILTER_VALIDATE_INT);
   
-  if (!$product->id)
+  if (!$product->id) {
     $product->type = (int)filter_input(INPUT_POST, 'type', FILTER_VALIDATE_INT);
+  }
   
-  if (isset($_POST['manualCost']))
-    $product->manualCost = (string)$_POST['manualCost'];
+  if (isset($_POST['manualCost'])) {
+    $product->manualCost = trim((string)$_POST['manualCost']);
+  }
   
   if (empty($product->name)) {
     $errors['name'] = 'Nama produk harus diisi.';
@@ -145,6 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
+
+_ensure_user_can_access();
 
 $categories = $db->query('select * from product_categories order by name asc')->fetchAll(PDO::FETCH_OBJ);
 

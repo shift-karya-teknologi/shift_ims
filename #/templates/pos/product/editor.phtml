@@ -25,18 +25,10 @@
           <span class="mdl-layout-title"><?= $product->id ? format_product_code($product->id) : 'Tambah Produk' ?></span>
           <div class="mdl-layout-spacer"></div>
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
-            type="submit" name="action" value="save"><i class="material-icons left">save</i></button>
-          <?php if ($product->id && $product->type != Product::ShiftNetVoucher): ?>
-            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
-              <i class="material-icons">more_vert</i>
-            </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
-              <li class="mdl-menu__item">
-                <button id="delete-button" type="submit" name="action" value="delete">
-                  <i class="material-icons left">delete</i> Hapus
-                </button>
-              </li>
-            </ul>
+            type="submit" name="action" value="save"><i class="material-icons left">check</i></button>
+          <?php if ($product->id && $product->type != Product::ShiftNetVoucher && current_user_can('delete-product')): ?>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
+            type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
           <?php endif ?>
         </div>
       </header>
@@ -124,10 +116,12 @@
             <?php if ($product->id): ?>
               <div id="price-list-container" class="mdl-cell mdl-cell--6-col mdl-cell--4-col-mobile">
                 <h5>Harga Jual
+                  <?php if (current_user_can('add-product-price')): ?>
                   <a href="./price-editor?productId=<?= $product->id ?>"
                      class="mdl-button mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
                     <i class="material-icons">add</i>
                   </a>
+                  <?php endif ?>
                 </h5>
                 <?php if (empty($product->prices)): ?>
                   <p>Harga tidak tersedia.</p>
@@ -145,10 +139,17 @@
                       <tbody>
                         <?php foreach ($product->prices as $price): ?>
                           <tr>
-                            <td><a href="./price-editor?id=<?= $price->id ?>">
-                              <?= ($price->quantityMin && $price->quantityMax)
-                                ? format_number($price->quantityMin) . ' - ' . format_number($price->quantityMax)
-                                : '>= ' . format_number($price->quantityMin) ?></a>
+                            <td>
+                              <?php
+                                $v = ($price->quantityMin && $price->quantityMax)
+                                   ? format_number($price->quantityMin) . ' - ' . format_number($price->quantityMax)
+                                   : '>= ' . format_number($price->quantityMin);
+                              ?>
+                              <?php if (current_user_can('edit-product-price')): ?>
+                                <a href="./price-editor?id=<?= $price->id ?>"><?= $v ?></a>
+                              <?php else: ?>
+                                <?= $v ?>
+                              <?php endif ?>
                             </td>
                             <td><?= ($price->price1Min == $price->price1Max)
                                 ? format_number($price->price1Min)
@@ -171,11 +172,13 @@
                 <?php endif ?>
               </div>
               <div id="uom-list-container" class="mdl-cell mdl-cell--2-col mdl-cell--4-col-mobile">
-                <h5 style="position:relative;">
-                  Satuan Alternatif <a href="./uom-editor?productId=<?= $product->id ?>"
-                           class="mdl-button mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
+                <h5 style="position:relative;">Satuan Alternatif
+                  <?php if (current_user_can('add-uom')): ?>
+                  <a href="./uom-editor?productId=<?= $product->id ?>"
+                     class="mdl-button mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
                     <i class="material-icons">add</i>
                   </a>
+                  <?php endif ?>
                 </h5>
                 <?php if (empty($product->uoms)): ?>
                   <p>Satuan tidak tersedia.</p>
@@ -185,9 +188,12 @@
                       <?php foreach ($product->uoms as $uom): ?>
                         <tr>
                           <td>
-                            <a href="./uom-editor?id=<?= $uom->id ?>">
-                              <?= '1 ' . e($uom->name) . ' = ' . format_number($uom->quantity) . ' ' . e($product->uom) ?>
-                            </a>
+                            <?php $v = '1 ' . e($uom->name) . ' = ' . format_number($uom->quantity) . ' ' . e($product->uom); ?>
+                            <?php if (current_user_can('edit-uom')): ?>
+                              <a href="./uom-editor?id=<?= $uom->id ?>"><?= $v ?></a>
+                            <?php else: ?>
+                              <?= $v ?>
+                            <?php endif ?>
                           </td>
                         </tr>
                       <?php endforeach ?>

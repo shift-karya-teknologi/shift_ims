@@ -1,5 +1,13 @@
 <?php
 
+function _ensure_user_can_access() {
+  global $category;
+  if ($category->id == 0 && !current_user_can('add-product-category'))
+    exit(render('error/403'));
+  else if ($category->id != 0 && !current_user_can('edit-product-category'))
+    exit(render('error/403'));
+}
+
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
 if ($id) {
@@ -37,7 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
   
-  $category->name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+  _ensure_user_can_access();
+  
+  $category->name = isset($_POST['name']) ? trim((string)$_POST['name']) : '';
   
   if (empty($category->name)) {
     $errors['name'] = 'Nama kategori harus diisi.';
@@ -48,8 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q = $db->prepare('select count(0) from product_categories where name=:name');
     }
     else {
-
-      
       $q = $db->prepare('select count(0) from product_categories where name=:name and id<>:id');
       $q->bindValue(':id', $category->id);
     }
@@ -60,16 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $errors['name'] = 'Nama kategori sudah digunakan.';
     }
     else {
-      if ($category->id == 0) {
-        if (!current_user_can('add-product-category'))
-          exit(render('error/403'));
-      
+      if ($category->id == 0) {      
         $q = $db->prepare('insert into product_categories (name) values(:name)');
       }
-      else {
-        if (!current_user_can('edit-product-category'))
-          exit(render('error/403'));
-      
+      else {      
         $q = $db->prepare('update product_categories set name=:name where id=:id');
         $q->bindValue(':id', $category->id);
       }
@@ -83,10 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
-if ($category->id == 0 && !current_user_can('add-product-category'))
-  exit(render('error/403'));
-else if ($category->id != 0 && !current_user_can('edit-product-category'))
-  exit(render('error/403'));
+_ensure_user_can_access();
 
 render('pos/product-category/editor', [
   'category' => $category,

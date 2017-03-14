@@ -6,6 +6,12 @@ $__ACL__ = [
     'edit-product',
     'delete-product',
     'view-product-cost',
+    'add-product-price',
+    'edit-product-price',
+    'delete-product-price',
+    'add-product-uom',
+    'edit-product-uom',
+    'delete-product-uom',
     
     'add-product-category',
     'edit-product-category',
@@ -21,6 +27,10 @@ $__ACL__ = [
     'add-product',
     'edit-product',
     'view-product-cost',
+    'add-product-price',
+    'edit-product-price',
+    'add-product-uom',
+    'edit-product-uom',
     
     'add-product-category',
     'edit-product-category',

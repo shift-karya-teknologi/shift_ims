@@ -14,15 +14,9 @@
           <div class="mdl-layout-spacer"></div>
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
             type="submit" name="action" value="save" id="save-button"><i class="material-icons left">save</i></button>
-          <?php if ($uom->id): ?>
-          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
-            <i class="material-icons">more_vert</i>
-          </button>
-          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
-            <li class="mdl-menu__item">
-              <button type="submit" name="action" value="delete" id="delete-button"><i class="material-icons left">delete</i> Hapus</button>
-            </li>
-          </ul>
+          <?php if ($uom->id && current_user_can('delete-product-uom')): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
+              type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
           <?php endif ?>
         </div>
       </header>
@@ -79,14 +73,15 @@
       
       updateDescription();
       
-      <?php if ($uom->id): ?>
-        document.querySelector('#delete-button').addEventListener('click', function(e) {
+      var deleteButton = querySelector('#delete-button');
+      if (deleteButton) {
+        deleteButton.addEventListener('click', function(e) {
           if (!confirm('Hapus Satuan?')) {
             e.preventDefault();
             return;
           }
         });
-      <?php endif ?>
+      }
     </script>
   </body>
 </html>

@@ -1,5 +1,13 @@
 <?php
 
+function _ensure_user_can_access() {
+  global $price;
+  if ($price->id == 0 && !current_user_can('add-product-price'))
+    exit(render('error/403'));
+  else if ($price->id != 0 && !current_user_can('edit-product-price'))
+    exit(render('error/403'));
+}
+
 require_once CORELIB_PATH . '/Product.php';
 
 $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
@@ -25,14 +33,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $action = $_POST['action'];
   
   if ($action == 'delete') {
+    if (!current_user_can('delete-product-price'))
+      exit(render('error/403'));
+    
     $db->query('delete from product_prices where id=' . $price->id);
     $_SESSION['FLASH_MESSAGE'] = "Harga telah dihapus.";
     header('Location: ./editor?id=' . $price->productId);
     exit;
   }
   
+  _ensure_user_can_access();
+  
   if ($action == 'save') {
-    $quantityText = $_POST['quantity'];
+    $quantityText = trim(isset($_POST['quantity']) ? (string)$_POST['quantity'] : '');
 
     if (str_starts_with($quantityText, '>=')) {
       $price->quantityMin = trim(str_replace('>=', '', str_replace('.', '', $quantityText)));
@@ -44,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     for ($i = 1; $i <= 3; $i++) {
-      $priceArray = explode('-', str_replace('.', '', $_POST['price' . $i]));
+      $priceArray = explode('-', str_replace('.', '', trim((string)$_POST['price' . $i])));
       
       $min = $max = 0;
       if (count($priceArray) == 0) {
@@ -57,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $min = (int)trim($priceArray[0]);
         $max = (int)trim($priceArray[1]);
       }
-      
       
       $price->{'price'.$i.'Min'} = $min;
       $price->{'price'.$i.'Max'} = $max;
@@ -94,6 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
   }
 }
+
+_ensure_user_can_access();
 
 render('pos/product/price-editor', [
   'price'   => $price,
