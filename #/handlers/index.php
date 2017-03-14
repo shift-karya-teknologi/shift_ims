@@ -44,7 +44,7 @@ $q->bindValue(2, $shiftEnd->format('Y-m-d H:i:s'));
 $q->execute();
 $data['costs']['shift_2'] = -$q->fetch(PDO::FETCH_COLUMN);
 
-$data['stock'] = $db->query('select sum(cost*quantity) from products')->fetch(PDO::FETCH_COLUMN);
+$data['stock'] = $db->query('select sum(cost*quantity) from products where type=0')->fetch(PDO::FETCH_COLUMN);
 
 render('layout', [
   'title'   => 'Dashboard',

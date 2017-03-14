@@ -1,8 +1,8 @@
 <?php
 
 if (!isset($_SESSION['PURCHASING_ORDER_MANAGER'])) $_SESSION['PURCHASING_ORDER_MANAGER'] = [];
-if (!isset($_SESSION['PURCHASING_ORDER_MANAGER']['status'])) $_SESSION['PURCHASING_ORDER_MANAGER']['status'] = 0;
-if (!isset($_SESSION['PURCHASING_ORDER_MANAGER']['lastmod'])) $_SESSION['PURCHASING_ORDER_MANAGER']['lastmod'] = 'anytime';
+if (!isset($_SESSION['PURCHASING_ORDER_MANAGER']['status'])) $_SESSION['PURCHASING_ORDER_MANAGER']['status'] = -1;
+if (!isset($_SESSION['PURCHASING_ORDER_MANAGER']['lastmod'])) $_SESSION['PURCHASING_ORDER_MANAGER']['lastmod'] = 'thisweek';
 
 $filter = [];
 $filter['status'] = isset($_GET['status']) ? (int)$_GET['status'] : $_SESSION['PURCHASING_ORDER_MANAGER']['status'];
