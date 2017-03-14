@@ -130,7 +130,13 @@ h6.mdl-cell {
 /* .mdlx-data-list */ 
 .mdlx-data-list__item { border-bottom: 1px solid #ddd; width: calc(100% - 32px); padding: 6px 16px; }
 .mdlx-data-list__item a { display: block; width: 100%; color: #333; }
-
+.mdlx-data-list__item.r { background-color: #fcc; }
+.mdlx-data-list__item.r a { color:red; }
+.mdlx-data-list__item.y { background-color: #ffc; }
+.mdlx-data-list__item.y a { color:darkorange; }
+.mdlx-data-list__item.g { background-color: #cfc; }
+.mdlx-data-list__item.g a { color:darkgreen; }
+    
 /* form */
 form h5 { font-size: 15px; }
 form .mdl-grid { padding-top: 0; padding-bottom: 0; }
