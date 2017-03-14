@@ -32,6 +32,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         add_stock_update_detail($updateId, $item->productId, -$item->quantity);
         update_product_quantity($item->productId);
       }
+      else if ($item->productType == Product::MultiPayment) {
+          for ($i = 0; $i < $item->quantity; $i++) {
+            $data = new stdClass();
+            $data->type = 2;
+            $data->dateTime = $now;
+            $data->userId = $_SESSION['CURRENT_USER']->id;
+            $data->accountId = $item->multiPaymentAccountId;
+            $data->amount = -$item->cost;
+            $data->description = $item->productName;
+            $data->salesOrderDetailId = $item->id;
+            add_multipayment_transaction($data);
+          }
+        }
+        update_multipayment_account_balance($item->multiPaymentAccountId);
     }
     
     $q = $db->prepare('update sales_orders set'
@@ -70,6 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       foreach ($order->items as $item) {
         if ($item->productType == Product::Stocked) {
           update_product_quantity($item->productId);
+        }
+        else if ($item->productType == Product::MultiPayment) {
+          update_multipayment_account_balance($item->multiPaymentAccountId);
         }
       }
     }

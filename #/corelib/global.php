@@ -264,3 +264,29 @@ function to_locale_datetime($mysql_datetime) {
 function from_locale_number($number) {
   return (int)str_replace('.', '', $number);
 }
+
+
+function add_multipayment_transaction($data) {
+  global $db;
+  $q = $db->prepare('insert into multipayment_transactions'
+    . ' ( type, accountId, amount, description, dateTime, userId, salesOrderDetailId)'
+    . ' values'
+    . ' (:type,:accountId,:amount,:description,:dateTime,:userId,:salesOrderDetailId)');
+  $q->bindValue(':type', $data->type);
+  $q->bindValue(':accountId', $data->accountId);
+  $q->bindValue(':amount', $data->amount);
+  $q->bindValue(':description', $data->description);
+  $q->bindValue(':dateTime', $data->dateTime);
+  $q->bindValue(':userId', $data->userId);
+  $q->bindValue(':salesOrderDetailId', $data->salesOrderDetailId ? $data->salesOrderDetailId : null);
+  $q->execute();
+}
+
+function update_multipayment_account_balance($accountId) {
+  global $db;
+  $q = $db->prepare('update multipayment_accounts set'
+    . ' balance=(select ifnull(sum(amount), 0) from multipayment_transactions where accountId=:id)'
+    . ' where id=:id');
+  $q->bindValue(':id', $accountId);
+  $q->execute();
+}

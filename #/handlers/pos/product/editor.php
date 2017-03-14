@@ -72,44 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (empty($product->name)) {
     $errors['name'] = 'Nama produk harus diisi.';
   }
-  
-  if (empty($product->uom)) {
-    $errors['uom'] = 'Nama satuan dasar harus diisi.';
-  }
-  
-  if ($product->type != Product::ShiftNetVoucher) {
-    if (!preg_match('/^((?:\d{1,3}[\.]?)+\d*)$/', $product->manualCost)) {
-      $errors['manualCost'] = 'Nilai modal tidak valid.';
-    }
-    else {
-      $product->manualCost = (int)str_replace('.', '', $product->manualCost);
-    }
-  }
-  
-  if ($product->type == Product::MultiPayment) {
-    $product->multiPaymentAccountId = (int)$_POST['multiPaymentAccountId'];
-    if (!$product->multiPaymentAccountId)
-      $errors['multiPaymentAccountId'] = 'Akun Multi Payment tidak valid.';
-  }
-  
-  switch ($product->costingMethod) {
-    case Product::ManualCostingMethod: $product->cost = $product->manualCost; break;
-    case Product::AverageCostingMethod: $product->cost = $product->averageCost; break;
-    case Product::LastPurchaseCostingMethod: $product->cost = $product->lastPurchaseCost; break;
-  }
-
-  if (!$product->cost && $product->manualCost != 0)
-    $product->cost = $product->manualCost;
-  if (!$product->averageCost && $product->manualCost != 0)
-    $product->averageCost = $product->manualCost;
-  if (!$product->lastPurchaseCost && $product->manualCost != 0)
-    $product->lastPurchaseCost = $product->manualCost;
-
-  if (empty($product->cost)) {
-    $errors['manualCost'] = 'Nilai modal tidak valid.';
-  }
-  
-  if (empty($errors)) {
+  else {
     if ($product->id == 0) {
       $q = $db->prepare('select count(0) from products where name=:name');
     }
@@ -123,53 +86,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($q->fetch(PDO::FETCH_COLUMN) > 0) {
       $errors['name'] = 'Nama produk sudah digunakan.';
     }
-    else {      
-      if ($product->id == 0) {
-        $q = $db->prepare('insert into products'
-          . ' ( name, type, active, costingMethod, uom, cost, manualCost, averageCost, lastPurchaseCost, categoryId, multiPaymentAccountId)'
-          . ' values'
-          . ' (:name,:type,:active,:costingMethod,:uom,:cost,:manualCost,:averageCost,:lastPurchaseCost,:categoryId,:multiPaymentAccountId)');
-        $q->bindValue(':lastPurchaseCost', $product->cost);
-        $q->bindValue(':averageCost', $product->cost);
-      }
-      else {
-        $q = $db->prepare('update products set'
-          . ' name=:name,'
-          . ' type=:type,'
-          . ' active=:active,'
-          . ' costingMethod=:costingMethod,'
-          . ' uom=:uom,'
-          . ' cost=:cost,'
-          . ' manualCost=:manualCost,'
-          . ' categoryId=:categoryId,'
-          . ' multiPaymentAccountId=:multiPaymentAccountId'
-          . ' where id=:id');
-        $q->bindValue(':id', $product->id);
-      }
-      
-      $q->bindValue(':name', $product->name);
-      $q->bindValue(':type', $product->type);
-      $q->bindValue(':active', $product->active);
-      $q->bindValue(':costingMethod', $product->costingMethod);
-      $q->bindValue(':cost', $product->cost);
-      $q->bindValue(':uom', $product->uom);
-      $q->bindValue(':manualCost', $product->manualCost);
-      $q->bindValue(':categoryId', $product->categoryId ? $product->categoryId : null);
-      $q->bindValue(':multiPaymentAccountId', $product->multiPaymentAccountId ? $product->multiPaymentAccountId : null);
-      $q->execute();
-      
-      if (!$product->id) {
-        $product->id = $db->lastInsertId();
-        $_SESSION['FLASH_MESSAGE'] = 'Produk telah disimpan. Silahkan perbarui harga dan satuan alternatif.';
-        header('Location: ./editor?id=' . $product->id);
-      }
-      else {
-        update_product_quantity($product->id);
-        $_SESSION['FLASH_MESSAGE'] = 'Produk ' . format_product_code($product->id). ' telah disimpan.';
-        header('Location: ./');
-      }
-      exit;
+  }
+  
+  if (empty($product->uom)) {
+    $errors['uom'] = 'Nama satuan dasar harus diisi.';
+  }
+  
+  if ($product->type == Product::Stocked) {
+    if (!preg_match('/^((?:\d{1,3}[\.]?)+\d*)$/', $product->manualCost) || $product->manualCost == 0) {
+      $errors['manualCost'] = 'Nilai modal tidak valid.';
     }
+    else {
+      $product->manualCost = (int)str_replace('.', '', $product->manualCost);
+      
+      switch ($product->costingMethod) {
+        case Product::ManualCostingMethod: $product->cost = $product->manualCost; break;
+        case Product::AverageCostingMethod: $product->cost = $product->averageCost; break;
+        case Product::LastPurchaseCostingMethod: $product->cost = $product->lastPurchaseCost; break;
+      }
+
+      if (!$product->cost && $product->manualCost != 0)
+        $product->cost = $product->manualCost;
+      if (!$product->averageCost && $product->manualCost != 0)
+        $product->averageCost = $product->manualCost;
+      if (!$product->lastPurchaseCost && $product->manualCost != 0)
+        $product->lastPurchaseCost = $product->manualCost;
+    }
+  }
+  else {
+    $product->cost = 0;
+    $product->manualCost = 0;
+    $product->lastPurchaseCost = 0;
+    $product->averageCost = 0;
+  }
+  
+  if (empty($errors)) {
+    if ($product->id == 0) {
+      $q = $db->prepare('insert into products'
+        . ' ( name, type, active, costingMethod, uom, cost, manualCost, averageCost, lastPurchaseCost, categoryId)'
+        . ' values'
+        . ' (:name,:type,:active,:costingMethod,:uom,:cost,:manualCost,:averageCost,:lastPurchaseCost,:categoryId)');
+      $q->bindValue(':lastPurchaseCost', $product->cost);
+      $q->bindValue(':averageCost', $product->cost);
+    }
+    else {
+      $q = $db->prepare('update products set'
+        . ' name=:name,'
+        . ' type=:type,'
+        . ' active=:active,'
+        . ' costingMethod=:costingMethod,'
+        . ' uom=:uom,'
+        . ' cost=:cost,'
+        . ' manualCost=:manualCost,'
+        . ' categoryId=:categoryId'
+        . ' where id=:id');
+      $q->bindValue(':id', $product->id);
+    }
+
+    $q->bindValue(':name', $product->name);
+    $q->bindValue(':type', $product->type);
+    $q->bindValue(':active', $product->active);
+    $q->bindValue(':costingMethod', $product->costingMethod);
+    $q->bindValue(':cost', $product->cost);
+    $q->bindValue(':uom', $product->uom);
+    $q->bindValue(':manualCost', $product->manualCost);
+    $q->bindValue(':categoryId', $product->categoryId ? $product->categoryId : null);
+    $q->execute();
+
+    if (!$product->id) {
+      $product->id = $db->lastInsertId();
+      $_SESSION['FLASH_MESSAGE'] = 'Produk telah disimpan. Silahkan perbarui harga dan satuan alternatif.';
+      header('Location: ./editor?id=' . $product->id);
+    }
+    else {
+      update_product_quantity($product->id);
+      $_SESSION['FLASH_MESSAGE'] = 'Produk ' . format_product_code($product->id). ' telah disimpan.';
+      header('Location: ./');
+    }
+    exit;
   }
 }
 

@@ -81,19 +81,6 @@
             </select>
             <label class="mdl-selectfield__label" for="categoryId">Kategori</label>
           </div>
-          <?php if (!$product->id || $product->type == Product::MultiPayment): ?>
-          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col"
-            <?= $product->type == Product::MultiPayment ? '' : 'style="display:none"' ?>>
-            <select id="multiPaymentAccountId" class="mdl-selectfield__select"
-              <?= $product->type == Product::MultiPayment ? 'name="multiPaymentAccountId"' : '' ?>>
-              <?php foreach ($multipaymentAccounts as $account): ?>
-                <option value="<?= $account->id ?>" <?= $product->multiPaymentAccountId == $account->id ? 'selected' : '' ?>>
-                  <?= e($account->name) ?></option>
-              <?php endforeach ?>
-            </select>
-            <label class="mdl-selectfield__label" for="multiPaymentAccountId">Akun Multi Payment</label>
-          </div>
-          <?php endif ?>
           <div class="mdl-cell mdl-cell--1-col">
             <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="active">
               <input type="checkbox" id="active" class="mdl-checkbox__input" value="1"
@@ -102,7 +89,7 @@
             </label>
           </div>
         </div>
-        <?php if ($product->type != Product::ShiftNetVoucher): ?>
+        <?php if ($product->type == Product::Stocked): ?>
           <div id="cost-container" class="mdl-grid">
             <h5 class="mdl-cell mdl-cell--12-col">Modal / Harga Beli</h5>
             <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col">
@@ -110,7 +97,7 @@
                 <?php
                   $costingMethods = Product::getCostingMethods();
                   if ($product->id && $product->type == Product::MultiPayment) {
-                    unset($costingMethods[Product::ManualCostingMethod]);
+                    unset($costingMethods[Product::LastPurchaseCostingMethod]);
                     unset($costingMethods[Product::AverageCostingMethod]);
                   }
                 ?>
@@ -133,7 +120,7 @@
           </div>
         <?php endif ?>
           <div class="mdl-grid">
-            <?php if ($product->id): ?>
+            <?php if ($product->id && ($product->type == Product::Stocked || $product->type == Product::Service)): ?>
               <div id="price-list-container" class="mdl-cell mdl-cell--6-col mdl-cell--4-col-mobile">
                 <h5>Harga Jual
                   <?php if (current_user_can('add-product-price')): ?>
@@ -227,30 +214,13 @@
     </form>
     <?= render('foot') ?>
     <script>
-MaterialSelectfield.prototype.change = function(value) {
-var option = null;
-for (var i = 0; i < this.options_.length; i++) {
-option = this.options_[i];
-if (option.value === value) {
-break;
-}
-}
-if (option === null) {
-return;
-}
-this.selectedOptionValue_.textContent = option.textContent;
-option.selected = true;
-};
-
-MaterialSelectfield.prototype['change'] =
-MaterialSelectfield.prototype.change;
-
       var productId = <?= (int)$product->id ?>
         , averageCost = <?= (int)$product->averageCost ?>
         , manualCost =  <?= (int)$product->manualCost ?>
         , lastPurchaseCost = <?= (int)$product->lastPurchaseCost ?>
         , typeSelect = document.querySelector('#type')
         , costingMethodSelect = document.querySelector('#costingMethod')
+        , costContainer = document.querySelector('#cost-container')
         , manualCostTextBox = document.querySelector('#manualCost')
         , deleteButton = document.querySelector('#delete-button');
         
@@ -281,32 +251,11 @@ MaterialSelectfield.prototype.change;
       
       typeSelect.addEventListener('change', function() {
         var v = this.value;
-        var ms = document.querySelector("#costingMethod").parentNode.MaterialSelectfield;
-        var mse = document.querySelector("#costingMethod").parentNode;
-        var multiPaymentAccountSelect = document.querySelector("#multiPaymentAccountId");
-        if (v === '101') {
-          costingMethodSelect.children[0].setAttribute('disabled', 'disabled');
-          costingMethodSelect.children[1].setAttribute('disabled', 'disabled');
-          ms.change(v);
-          mse.children[3].children[0].children[0].classList.add('is-disabled');
-          mse.children[3].children[0].children[1].classList.add('is-disabled');
-          mse.children[3].children[0].children[0].classList.remove('is-selected');
-          mse.children[3].children[0].children[1].classList.remove('is-selected');
-          mse.children[3].children[0].children[2].classList.add('is-selected');
-          if (multiPaymentAccountSelect) {
-            multiPaymentAccountSelect.parentNode.style.display= 'inherit';
-            multiPaymentAccountSelect.setAttribute('name', 'multiPaymentAccountId');
-          }
+        if (v != 0) {
+          costContainer.style.display = 'none';
         }
-        else {
-          costingMethodSelect.children[0].removeAttribute('disabled');
-          costingMethodSelect.children[1].removeAttribute('disabled');
-          mse.children[3].children[0].children[0].classList.remove('is-disabled');
-          mse.children[3].children[0].children[1].classList.remove('is-disabled');
-          if (multiPaymentAccountSelect) {
-            multiPaymentAccountSelect.parentNode.style.display= 'none';
-            multiPaymentAccountSelect.removeAttribute('name');
-          }
+        else if (costContainer) {
+          costContainer.style.display = 'inherit';
         }
       });
       costingMethodSelect.addEventListener('change', updateCost);
