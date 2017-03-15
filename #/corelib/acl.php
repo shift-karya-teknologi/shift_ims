@@ -6,13 +6,16 @@ $__ACL__ = [
     'edit-product',
     'delete-product',
     'view-product-cost',
+    
     'add-product-price',
     'edit-product-price',
     'delete-product-price',
+    
     'add-product-uom',
     'edit-product-uom',
     'delete-product-uom',
     
+    'view-product-categories',
     'add-product-category',
     'edit-product-category',
     'delete-product-category',
@@ -22,9 +25,17 @@ $__ACL__ = [
     'edit-multipayment-account',
     'delete-multipayment-account',
     
+    'view-stock-adjustments',
+    
     'delete-sales-order',
     
-    'delete-purchase-order',
+    'view-purchasing-orders',
+    'add-purchasing-order',
+    'edit-purchasing-order',
+    'print-purchasing-order',
+    'complete-purchasing-order',
+    'cancel-purchasing-order',
+    'delete-purchasing-order',
     
     'delete-stock-adjustment',
   ],
@@ -32,15 +43,27 @@ $__ACL__ = [
     'add-product',
     'edit-product',
     'view-product-cost',
+    
     'add-product-price',
     'edit-product-price',
+    
     'add-product-uom',
     'edit-product-uom',
     
+    'view-product-categories',
     'add-product-category',
     'edit-product-category',
     
-    'view-multipayment-account-list',
+    'view-purchasing-orders',
+    'add-purchasing-order',
+    'edit-purchasing-order',
+    'print-purchasing-order',
+    'complete-purchasing-order',
+    'cancel-purchasing-order',
+    
+    'view-multipayment-accounts',
+    
+    'view-stock-adjustments',
   ],
   3 => [
     'add-product-category',

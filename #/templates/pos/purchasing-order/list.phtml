@@ -16,22 +16,28 @@
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
             <i class="material-icons">filter_list</i>
           </button>
+          <?php if (current_user_can('add-purchasing-order')): ?>
           <a href="./create" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">add</i>
           </a>
+          <?php endif ?>
         </div>
       </header>
       <?= render('pos/drawer') ?>
       <main class="mdl-layout__content">
         <div id="po-list" class="mdlx-data-list">
           <?php foreach ($items as $item): ?>
-            <div class="mdlx-data-list__item">
+            <div class="mdlx-data-list__item <?= $item->status == 2 ? 'r' : ($item->status == 0 ? 'y' : '') ?>">
+              <?php if (current_user_can('edit-purchasing-order')): ?>
               <a href="./editor?id=<?= $item->id ?>">
+              <?php endif ?>
                 <div class="title">#<?= format_purchasing_order_code($item->id) ?> <?= date('d/m/Y H:i:s', strtotime($item->lastModDateTime)) ?></div>
                 <div class="detail">
                   <?= format_purchasing_order_status($item->status) ?> | <?= format_number($item->totalCost) ?>
                 </div>
+              <?php if (current_user_can('edit-purchasing-order')): ?>
               </a>
+              <?php endif ?>
             </div>
           <?php endforeach ?>
         </div>
