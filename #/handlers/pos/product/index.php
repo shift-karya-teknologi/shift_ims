@@ -4,7 +4,7 @@ require_once CORELIB_PATH . '/Product.php';
 
 if (!isset($_SESSION['PRODUCT_MANAGER_FILTER'])) $_SESSION['PRODUCT_MANAGER_FILTER'] = [];
 if (!isset($_SESSION['PRODUCT_MANAGER_FILTER']['type'])) $_SESSION['PRODUCT_MANAGER_FILTER']['type'] = -1;
-if (!isset($_SESSION['PRODUCT_MANAGER_FILTER']['status'])) $_SESSION['PRODUCT_MANAGER_FILTER']['status'] = -1;
+if (!isset($_SESSION['PRODUCT_MANAGER_FILTER']['status'])) $_SESSION['PRODUCT_MANAGER_FILTER']['status'] = 1;
 if (!isset($_SESSION['PRODUCT_MANAGER_FILTER']['categoryId'])) $_SESSION['PRODUCT_MANAGER_FILTER']['categoryId'] = -1;
   
 $filter = [];
