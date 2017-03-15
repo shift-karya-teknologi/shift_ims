@@ -83,6 +83,20 @@ $amounts = [
   20000 => 'Rp. 20.000',
 ];
 
+$productsIdbyPrices = [
+  1000  => 1,
+  1500  => 2,
+  2000  => 3,
+  3000  => 4,
+  5000  => 5,
+  7500  => 6,
+  10000 => 7,
+  12500 => 8,
+  15000 => 9,
+  17500 => 10,
+  20000 => 11,
+];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $amount   = isset($_POST['amount']) ? (int)$_POST['amount'] : 0;
   $password = isset($_POST['operatorPassword']) ? (string)$_POST['operatorPassword'] : 0;
@@ -116,10 +130,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $q->bindValue(':expirationDateTime', $voucher->expirationDateTime->format('Y-m-d H:i:s'));
     $q->execute();
     
-    // TODO: catat transaksi di penjualan
-    // TODO: catat transaksi di keuangan
-    
     $voucher->id = $db->lastInsertId();
+    
+    // TODO: catat transaksi di penjualan
+    $q = $db->prepare('insert into sales_orders'
+      . ' (lastModDateTime,openDateTime,closeDateTime,status,totalCost,totalPrice,openUserId,lastModUserId,closeUserId)'
+      . 'values'
+      . ' (:dateTime,:dateTime,:dateTime,1,0,:total,:userId,:userId,:userId)');
+    $q->bindValue(':dateTime', $voucher->creationDateTime->format('Y-m-d H:i:s'));
+    $q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
+    $q->bindValue(':total', $voucher->price);
+    $q->execute();
+    
+    $salesOrderId = $db->lastInsertId();
+    $q = $db->prepare('insert into sales_order_details'
+      . ' (parentId, productId, quantity, cost, price, subtotalCost, subtotalPrice)'
+      . 'values'
+      . ' (:parentId,:productId,       1,     0,:price,           0, :price)');
+    $q->bindValue(':parentId', $salesOrderId);
+    $q->bindValue(':productId', $productsIdbyPrices[$voucher->price]);
+    $q->bindValue(':price', $voucher->price);
+    $q->execute();
+    
+    // TODO: catat transaksi di keuangan
     
     $q = $db->prepare('insert into shiftnet_active_vouchers'
                       . ' ( voucherId, code, remainingDuration, activeClientId, lastActiveUsername)'

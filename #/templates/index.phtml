@@ -1,6 +1,6 @@
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--8-col">
-    <h6>Penjualan Hari Ini</h6>
+    <h6>Laporan Hari Ini</h6>
     <style>
       table{border-collapse: collapse;}
       td,th{padding:0 8px;border:1px solid #ddd;}
@@ -18,22 +18,10 @@
       </thead>
       <tbody>
         <tr>
-          <td>Toko</td>
+          <td>Penjualan</td>
           <td><?= format_number($data['shiftkom']['total_sales_1']) ?></td>
           <td><?= format_number($data['shiftkom']['total_sales_2']) ?></td>
           <td><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftkom']['total_sales_2']) ?></td>
-        </tr>
-        <tr>
-          <td>ShiftNet</td>
-          <td><?= format_number($data['shiftnet']['total_sales_1']) ?></td>
-          <td><?= format_number($data['shiftnet']['total_sales_2']) ?></td>
-          <td><?= format_number($data['shiftnet']['total_sales_1']+$data['shiftnet']['total_sales_2']) ?></td>
-        </tr>
-        <tr>
-          <td>Kudo</td>
-          <td>?</td>
-          <td>?</td>
-          <td>?</td>
         </tr>
         <tr>
           <td>Pengeluaran</td>
@@ -45,12 +33,9 @@
       <tfoot>
       <tr>
         <th>Total (Rp.)</th>
-        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftnet']['total_sales_1']+$data['costs']['shift_1']) ?></th>
-        <th><?= format_number($data['shiftkom']['total_sales_2']+$data['shiftnet']['total_sales_2']+$data['costs']['shift_2']) ?></th>
-        <th><?= format_number($data['shiftkom']['total_sales_1']
-                             +$data['shiftnet']['total_sales_1']
-                             +$data['shiftkom']['total_sales_2']
-                             +$data['shiftnet']['total_sales_2']
+        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['costs']['shift_1']) ?></th>
+        <th><?= format_number($data['shiftkom']['total_sales_2']+$data['costs']['shift_2']) ?></th>
+        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftkom']['total_sales_2']
                              +$data['costs']['shift_1']+$data['costs']['shift_2']) ?></th>
       </tr>
       </tfoot>
