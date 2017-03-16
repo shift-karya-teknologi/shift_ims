@@ -1,5 +1,7 @@
 <?php
 
+ensure_current_user_can('add-sales-order');
+
 $q = $db->prepare('insert into sales_orders'
   . ' (openDateTime,lastModDateTime,openUserId,lastModUserId)'
   . ' values '

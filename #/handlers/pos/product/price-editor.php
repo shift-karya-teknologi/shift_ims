@@ -1,13 +1,5 @@
 <?php
 
-function _ensure_user_can_access() {
-  global $price;
-  if ($price->id == 0 && !current_user_can('add-product-price'))
-    exit(render('error/403'));
-  else if ($price->id != 0 && !current_user_can('edit-product-price'))
-    exit(render('error/403'));
-}
-
 require_once CORELIB_PATH . '/Product.php';
 
 $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
@@ -16,10 +8,12 @@ $price = null;
 $errors = [];
 
 if (!$id) {
+  ensure_current_user_can('add-product-price');
   $price = new ProductPrice();
   $price->productId = $productId;
 }
 else {
+  ensure_current_user_can('edit-product-price');
   $price = $db->query('select * from product_prices where id=' . $id)->fetchObject(ProductPrice::class);
 }
 
@@ -33,16 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $action = $_POST['action'];
   
   if ($action == 'delete') {
-    if (!current_user_can('delete-product-price'))
-      exit(render('error/403'));
+    ensure_current_user_can('delete-product-price');
     
     $db->query('delete from product_prices where id=' . $price->id);
     $_SESSION['FLASH_MESSAGE'] = "Harga telah dihapus.";
     header('Location: ./editor?id=' . $price->productId);
     exit;
   }
-  
-  _ensure_user_can_access();
   
   if ($action == 'save') {
     $quantityText = trim(isset($_POST['quantity']) ? (string)$_POST['quantity'] : '');
@@ -106,8 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
   }
 }
-
-_ensure_user_can_access();
 
 render('pos/product/price-editor', [
   'price'   => $price,

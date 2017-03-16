@@ -1,5 +1,7 @@
 <?php
 
+ensure_current_user_can('view-stock-adjustments');
+
 if (!isset($_SESSION['STOCK_ADJUSTMENT_MANAGER'])) $_SESSION['STOCK_ADJUSTMENT_MANAGER'] = [];
 if (!isset($_SESSION['STOCK_ADJUSTMENT_MANAGER']['status'])) $_SESSION['STOCK_ADJUSTMENT_MANAGER']['status'] = 0;
 if (!isset($_SESSION['STOCK_ADJUSTMENT_MANAGER']['lastmod'])) $_SESSION['STOCK_ADJUSTMENT_MANAGER']['lastmod'] = 'anytime';

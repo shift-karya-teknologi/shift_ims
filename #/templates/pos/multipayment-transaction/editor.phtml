@@ -48,6 +48,8 @@
               <span class="form-error"><?= $errors['type'] ?></span>
             <?php endif ?>
           </div>
+        </div>
+        <div class="mdl-grid">
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
             !empty($errors['description']) ? 'is-invalid' : '' ?>">
             <input class="mdl-textfield__input" type="text" value="<?= e($transaction->description) ?>"
@@ -57,6 +59,8 @@
               <span class="form-error"><?= $errors['description'] ?></span>
             <?php endif ?>
           </div>
+        </div>
+        <div class="mdl-grid">
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
             !empty($errors['amount']) ? 'is-invalid' : '' ?>">
             <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($transaction->amount) ?>"

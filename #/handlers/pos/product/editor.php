@@ -1,18 +1,12 @@
 <?php
 
-function _ensure_user_can_access() {
-  global $product;
-  if ($product->id == 0 && !current_user_can('add-product'))
-    exit(render('error/403'));
-  else if ($product->id != 0 && !current_user_can('edit-product'))
-    exit(render('error/403'));
-}
-
 require_once CORELIB_PATH . '/Product.php';
 
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
-if ($id) { 
+if ($id) {
+  ensure_current_user_can('edit-product');
+  
   $product = $db->query('select * from products where id=' . $id)->fetchObject(Product::class);
   if (!$product) {
     $_SESSION['FLASH_MESSAGE'] = 'Produk ' . format_product_code($id) . ' tidak ditemukan';
@@ -24,6 +18,8 @@ if ($id) {
   $product->uoms = $db->query('select * from product_uoms where productId=' . $product->id)->fetchAll(PDO::FETCH_OBJ);
 }
 else {
+  ensure_current_user_can('add-product');
+  
   $product = new Product();
   $product->active = 1;
   $product->type = Product::Stocked;
@@ -36,8 +32,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? (string)$_POST['action'] : 'save';
   if ($action === 'delete') {
-    if (!current_user_can('delete-product'))
-      exit(render('error/403'));
+    ensure_current_user_can('delete-product');
     
     try {
       $db->query('delete from products where id='.$product->id);
@@ -52,8 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ./');
     exit;
   }
-  
-  _ensure_user_can_access();
   
   $product->name = isset($_POST['name']) ? trim((string)$_POST['name']) : '';
   $product->active = (int)filter_input(INPUT_POST, 'active', FILTER_VALIDATE_INT);
@@ -166,8 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
 }
-
-_ensure_user_can_access();
 
 $categories = $db->query('select * from product_categories order by name asc')->fetchAll(PDO::FETCH_OBJ);
 $multiPaymentAccounts = $db->query('select * from multipayment_accounts order by name asc')->fetchAll(PDO::FETCH_OBJ);

@@ -1,13 +1,5 @@
 <?php
 
-function _ensure_user_can_access() {
-  global $uom;
-  if ($uom->id == 0 && !current_user_can('add-product-uom'))
-    exit(render('error/403'));
-  else if ($uom->id != 0 && !current_user_can('edit-product-uom'))
-    exit(render('error/403'));
-}
-
 require_once CORELIB_PATH . '/Product.php';
 
 $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
@@ -16,10 +8,12 @@ $uom = null;
 $errors = [];
 
 if (!$id) {
+  ensure_current_user_can('add-product-uom');
   $uom = new ProductUom();
   $uom->productId = $productId;
 }
 else {
+  ensure_current_user_can('edit-product-uom');
   $uom = $db->query('select * from product_uoms where id=' . $id)->fetchObject(ProductUom::class);
 }
 
@@ -33,16 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $action = $_POST['action'];
   
   if ($action == 'delete') {
-    if (!current_user_can('delete-product-uom'))
-      exit(render('error/403'));
+    ensure_current_user_can('delete-product-uom');
       
     $db->query('delete from product_uoms where id=' . $uom->id);
     $_SESSION['FLASH_MESSAGE'] = "Satuan $uom->name telah dihapus.";
     header('Location: ./editor?id=' . $uom->productId);
     exit;
   }
-  
-  _ensure_user_can_access();
   
   if ($action == 'save') {
     $uom->name = trim((string)$_POST['name']);
@@ -65,8 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
   }
 }
-
-_ensure_user_can_access();
 
 render('pos/product/uom-editor', [
   'uom'     => $uom,

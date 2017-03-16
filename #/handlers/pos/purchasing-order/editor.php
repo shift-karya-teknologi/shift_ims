@@ -1,5 +1,7 @@
 <?php
 
+ensure_current_user_can('edit-purchasing-order');
+
 $_now = date('Y-m-d H:i:s');
 
 require_once CORELIB_PATH . '/Product.php';
@@ -48,7 +50,8 @@ $order->items = $db->query('select d.*,'
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $action = $_POST['action'];
   
-  if ($order->status == 0 && $action == 'complete') {   
+  if ($order->status == 0 && $action == 'complete') {
+    ensure_current_user_can('complete-purchasing-order');
     $order->itemsByProductIds = [];
     $db->beginTransaction();
     
@@ -102,12 +105,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
   }
   else if ($order->status == 0 && $action == 'cancel') {
+    ensure_current_user_can('cancel-purchasing-order');
     _update_purchasing_order($order->id, 2);    
     $_SESSION['FLASH_MESSAGE'] = 'Pembelian #' . format_purchasing_order_code($id) . ' telah dibatalkan.';
     header('Location: ./');
     exit;
   }
   else if ($action == 'delete') {
+    ensure_current_user_can('delete-purchasing-order');
     $db->beginTransaction();
     $db->query('delete from purchasing_orders where id=' . $id);
 

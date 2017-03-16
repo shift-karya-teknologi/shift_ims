@@ -1,16 +1,10 @@
 <?php
 
-function _ensure_current_user_has_access() {
-  global $account;
-  if ($account->id == 0)
-    ensure_current_user_can('add-multipayment-account');
-  else
-    ensure_current_user_can('edit-multipayment-account');
-}
-
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
 if ($id) {
+  ensure_current_user_can('edit-multipayment-account');
+  
   $account = $db->query('select * from multipayment_accounts where id=' . $id)->fetchObject();
   if (!$account) {
     $_SESSION['FLASH_MESSAGE'] = 'Akun tidak ditemukan';
@@ -19,6 +13,8 @@ if ($id) {
   }
 }
 else {
+  ensure_current_user_can('add-multipayment-account');
+  
   $account = new stdClass();
   $account->id = null;
   $account->active = 1;
@@ -45,8 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ./');
     exit;
   }
-  
-  _ensure_current_user_has_access();
   
   $account->name = isset($_POST['name']) ? trim((string)$_POST['name']) : '';
   $account->active = isset($_POST['active']) ? (int)$_POST['active'] : 0;
@@ -86,8 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
-
-_ensure_current_user_has_access();
 
 render('pos/multipayment-account/editor', [
   'account' => $account,

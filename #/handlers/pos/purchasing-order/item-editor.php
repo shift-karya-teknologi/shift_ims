@@ -14,10 +14,12 @@ $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
 $orderId = (int)(isset($_REQUEST['orderId']) ? $_REQUEST['orderId'] : 0);
 
 if (!$id) {
+  ensure_current_user_can('add-purchasing-order-item');
   $item = new PurchaseOrderItem();
   $item->parentId = $orderId;
 }
 else {
+  ensure_current_user_can('edit-purchasing-order-item');
   $item = $db->query('select * from purchasing_order_details where id='.$id)->fetchObject(PurchaseOrderItem::class);
 }
 
@@ -32,6 +34,8 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = $_POST['action'];
   if ($action == 'delete') {
+    ensure_current_user_can('delete-purchasing-order-item');
+    
     $db->beginTransaction();
     $db->query('delete from purchasing_order_details where id=' . $id);
     update_purchasing_order_subtotal($item->parentId);

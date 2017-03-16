@@ -1,5 +1,7 @@
 <?php
 
+ensure_current_user_can('view-purchasing-orders');
+
 if (!isset($_SESSION['PURCHASING_ORDER_MANAGER'])) $_SESSION['PURCHASING_ORDER_MANAGER'] = [];
 if (!isset($_SESSION['PURCHASING_ORDER_MANAGER']['status'])) $_SESSION['PURCHASING_ORDER_MANAGER']['status'] = -1;
 if (!isset($_SESSION['PURCHASING_ORDER_MANAGER']['lastmod'])) $_SESSION['PURCHASING_ORDER_MANAGER']['lastmod'] = 'thisweek';

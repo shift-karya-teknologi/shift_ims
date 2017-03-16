@@ -1,5 +1,6 @@
 <?php
 
+ensure_current_user_can('view-sales-orders');
 
 if (!isset($_SESSION['SALES_ORDER_MANAGER'])) $_SESSION['SALES_ORDER_MANAGER'] = [];
 if (!isset($_SESSION['SALES_ORDER_MANAGER']['status'])) $_SESSION['SALES_ORDER_MANAGER']['status'] = 0;

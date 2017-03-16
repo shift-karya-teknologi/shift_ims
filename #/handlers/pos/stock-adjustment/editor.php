@@ -1,5 +1,7 @@
 <?php
 
+ensure_current_user_can('edit-stock-adjustment');
+
 require_once CORELIB_PATH . '/Product.php';
 
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
@@ -67,6 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       header('Location: ?id=' . $data->id);
       exit;
     }
+    
+    ensure_current_user_can('complete-stock-adjustment');
 
     // action=complete
     $updateId = add_stock_update(0, $data->dateTime);
@@ -91,12 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
   else if ($action == 'cancel') {
+    ensure_current_user_can('cancel-stock-adjustment');
     $db->query('update stock_adjustments set status=2 where id=' . $data->id);
     $_SESSION['FLASH_MESSAGE'] = 'Penyesuaian stok #' . format_stock_adjustment_code($data->id) . ' telah dibatalkan.';
     header('Location: ./');
     exit;
   }
   else if ($action == 'delete') {
+    ensure_current_user_can('delete-stock-adjustment');
     $db->beginTransaction();
     delete_stock_adjustment($data->id);
     if ($data->updateId) {

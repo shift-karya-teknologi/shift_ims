@@ -4,15 +4,25 @@ require CORELIB_PATH . '/MultipaymentTransaction.php';
 
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 if ($id) {
+  ensure_current_user_can('edit-multipayment-transaction');
+  
   $transaction = $db->query("select * from multipayment_transactions where id=$id")->fetchObject(MultiPaymentTransaction::class);
-  if ($transaction->salesOrderDetailId) {
-    $_SESSION['FLASH_MESSAGE'] = "Transaksi #$id tidak dapat diperbarui.";
+  
+  if (!$transaction) {
+    $transaction = new MultiPaymentTransaction();
+    $transaction->id = $id;
+    $_SESSION['FLASH_MESSAGE'] = "Transaksi {$transaction->getCode()} tidak ditemukan.";
     exit(header('Location: ./'));
   }
-  ensure_current_user_can('edit-multipayment-transaction');
+  
+  if ($transaction->salesOrderDetailId) {
+    $_SESSION['FLASH_MESSAGE'] = "Transaksi {$transaction->getCode()} tidak dapat diubah.";
+    exit(header('Location: ./'));
+  }
 }
 else {
   ensure_current_user_can('add-multipayment-transaction');
+  
   $transaction = new MultiPaymentTransaction();
   $transaction->dateTime = date('Y-m-d H:i:s');
 }
@@ -30,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->query("delete from multipayment_transactions where id=$id");
     update_multipayment_account_balance($transaction->accountId);
     $db->commit();
-    $_SESSION['FLASH_MESSAGE'] = "Transaksi #$id telah dihapus.";
+    $_SESSION['FLASH_MESSAGE'] = "Transaksi {$transaction->getCode()} telah dihapus.";
     header('Location: ./');
     exit;
   }
@@ -72,7 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         . ' type=:type,'
         . ' amount=:amount,'
         . ' dateTime=:dateTime,'
-        . ' description=:description'
+        . ' description=:description,'
+        . ' userId=:userId'
         . ' where id=:id'
       );
       $q->bindValue(':id', $transaction->id);
@@ -87,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     update_multipayment_account_balance($transaction->accountId);
     $db->commit();
 
-    $_SESSION['FLASH_MESSAGE'] = "Transaksi #$id telah disimpan.";
+    $_SESSION['FLASH_MESSAGE'] = "Transaksi {$transaction->getCode()} telah disimpan.";
     header('Location: ./');
     exit;
   }

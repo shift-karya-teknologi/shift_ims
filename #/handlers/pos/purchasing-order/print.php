@@ -1,5 +1,7 @@
 <?php
 
+ensure_current_user_can('print-purchasing-order');
+
 $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
 $order = $db->query('select * from purchasing_orders where id=' . $id)->fetchObject();
 if (!$order) {

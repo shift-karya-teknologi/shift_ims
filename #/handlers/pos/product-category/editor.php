@@ -1,16 +1,9 @@
 <?php
 
-function _ensure_user_can_access() {
-  global $category;
-  if ($category->id == 0 && !current_user_can('add-product-category'))
-    exit(render('error/403'));
-  else if ($category->id != 0 && !current_user_can('edit-product-category'))
-    exit(render('error/403'));
-}
-
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
 if ($id) {
+  ensure_current_user_can('edit-product-category');
   $category = $db->query('select * from product_categories where id=' . $id)->fetchObject();
   if (!$category) {
     $_SESSION['FLASH_MESSAGE'] = 'Kategori Produk tidak ditemukan';
@@ -19,6 +12,7 @@ if ($id) {
   }
 }
 else {
+  ensure_current_user_can('add-product-category');
   $category = new stdClass();
   $category->id = null;
   $category->name = '';
@@ -28,8 +22,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? (string)$_POST['action'] : 'save';
   if ($action === 'delete') {
-    if (!current_user_can('delete-product-category'))
-      exit(render('error/403'));
+    ensure_current_user_can('delete-product-category');
     
     try {
       $db->query('delete from product_categories where id=' . $category->id);
@@ -84,8 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
-
-_ensure_user_can_access();
 
 render('pos/product-category/editor', [
   'category' => $category,

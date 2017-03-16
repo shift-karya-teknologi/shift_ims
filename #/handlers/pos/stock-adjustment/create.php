@@ -1,5 +1,7 @@
 <?php
 
+ensure_current_user_can('add-stock-adjustment');
+
 require_once CORELIB_PATH . '/Product.php';
 
 $filter['categoryId'] = isset($_GET['categoryId']) ? (int)$_GET['categoryId'] : -1;

@@ -1,5 +1,7 @@
 <?php
 
+ensure_current_user_can('view-products');
+
 require_once CORELIB_PATH . '/Product.php';
 
 if (!isset($_SESSION['PRODUCT_MANAGER_FILTER'])) $_SESSION['PRODUCT_MANAGER_FILTER'] = [];

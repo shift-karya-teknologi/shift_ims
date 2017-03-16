@@ -1,6 +1,6 @@
 <?php
 
-ensure_current_user_can('view-sales-order');
+ensure_current_user_can('edit-sales-order');
 
 require_once CORELIB_PATH . '/Product.php';
 

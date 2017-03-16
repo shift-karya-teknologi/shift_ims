@@ -19,10 +19,12 @@ class SalesOrderItem {
 
 $id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
 if (!$id) {
+  ensure_current_user_can('add-sales-order-item');
   $item = new SalesOrderItem();
   $item->parentId = (int)(isset($_REQUEST['orderId']) ? $_REQUEST['orderId'] : 0);
 }
 else {
+  ensure_current_user_can('edit-sales-order-item');
   $item = $db->query('select'
     . ' d.*, p.name productName, p.type productType'
     . ' from sales_order_details d'
@@ -52,6 +54,7 @@ while ($product = $q->fetchObject()) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = $_POST['action'];
   if ($action == 'delete') {
+    ensure_current_user_can('delete-sales-order-item');
     $db->beginTransaction();
     $db->query('delete from sales_order_details where id=' . $id);
     update_sales_order_subtotal($item->parentId);
