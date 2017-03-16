@@ -31,10 +31,11 @@
               <?php endif ?>
               <div class="title">
                 <?= date('d/m/Y H:i:s', strtotime($item->lastModDateTime)) ?>
-                <span style="float:right"><?= format_money($item->totalPrice) ?></span>
+                <span style="float:right"><?= format_number($item->totalPrice) ?></span>
               </div>
               <div class="detail">#<?= format_sales_order_code($item->id) ?> 
-                (<?= format_sales_order_status($item->status) ?>)
+                [<?= format_sales_order_status($item->status) . ':' . $item->openUsername
+                   . ($item->lastModUsername == $item->openUsername ? '' : $item->lastModUsername) ?>]
               </div>
               <?php if (current_user_can('view-sales-order')): ?>
               </a>

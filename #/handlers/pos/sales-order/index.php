@@ -2,7 +2,7 @@
 
 
 if (!isset($_SESSION['SALES_ORDER_MANAGER'])) $_SESSION['SALES_ORDER_MANAGER'] = [];
-if (!isset($_SESSION['SALES_ORDER_MANAGER']['status'])) $_SESSION['SALES_ORDER_MANAGER']['status'] = -1;
+if (!isset($_SESSION['SALES_ORDER_MANAGER']['status'])) $_SESSION['SALES_ORDER_MANAGER']['status'] = 0;
 if (!isset($_SESSION['SALES_ORDER_MANAGER']['lastmod'])) $_SESSION['SALES_ORDER_MANAGER']['lastmod'] = 'today';
 
 $filter = [];
@@ -11,11 +11,12 @@ $filter['lastmod'] = isset($_GET['lastmod']) ? (string)$_GET['lastmod'] : $_SESS
 
 $_SESSION['SALES_ORDER_MANAGER'] = $filter;
 
-$sql = 'select * from sales_orders';
+$sql = 'select so.*, u1.username openUsername, u2.username lastModUsername'
+  . ' from sales_orders so';
 $where = [];
 
 if ($filter['status'] !== -1) {
-  $where[] = 'status=' . $filter['status'];
+  $where[] = 'so.status=' . $filter['status'];
 }
 
 if ($filter['lastmod'] !== 'anytime') {
@@ -69,13 +70,16 @@ if ($filter['lastmod'] !== 'anytime') {
   $startDateTime = $startDateTime->format('Y-m-d 00:00:00');
   $endDateTime = $endDateTime->format('Y-m-d 23:59:59');
   
-  $where[] = "(lastModDateTime>='$startDateTime' and lastModDateTime<='$endDateTime')";
+  $where[] = "(so.lastModDateTime>='$startDateTime' and so.lastModDateTime<='$endDateTime')";
 }
 
+$sql .= ' inner join users u1 on u1.id=so.openUserId';
+$sql .= ' inner join users u2 on u2.id=so.lastModUserId';      
+
 $where = implode(' and ', $where);
-if (!empty($where))
-  $sql .= " where $where";
-$sql .= ' order by lastModDateTime desc';
+if (!empty($where)) $sql .= " where $where";
+
+$sql .= ' order by so.lastModDateTime desc';
 
 $items = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
 
