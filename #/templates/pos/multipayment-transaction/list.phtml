@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  <style>
+  </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Transaksi Multi Payment</span>
+          <div class="mdl-layout-spacer"></div>
+          <?php if (current_user_can('topup-multipayment-account') || current_user_can('adjust-multipayment-account')): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+              <?php if (current_user_can('topup-multipayment-account')): ?>
+                <li class="mdl-menu__item">
+                  <a href="./topup">TopUp</a>
+                </li>
+              <?php endif ?>
+              <?php if (current_user_can('adjust-multipayment-account')): ?>
+                <li class="mdl-menu__item">
+                  <a href="./adjust">Penyesuaian</a>
+                </li>
+              <?php endif ?>
+            </ul>
+          <?php endif ?>
+        </div>
+      </header>
+      <?= render('pos/drawer') ?>
+      <main class="mdl-layout__content">
+        <div id="product-list" class="mdlx-data-list">
+          <?php foreach ($items as $item): ?>
+            <div class="mdlx-data-list__item">
+              <?php if (current_user_can('view-multipayment-transaction')): ?>
+                <a href="./editor?id=<?= $item->id ?>">
+              <?php endif ?>
+              <b><span style="float:right"><?= format_number($item->amount) ?></span>
+              <?= e($item->accountName) . ': ' . e($item->description) ?></b>
+              <br><?= to_locale_datetime($item->dateTime) ?> - <?= $item->username ?>
+              <?php if (current_user_can('view-multipayment-transaction')): ?>
+                </a>
+              <?php endif ?>
+            </div>
+          <?php endforeach ?>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>
