@@ -35,11 +35,8 @@
         j = (j = i.length) > 3 ? j % 3 : 0;
     return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
   };
-  
-  function showSubmitProgress() {
-    document.querySelector('#submit-progress').style.display = 'block';
-  }
-  
+  function confirmOnClick(q, m) { var e = document.querySelector(q); if (e) e.addEventListener('click', function(e) { if (!confirm(m)) { e.preventDefault(); return; } }); }
+  function showSubmitProgress() { document.querySelector('#submit-progress').style.display = 'block'; }
   document.querySelectorAll('form').forEach(function(form) { form.addEventListener('submit', showSubmitProgress); });
   document.querySelectorAll('.numberEditor').forEach(function(input) {
     input.addEventListener('focus', function() { this.select(); });
