@@ -27,7 +27,7 @@ $__ACL__ = [
     'topup-multipayment-account',
     'adjust-multipayment-account',
     'view-multipayment-transactions',
-    'view-multipayment-transaction',
+    'add-multipayment-transaction',
     'edit-multipayment-transaction',
     'delete-multipayment-transaction',
     
@@ -89,6 +89,7 @@ $__ACL__ = [
     'delete-sales-order-item',
     
     'view-multipayment-accounts',
+    'view-multipayment-transactions',
     
     'view-stock-adjustments',
   ],
