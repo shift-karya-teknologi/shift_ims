@@ -10,7 +10,7 @@
           <a href="./editor?id=<?= $item->parentId ?>" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">arrow_back</i>
           </a>
-          <span class="mdl-layout-title"><?= format_purchasing_order_code($item->parentId) ?></span>
+          <span class="mdl-layout-title">#<?= format_sales_order_code($item->parentId) ?></span>
           <div class="mdl-layout-spacer"></div>
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
             type="submit" name="action" value="save"><i class="material-icons left">check</i></button>
