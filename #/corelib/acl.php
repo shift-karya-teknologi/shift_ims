@@ -27,7 +27,17 @@ $__ACL__ = [
     
     'view-stock-adjustments',
     
+    'view-sales-orders',
+    'view-sales-order',
+    'add-sales-order',
+    'edit-sales-order',
+    'complete-sales-order',
+    'cancel-sales-order',
     'delete-sales-order',
+    
+    'add-sales-order-item',
+    'edit-sales-order-item',
+    'delete-sales-order-item',
     
     'view-purchasing-orders',
     'add-purchasing-order',
@@ -61,6 +71,17 @@ $__ACL__ = [
     'complete-purchasing-order',
     'cancel-purchasing-order',
     
+    'view-sales-orders',
+    'view-sales-order',
+    'add-sales-order',
+    'edit-sales-order',
+    'complete-sales-order',
+    'cancel-sales-order',
+    
+    'add-sales-order-item',
+    'edit-sales-order-item',
+    'delete-sales-order-item',
+    
     'view-multipayment-accounts',
     
     'view-stock-adjustments',
@@ -68,9 +89,31 @@ $__ACL__ = [
   3 => [
     'add-product-category',
     
+    'view-sales-orders',
+    'view-sales-order',
+    'add-sales-order',
+    'edit-sales-order',
+    'complete-sales-order',
+    'cancel-sales-order',
+    
+    'add-sales-order-item',
+    'edit-sales-order-item',
+    'delete-sales-order-item',
+    
     'view-multipayment-accounts',
   ],
   4 => [
+    'view-sales-orders',
+    'view-sales-order',
+    'add-sales-order',
+    'edit-sales-order',
+    'complete-sales-order',
+    'cancel-sales-order',
+    
+    'add-sales-order-item',
+    'edit-sales-order-item',
+    'delete-sales-order-item',
+    
     'view-multipayment-accounts',
   ]
 ];

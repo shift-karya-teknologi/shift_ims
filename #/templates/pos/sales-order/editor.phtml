@@ -7,6 +7,7 @@
   </head>
   <body>
     <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <input type="hidden" name="id" value="<?= $order->id ?>">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
           <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -15,46 +16,49 @@
           <span class="mdl-layout-title">#<?= format_sales_order_code($order->id) ?></span>
           <div class="mdl-layout-spacer"></div>
           <?php if ($order->status == 0): ?>
-            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="save">
-              <i class="material-icons">save</i>
-            </button>
-            <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" href="./item-editor?orderId=<?= $order->id ?>">
-              <i class="material-icons">add</i>
-            </a>
-            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
-              <i class="material-icons">more_vert</i>
-            </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
-              <?php if (count($order->items) > 0): ?>
+            <?php if (current_user_can('edit-sales-order')): ?>
+              <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="save">
+                <i class="material-icons">save</i>
+              </button>
+            <?php endif ?>
+            <?php if (current_user_can('add-sales-order-item')): ?>
+              <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" href="./item-editor?orderId=<?= $order->id ?>">
+                <i class="material-icons">add</i>
+              </a>
+            <?php endif ?>
+          <?php endif ?>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+            <?php if ($order->status == 0): ?>
+              <?php if (count($order->items) > 0 && current_user_can('complete-sales-order')): ?>
                 <li class="mdl-menu__item">
                   <button id="complete-button" type="submit" name="action" value="complete"><i class="material-icons">check</i> Selesai</button>
                 </li>
               <?php endif ?>
-              <li class="mdl-menu__item">
-                <button id="cancel-button" type="submit" name="action" value="cancel"><i class="material-icons">delete</i> Batalkan</button>
-              </li>
-            </ul>
-          <?php else: ?>
-            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
-              <i class="material-icons">more_vert</i>
-            </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+              <?php if (current_user_can('cancel-sales-order')): ?>
+                <li class="mdl-menu__item">
+                  <button id="cancel-button" type="submit" name="action" value="cancel"><i class="material-icons">delete</i> Batalkan</button>
+                </li>
+              <?php endif ?>
+            <?php elseif (current_user_can('delete-sales-order')): ?>
               <li class="mdl-menu__item">
                 <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus</button>
               </li>
-            </ul>
-          <?php endif ?>
+            <?php endif ?>
+          </ul>
         </div>
       </header>
       <main class="mdl-layout__content">
         <div class="mdl-grid">
           <h5 class="mdl-cell mdl-cell--12-col">Informasi Order</h5>
-          <input type="hidden" name="id" value="<?= $order->id ?>">
           <div class="mdl-cell mdl-cell--12-col">
             <table style="width: 100%;">
               <tr>
                 <td style="width:50px;">Status</td>
-                <td>: <?= format_sales_order_status($order->status) ?> tanggal <?= date('d/m/Y H:i:s', strtotime($order->lastModDateTime)) ?></td>
+                <td>: <?= format_sales_order_status($order->status) ?> <?= date('d/m/Y H:i:s', strtotime($order->lastModDateTime)) ?>
+                <?= $order->lastModUsername ?></td>
               </tr>
               <tr>
                 <td>Total</td>
@@ -72,17 +76,17 @@
               <div id="sales-order-list" class="mdlx-data-list" style="border:1px solid #ddd; border-bottom:none;">
                 <?php foreach ($order->items as $item): ?>
                   <div class="mdlx-data-list__item">
-                    <?php if ($order->status == 0): ?>
-                    <a href="./item-editor?id=<?= $item->id ?>">
+                    <?php if ($order->status == 0 && current_user_can('edit-sales-order-item')): ?>
+                      <a href="./item-editor?id=<?= $item->id ?>">
                     <?php endif ?>
-                      <div class="title"><?= $item->productName ?></div>
-                      <div class="detail">
-                        <?= format_number($item->quantity) . ' ' . e($item->productUom)
-                            . ' x Rp. ' . format_number($item->price)
-                            . ' = Rp. ' . format_number($item->subtotalPrice) ?>
-                      </div>
-                    <?php if ($order->status == 0): ?>
-                    </a>
+                    <div class="title"><?= e($item->productName) ?></div>
+                    <div class="detail">
+                      <?= format_number($item->quantity) . ' ' . e($item->productUom)
+                          . ' x Rp. ' . format_number($item->price)
+                          . ' = Rp. ' . format_number($item->subtotalPrice) ?>
+                    </div>
+                    <?php if ($order->status == 0 && current_user_can('edit-sales-order-item')): ?>
+                      </a>
                     <?php endif ?>
                   </div>
                 <?php endforeach ?>
@@ -93,36 +97,10 @@
       </main>
     </form>
     <?= render('foot') ?>
-    <script>      
-      var deleteButton = document.querySelector('#delete-button');
-      if (deleteButton) {
-        deleteButton.addEventListener('click', function(e) {
-          if (!confirm('Hapus order penjualan?')) {
-            e.preventDefault();
-            return;
-          }
-        });
-      }
-      
-      var completeButton = document.querySelector('#complete-button');
-      if (completeButton) {
-        completeButton.addEventListener('click', function(e) {
-          if (!confirm('Order penjualan telah selesai?')) {
-            e.preventDefault();
-            return;
-          }
-        });
-      }
-      
-      var cancelButton = document.querySelector('#cancel-button');
-      if (cancelButton) {
-        cancelButton.addEventListener('click', function(e) {
-          if (!confirm('Batalkan order penjualan?')) {
-            e.preventDefault();
-            return;
-          }
-        });
-      }
+    <script>
+      confirmOnClick('#delete-button', 'Hapus order penjualan?');
+      confirmOnClick('#complete-button', 'Order penjualan telah selesai?');
+      confirmOnClick('#cancel-button', 'Batalkan order penjualan?');
     </script>
   </body>
 </html>

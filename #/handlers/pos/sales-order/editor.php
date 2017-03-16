@@ -1,14 +1,19 @@
 <?php
 
+ensure_current_user_can('view-sales-order');
+
 require_once CORELIB_PATH . '/Product.php';
 
 $now = date('Y-m-d H:i:s');
-$id = (int)(isset($_REQUEST['id']) ? $_REQUEST['id'] : 0);
-$order = $db->query('select * from sales_orders where id=' . $id)->fetchObject();
+$id  = (isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0);
+$order = $db->query('select o.*, u.username lastModUsername'
+  . ' from sales_orders o'
+  . ' left join users u on u.id=o.lastModUserId'
+  . " where o.id=$id"
+  )->fetchObject();
+
 if (!$order) {
-  if ($id) {
-    $_SESSION['FLASH_MESSAGE'] = 'Penjualan #' . format_sales_order_code($id) . ' tidak ditemukan.';
-  }
+  $_SESSION['FLASH_MESSAGE'] = 'Penjualan #' . format_sales_order_code($id) . ' tidak ditemukan.';
   header('Location: ./');
   exit;
 }
@@ -23,10 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $action = $_POST['action'];
   
   if ($order->status == 0 && $action == 'complete') {
-    $db->beginTransaction();
-    
+    ensure_current_user_can('complete-sales-order');
+    $db->beginTransaction();   
     $updateId = add_stock_update(1, $now);
-    
     foreach ($order->items as $item) {
       if ($item->productType == Product::Stocked) {
         add_stock_update_detail($updateId, $item->productId, -$item->quantity);
@@ -47,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         update_multipayment_account_balance($item->multiPaymentAccountId);
     }
-    
     $q = $db->prepare('update sales_orders set'
       . ' status=1, closeDateTime=:dateTime, lastModDateTime=:dateTime, updateId=:updateId, closeUserId=:userId, lastModUserId=:userId'
       . ' where id=' . $id);
@@ -55,7 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $q->bindValue(':updateId', $updateId);
     $q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
     $q->execute();
-    
     $db->commit();
     
     $_SESSION['FLASH_MESSAGE'] = 'Penjualan #' . format_sales_order_code($id) . ' telah selesai.';
@@ -63,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
   }
   else if ($order->status == 0 && $action == 'cancel') {
+    ensure_current_user_can('cancel-sales-order');
     $db->beginTransaction();
     $q = $db->prepare('update sales_orders set'
       . ' status=2, closeDateTime=:dateTime, lastModDateTime=:dateTime, closeUserId=:userId, lastModUserId=:userId'
@@ -70,13 +73,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $q->bindValue(':dateTime', $now);
     $q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
     $q->execute();
-    
     $db->commit();
+    
     $_SESSION['FLASH_MESSAGE'] = 'Penjualan #' . format_sales_order_code($id) . ' telah dibatalkan.';
     header('Location: ./');
     exit;
   }
   else if ($order->status != 0 && $action == 'delete') {
+    ensure_current_user_can('delete-sales-order');
     $db->beginTransaction();
     $db->query("delete from sales_orders where id=$order->id");
     if ($order->updateId) {

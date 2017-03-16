@@ -26,15 +26,19 @@
         <div id="so-list" class="mdlx-data-list">
           <?php foreach ($items as $item): ?>
             <div class="mdlx-data-list__item <?= $item->status == 0 ? 'y' : ($item->status == 2 ? 'r' : '') ?> ">
-              <a href="./editor?id=<?= $item->id ?>">
-                <div class="title">
-                  <?= date('d/m/Y H:i:s', strtotime($item->lastModDateTime)) ?>
-                  <span style="float:right"><?= format_money($item->totalPrice) ?></span>
-                </div>
-                <div class="detail">#<?= format_sales_order_code($item->id) ?> 
-                  (<?= format_sales_order_status($item->status) ?>)
-                </div>
+              <?php if (current_user_can('view-sales-order')): ?>
+                <a href="./editor?id=<?= $item->id ?>">
+              <?php endif ?>
+              <div class="title">
+                <?= date('d/m/Y H:i:s', strtotime($item->lastModDateTime)) ?>
+                <span style="float:right"><?= format_money($item->totalPrice) ?></span>
+              </div>
+              <div class="detail">#<?= format_sales_order_code($item->id) ?> 
+                (<?= format_sales_order_status($item->status) ?>)
+              </div>
+              <?php if (current_user_can('view-sales-order')): ?>
               </a>
+              <?php endif ?>
             </div>
           <?php endforeach ?>
         </div>
