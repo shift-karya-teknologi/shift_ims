@@ -1,5 +1,7 @@
 <?php
 
+require CORELIB_PATH . '/MultiPaymentTransaction.php';
+
 ensure_current_user_can('view-multipayment-transactions');
 
 $items = [];
@@ -10,7 +12,7 @@ $q = $db->query('select t.*, a.name accountName, u.username username'
   . ' inner join users u on u.id = t.userId'
   . ' order by t.dateTime desc'
   );
-while ($item = $q->fetchObject()) {
+while ($item = $q->fetchObject(MultiPaymentTransaction::class)) {
   $items[] = $item;
 }
 

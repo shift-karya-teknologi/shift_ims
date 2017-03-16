@@ -11,19 +11,26 @@
         <div class="mdl-layout__header-row">
           <span class="mdl-layout-title">Transaksi Multi Payment</span>
           <div class="mdl-layout-spacer"></div>
-          <?php if (current_user_can('topup-multipayment-account') || current_user_can('adjust-multipayment-account')): ?>
+          <?php if (current_user_can('topup-multipayment-account')
+                    || current_user_can('adjust-multipayment-account')
+                    || current_user_can('add-multipayment-account')): ?>
             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
               <i class="material-icons">more_vert</i>
             </button>
             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
               <?php if (current_user_can('topup-multipayment-account')): ?>
+              <li class="mdl-menu__item">
+                  <a href="./editor"><i class="material-icons">add</i>Catat</a>
+                </li>
+              <?php endif ?>
+              <?php if (current_user_can('topup-multipayment-account')): ?>
                 <li class="mdl-menu__item">
-                  <a href="./topup">TopUp</a>
+                  <a href="./topup"><i class="material-icons">call_made</i>TopUp</a>
                 </li>
               <?php endif ?>
               <?php if (current_user_can('adjust-multipayment-account')): ?>
                 <li class="mdl-menu__item">
-                  <a href="./adjust">Penyesuaian</a>
+                  <a href="./adjust"><i class="material-icons">import_export</i>Penyesuaian</a>
                 </li>
               <?php endif ?>
             </ul>
@@ -35,13 +42,15 @@
         <div id="product-list" class="mdlx-data-list">
           <?php foreach ($items as $item): ?>
             <div class="mdlx-data-list__item">
-              <?php if (current_user_can('view-multipayment-transaction')): ?>
+              <?php if (current_user_can('edit-multipayment-transaction')): ?>
                 <a href="./editor?id=<?= $item->id ?>">
               <?php endif ?>
-              <b><span style="float:right"><?= format_number($item->amount) ?></span>
-              <?= e($item->accountName) . ': ' . e($item->description) ?></b>
-              <br><?= to_locale_datetime($item->dateTime) ?> - <?= $item->username ?>
-              <?php if (current_user_can('view-multipayment-transaction')): ?>
+              <span style="float:right;text-align:right;"><b><?= format_number($item->amount) ?></b>
+                <br><small><?= $item->getCode(); ?></small>
+              </span>
+              <?= e($item->accountName) . ' | ' . $item->getTypeName() . ' | ' . e($item->description) ?>
+                  <br><small><?= to_locale_datetime($item->dateTime) ?> - <?= $item->username ?></small>
+              <?php if (current_user_can('edit-multipayment-transaction')): ?>
                 </a>
               <?php endif ?>
             </div>
