@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  <style>
+  </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Nasabah (<?= count($items) ?>)</span>
+          <div class="mdl-layout-spacer"></div>
+          <?php if (current_user_can('add-credit-referral')): ?>
+          <a href="./editor" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">add</i>
+          </a>
+          <?php endif ?>
+        </div>
+      </header>
+      <?= render('credit/drawer') ?>
+      <main class="mdl-layout__content">
+        <div id="product-list" class="mdlx-data-list">
+          <?php foreach ($items as $item): ?>
+            <div class="mdlx-data-list__item <?= $item->balance == 0 ? 'g' : '' ?>">
+              <?php if (current_user_can('view-credit-account')): ?>
+              <a href="./view?id=<?= $item->id ?>">
+              <?php endif ?>
+                <?= e($item->getCode()) ?>
+              <?php if (current_user_can('view-credit-account')): ?>
+              </a>
+              <?php endif ?>
+            </div>
+          <?php endforeach ?>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>
