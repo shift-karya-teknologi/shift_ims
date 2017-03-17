@@ -1,0 +1,36 @@
+<div class="mdl-layout__drawer">
+  <header class="mdl-color--blue-grey mdl-color-text--white">
+    <span class="mdl-layout-title">
+        <small><a class="mdl-color-text--white" href="<?= BASE_URL ?>/credit/"><?= 'Kredit' ?></a></small>
+    </span>
+    <span class="my-account-name">
+      <a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a>
+    </span>
+  </header>
+  <nav class="mdl-navigation">
+    <a class="mdl-navigation__link<?= $_SERVER['PATH_INFO'] === BASE_URL . '/credit/' ? ' active' : '' ?>"
+       href="<?= BASE_URL ?>/credit/">
+      <i class="material-icons">dashboard</i><small>Dasbor</small>
+    </a>
+    <?php if (current_user_can('view-credit-transactions')): ?>
+    <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/credit/transaction/') ? ' active' : '' ?>"
+       href="<?= BASE_URL ?>/credit/transaction/">
+      <i class="material-icons">payment</i>Angsuran
+    </a>
+    <?php endif ?> 
+    <?php if (current_user_can('view-credit-accounts')): ?>
+    <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/credit/account/') ? ' active' : '' ?>"
+       href="<?= BASE_URL ?>/credit/account/">
+      <i class="material-icons">assignment_ind</i>Nasabah
+    </a>
+    <?php endif ?>
+    <?php if (current_user_can('view-credit-referrals')): ?>
+    <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/credit/referral/') ? ' active' : '' ?>"
+       href="<?= BASE_URL ?>/credit/referral/">
+      <i class="material-icons">face</i>Akun Referal
+    </a>
+    <?php endif ?>
+    <hr>
+    <a class="mdl-navigation__link" href="<?= BASE_URL ?>/"><i class="material-icons">arrow_back</i>Shift Apps</a>
+  </nav>
+</div>
