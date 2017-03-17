@@ -4,6 +4,11 @@
     <span class="my-account-name"><a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a></span>
   </header>
   <nav class="mdl-navigation">
+    <?php if (current_user_can('view-reports')): ?>
+      <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/report/') ? ' active' : '' ?>"
+        href="<?= BASE_URL ?>/pos/report/">Laporan</a>
+    <?php endif ?>
+    <hr>
     <?php if (current_user_can('view-sales-orders')): ?>
       <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/sales-order/') ? ' active' : '' ?>"
         href="<?= BASE_URL ?>/pos/sales-order/">Penjualan</a>

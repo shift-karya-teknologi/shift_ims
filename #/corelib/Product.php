@@ -81,6 +81,10 @@ class Product
     return self::$_types;
   }
   
+  public static function typeName($type) {
+    return self::$_types[$type];
+  }
+  
   public function getCostingMethodName() {
     return self::$_costingMethods[$this->costingMethod];
   }
