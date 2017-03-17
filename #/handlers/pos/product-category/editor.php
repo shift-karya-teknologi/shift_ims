@@ -38,8 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
   
-  _ensure_user_can_access();
-  
   $category->name = isset($_POST['name']) ? trim((string)$_POST['name']) : '';
   
   if (empty($category->name)) {
