@@ -100,10 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q->bindValue(':lastModDateTime', $now);
       $q->bindValue(':lastModUserId', $_SESSION['CURRENT_USER']->id);
       $q->execute();
-      CreditAccount::updateBalance($item->id);
-      $db->commit();
       
       if (!$item->id) $item->id = $db->lastInsertId();
+      CreditAccount::updateBalance($item->id);
+      $db->commit();
       
       $_SESSION['FLASH_MESSAGE'] = 'Akun ' . $item->getCode() . ' telah disimpan.';
       exit(header('Location: ./view?id=' . $item->id));
