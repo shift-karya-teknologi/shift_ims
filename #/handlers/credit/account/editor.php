@@ -102,8 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       
       if (!$item->id) $item->id = $db->lastInsertId();
       
-      $_SESSION['FLASH_MESSAGE'] = 'Nasabah ' . $item->getCode() . ' telah disimpan.';
-      exit(header('Location: ./'));
+      $_SESSION['FLASH_MESSAGE'] = 'Akun ' . $item->getCode() . ' telah disimpan.';
+      exit(header('Location: ./view?id=' . $item->id));
     }
   }
 }

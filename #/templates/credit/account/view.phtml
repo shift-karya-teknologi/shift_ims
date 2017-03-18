@@ -16,6 +16,12 @@
           <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="edit-button"
             href="./editor?id=<?= $item->id ?>"><i class="material-icons left">edit</i></a>
           <?php endif ?>
+          <?php if (current_user_can('delete-credit-account')): ?>
+            <form method="POST" action="./editor?id=<?= $item->id ?>">
+              <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
+                type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
+            </form>
+          <?php endif ?>
         </div>
       </header>
       <main class="mdl-layout__content">
@@ -113,7 +119,7 @@
     </div>
     <?= render('foot') ?>
     <script>
-      confirmOnClick('#delete-button', 'Hapus referal?');
+      confirmOnClick('#delete-button', 'Hapus akun?');
     </script>
   </body>
 </html>
