@@ -20,6 +20,7 @@ $__ACL__ = [
     'open-shiftnet-app',
     
     'open-finance-app',
+    'view-finance-accounts', 'view-finance-account'
   ],
   3 => [
 

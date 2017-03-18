@@ -47,18 +47,23 @@
             </label>
           </div>
         </div>
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            Pengelola:<br>
+            <select multiple="multiple" name="users[]" style="width:200px;">
+              <?php foreach ($users as $user): ?>
+              <option value="<?= $user->id ?>" <?= in_array($user->id, $account->users) ? 'selected' : '' ?>>
+                <?= $user->username ?>
+              </option>
+              <?php endforeach ?>
+            </select>
+          </div>
+        </div>
       </main>
     </form>
     <?= render('foot') ?>
-    <?php if ($account->id): ?>
     <script>
-      document.querySelector('#delete-button').addEventListener('click', function(e) {
-        if (!confirm('Hapus Kategori?')) {
-          e.preventDefault();
-          return;
-        }
-      });
+      confirmOnClick('#delete-button', 'Hapus akun?')
     </script>
-    <?php endif ?>
   </body>
 </html>

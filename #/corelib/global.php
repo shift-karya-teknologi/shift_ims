@@ -290,3 +290,13 @@ function update_multipayment_account_balance($accountId) {
   $q->bindValue(':id', $accountId);
   $q->execute();
 }
+
+
+function get_current_finance_account_ids() {
+  global $db;
+    $q = $db->query('select * from finance_account_users where userId=' . $_SESSION['CURRENT_USER']->id);
+  $ids = [];
+  while ($r = $q->fetchObject())
+    $ids[] = $r->accountId;
+  return $ids;
+}
