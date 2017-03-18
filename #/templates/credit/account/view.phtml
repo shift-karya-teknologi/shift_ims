@@ -20,18 +20,20 @@
             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
               <i class="material-icons">more_vert</i>
             </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
-              <?php if (current_user_can('edit-credit-account')): ?>
-                <li class="mdl-menu__item">
-                  <a href="./editor?id=<?= $item->id ?>"><i class="material-icons">edit</i> Edit</a>
-                </li>
-              <?php endif ?>
-              <?php if (current_user_can('delete-credit-account')): ?>
-                <li class="mdl-menu__item">
-                  <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus</button>
-                </li>
-              <?php endif ?>
-            </ul>
+            <form method="post" action="./editor?id=<?= $item->id ?>">
+              <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+                <?php if (current_user_can('edit-credit-account')): ?>
+                  <li class="mdl-menu__item">
+                    <a href="./editor?id=<?= $item->id ?>"><i class="material-icons">edit</i> Edit</a>
+                  </li>
+                <?php endif ?>
+                <?php if (current_user_can('delete-credit-account')): ?>
+                  <li class="mdl-menu__item">
+                    <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus</button>
+                  </li>
+                <?php endif ?>
+              </ul>
+            </form>
           <?php endif ?>
         </div>
       </header>
