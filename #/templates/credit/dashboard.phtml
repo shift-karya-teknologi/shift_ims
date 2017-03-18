@@ -3,6 +3,7 @@
   <head>
   <?= render('head') ?>
   <style>
+    h5 { font-size: 15px; }
   </style>
   </head>
   <body>
@@ -15,6 +16,11 @@
       </header>
       <?= render('credit/drawer') ?>
       <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <h5>Total Piutang Rp. <?= format_number($total) ?></h5>
+          </div>
+        </div>
       </main>
     </div>
     <?= render('foot') ?>
