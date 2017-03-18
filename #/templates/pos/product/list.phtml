@@ -34,9 +34,7 @@
         <div id="product-list" class="mdlx-data-list">
           <?php foreach ($products as $product): ?>
             <div class="mdlx-data-list__item <?= $product->active ? '' : 'r' ?>">
-              <?php if (current_user_can('edit-product')): ?>
-                <a href="./editor?id=<?= $product->id ?>">
-              <?php endif ?>
+              <a href="./editor?id=<?= $product->id ?>">
                 <div class="name"><?= e($product->name) ?></div>
                 <div class="info">
                   <?php if ($product->type != Product::ShiftNetVoucher): ?>
@@ -53,9 +51,7 @@
                     <div><?= $info ?></div>
                   <?php endif ?>
                 </div>
-              <?php if (current_user_can('edit-product')): ?>
-                </a>
-              <?php endif ?>
+              </a>
             </div>
           <?php endforeach ?>
         </div>
