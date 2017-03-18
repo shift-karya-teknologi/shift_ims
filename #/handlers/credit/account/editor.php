@@ -24,10 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $db->query("delete from credit_accounts where id=$id");
     }
     catch (Exception $e) {
-      $_SESSION['FLASH_MESSAGE'] = 'Akun ' . e($item->getCode()) . ' tidak dapat dihapus.';
+      $_SESSION['FLASH_MESSAGE'] = 'Akun ' . $item->getCode() . ' tidak dapat dihapus.';
       exit(header('Location: ./'));
     }
-    $_SESSION['FLASH_MESSAGE'] = 'Akun ' . e($item->getCode()) . ' telah dihapus.';
+    $_SESSION['FLASH_MESSAGE'] = 'Akun ' . $item->getCode() . ' telah dihapus.';
     exit(header('Location: ./'));
   }
   else if ($action === 'save') {
