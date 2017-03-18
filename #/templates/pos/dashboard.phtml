@@ -3,9 +3,18 @@
   <head>
   <?= render('head') ?>
   <style>
+    h4 { font-size: 14px; margin: 0; font-weight: bold; }
+    .mdl-data-table .r { text-align: right; }
+    .mdl-data-table, .mdl-data-table td { border: none; }
+    .shift { font-weight: bold; font-size: 15px; } 
+    .item { font-size: 9pt; font-family: 'Arial Narrow'; }
+    .type { font-weight: bold; }
+    #dashboard tr.spacer, #dashboard tr.spacer td { height: 10px; line-height: 10px; }
+    #dashboard td { padding: 0; }
+    #dashboard td.uom { padding-left: 5px; }
   </style>
   </head>
-  <body>
+  <body id="dashboard">
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
@@ -15,6 +24,37 @@
       </header>
       <?= render('pos/drawer') ?>
       <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <?php foreach ($shifts as $label => $shift): ?>
+            <div class="mdl-cell mdl-cell--4-col">
+              <div class="mdlx-data-table--responsive" style="border:none;">
+                <table class='mdl-data-table condensed'>
+                  <tbody>
+                    <tr class="shift">
+                      <td colspan="3">Penjualan <?= $label ?></td>
+                      <td class="r"><?= format_number($shift->total) ?></td>
+                    </tr>
+                    <?php foreach ($shift->types as $id => $type): ?>
+                      <tr class="spacer"><td colspan="4"></td></tr>
+                      <tr class="type">
+                        <td colspan="3"><?= Product::typeName($id) ?></td>
+                        <td class="r"><?= format_number($type->total) ?></td>
+                      </tr>
+                        <?php foreach ($type->items as $item): ?>
+                        <tr class='item'>
+                          <td><?= e($item['name']) ?></td>
+                          <td class="r qty" style="width:25px"><?= format_number($item['quantity']) ?></td>
+                          <td class="uom" style="width:40px"><?= e($item['uom']) ?></td>
+                          <td class="r"><?= format_number($item['total']) ?></td>
+                        </tr>
+                      <?php endforeach ?>
+                    <?php endforeach ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <?php endforeach ?>
+        </div>
       </main>
     </div>
     <?= render('foot') ?>
