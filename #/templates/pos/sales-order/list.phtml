@@ -33,9 +33,13 @@
                 <?= date('d/m/Y H:i:s', strtotime($item->lastModDateTime)) ?>
                 <span style="float:right"><?= format_number($item->totalPrice) ?></span>
               </div>
-              <div class="detail">#<?= format_sales_order_code($item->id) ?> 
-                [<?= format_sales_order_status($item->status) . ':' . $item->openUsername
-                   . ($item->lastModUsername == $item->openUsername ? '' : $item->lastModUsername) ?>]
+              <div class="detail">#<?= format_sales_order_code($item->id) ?>
+                | <?= format_sales_order_status($item->status) ?>
+                <?php if ($item->openUsername == $item->lastModUsername): ?>
+                  | <?= $item->openUsername ?>
+                <?php else: ?>
+                  | <?= $item->openUsername ?> | <?= $item->lastModUsername ?>
+                <?php endif ?>
               </div>
               <?php if (current_user_can('view-sales-order')): ?>
               </a>
