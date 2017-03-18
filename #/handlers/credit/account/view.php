@@ -20,6 +20,12 @@ if (!$item) {
   exit(header('Location: ./'));
 }
 
+$item->transactions = $db->query("select *"
+  . " from credit_transactions"
+  . " where accountId=$item->id"
+  . " order by dateTime asc")
+  ->fetchAll(PDO::FETCH_OBJ);
+
 
 render('credit/account/view', [
   'item' => $item,

@@ -12,15 +12,26 @@
           </a>
           <span class="mdl-layout-title"><?= $item->getCode() ?></span>
           <div class="mdl-layout-spacer"></div>
-          <?php if (current_user_can('edit-credit-account')): ?>
-          <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="edit-button"
-            href="./editor?id=<?= $item->id ?>"><i class="material-icons left">edit</i></a>
+          <?php if (current_user_can('add-credit-transaction')): ?>
+            <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="add-button"
+               href="../transaction/editor?accountId=<?= $item->id ?>"><i class="material-icons left">add</i></a>
           <?php endif ?>
-          <?php if (current_user_can('delete-credit-account')): ?>
-            <form method="POST" action="./editor?id=<?= $item->id ?>">
-              <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
-                type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
-            </form>
+          <?php if (current_user_can('edit-credit-account') || current_user_can('delete-credit-account')): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+              <?php if (current_user_can('edit-credit-account')): ?>
+                <li class="mdl-menu__item">
+                  <a href="./editor?id=<?= $item->id ?>"><i class="material-icons">edit</i> Edit</a>
+                </li>
+              <?php endif ?>
+              <?php if (current_user_can('delete-credit-account')): ?>
+                <li class="mdl-menu__item">
+                  <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons">delete_forever</i> Hapus</button>
+                </li>
+              <?php endif ?>
+            </ul>
           <?php endif ?>
         </div>
       </header>
@@ -70,11 +81,13 @@
                 <td>:</td>
                 <td><?= format_number($item->productPrice) ?></td>
               </tr>
+              <?php if (!empty($item->productSerialNumber)): ?>
               <tr>
                 <td>SN/IMEI</td>
                 <td>:</td>
                 <td><?= e($item->productSerialNumber) ?></td>
               </tr>
+              <?php endif ?>
             </table>
           </div>
           <div class="mdl-cell--4-col">
@@ -113,6 +126,48 @@
                 <td><?= format_number($item->balance) ?></td>
               </tr>
             </table>
+          </div>
+        </div>
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <h5>Penerimaan Angsuran</h5>
+            <?php if (empty($item->transactions)): ?>
+              <p>Belum ada penerimaan angsuran.</p>
+            <?php else: ?>
+            <div class="mdlx-data-table--responsive">
+              <table class="mdl-data-table condensed">
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Jenis</th>
+                    <th>Jumlah (Rp.)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($item->transactions as $transaction): ?>
+                  <tr>
+                    <td>
+                      <?php if (current_user_can('edit-credit-transaction')): ?>
+                        <a href="../transaction/editor?id=<?= $transaction->id ?>">
+                      <?php endif ?>
+                      <small>
+                        <?= $item->getCode() ?>
+                        <br><?= date('d/m/Y', strtotime($transaction->dateTime)) ?>
+                      </small>
+                      <?php if (current_user_can('edit-credit-transaction')): ?>
+                        </a>
+                      <?php endif ?>
+                    </td>
+                    <td>
+                      <?= $transaction->types == 0 ? 'Biaya Adm' : ($transaction->types == 1 ? 'Biaya Adm' : 'Biaya Adm dan Angsuran') ?>
+                    </td>
+                    <td><?= format_number($transaction->amount) ?>
+                  </tr>
+                <?php endforeach ?>
+                </tbody>
+              </table>
+            </div>
+            <?php endif ?>
           </div>
         </div>
       </main>

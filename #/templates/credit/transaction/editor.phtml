@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  </head>
+  <body>
+    <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <input type="hidden" name="id" value="<?= $item->id ?>">
+      <input type="hidden" name="accountId" value="<?= $item->accountId ?>">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="<?= $item->id ? "./view?id=$item->id" : './' ?> " class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title"><?= !$item->id ? 'Catat Angsuran' : $item->getCode() ?></span>
+          <div class="mdl-layout-spacer"></div>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
+            type="submit" name="action" value="save"><i class="material-icons left">check</i></button>
+          <?php if ($item->id && current_user_can('delete-credit-transaction')): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
+              type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
+          <?php endif ?>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <table>
+              <tr>
+                <td>Akun</td><td>:</td><td><?= $account->getCode() ?></td>
+              </tr>
+              <tr>
+                <td>Nama</td><td>:</td><td><?= e($account->customerName) ?></td>
+              </tr>
+              <tr>
+                <td>Alamat</td><td>:</td><td><?= e($account->customerAddress) ?></td>
+              </tr>
+              <tr>
+                <td>Produk</td><td>:</td><td><?= e($account->productName) ?></td>
+              </tr>
+              <tr>
+                <td>Sisa</td><td>:</td><td><?= format_money($account->balance) ?></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="mdl-grid">
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col">
+            <select id="type" class="mdl-selectfield__select" name="types">
+              <option value="1" <?= $item->types == 1 ? 'selected' : '' ?>>Angsuran</option>
+              <option value="2" <?= $item->types == 2 ? 'selected' : '' ?>>Biaya Adm</option>
+              <option value="3" <?= $item->types == 3 ? 'selected' : '' ?>>Biaya Adm + Angsuran</option>
+            </select>
+            <label class="mdl-selectfield__label" for="type">Jenis Pembayaran</label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+            !empty($errors['amount']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($item->amount) ?>" maxlength="15"
+                   id="productPrice" name="amount">
+            <label class="mdl-textfield__label" for="amount">Jumlah Pembayaran (Rp.)</label>
+            <?php if (!empty($errors['amount'])): ?>
+              <span class="form-error"><?= $errors['amount'] ?></span>
+            <?php endif ?>
+          </div>
+        </div>
+      </main>
+    </form>
+    <?= render('foot') ?>
+  </body>
+</html>

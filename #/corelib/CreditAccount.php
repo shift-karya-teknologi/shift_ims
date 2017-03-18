@@ -31,9 +31,17 @@ class CreditAccount
   public $lastModUserId;
   public $lastModUsername;
   
+  public $transactions = [];
+  
   public function getCode() {
     return '#CRA-' . str_pad($this->id, 3, '0', STR_PAD_LEFT);
   }
 
+  public static function updateBalance($accountId) {
+    global $db;
+    $db->query("update credit_accounts set"
+      . " balance=(productPrice+administrationCost)-(select ifnull(sum(t.amount), 0) from credit_transactions t where accountId=$accountId)"
+      . " where id=$accountId");
+  }
 }
 

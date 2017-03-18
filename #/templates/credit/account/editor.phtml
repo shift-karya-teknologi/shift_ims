@@ -10,7 +10,7 @@
       <?php endif ?>
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-          <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+          <a href="<?= $item->id ? "./view?id=$item->id" : './' ?> " class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">arrow_back</i>
           </a>
           <span class="mdl-layout-title"><?= !$item->id ? 'Buat Akun Kredit' : $item->getCode() ?></span>

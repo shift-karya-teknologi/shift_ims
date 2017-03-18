@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($action === 'delete') {
     ensure_current_user_can('delete-credit-account');  
     try {
-    $db->query("delete from credit_accounts where id=$id");
+      $db->query("delete from credit_accounts where id=$id");
     }
     catch (Exception $e) {
       $_SESSION['FLASH_MESSAGE'] = 'Akun ' . e($item->getCode()) . ' tidak dapat dihapus.';
@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (empty($errors)) {
       $now = date('Y-m-d H:i:s');
+      $db->beginTransaction();
       if (!$item->id) {
         $q = $db->prepare('insert into credit_accounts'
           . ' ( customerName, customerAddress, customerContact, customerId,'
@@ -99,6 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q->bindValue(':lastModDateTime', $now);
       $q->bindValue(':lastModUserId', $_SESSION['CURRENT_USER']->id);
       $q->execute();
+      CreditAccount::updateBalance($item->id);
+      $db->commit();
       
       if (!$item->id) $item->id = $db->lastInsertId();
       

@@ -2,8 +2,6 @@
 <html lang="id">
   <head>
   <?= render('head') ?>
-  <style>
-  </style>
   </head>
   <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
@@ -20,7 +18,7 @@
       </header>
       <?= render('credit/drawer') ?>
       <main class="mdl-layout__content">
-        <div id="product-list" class="mdlx-data-list">
+        <div class="mdlx-data-list">
           <?php foreach ($items as $item): ?>
             <div class="mdlx-data-list__item <?= $item->balance == 0 ? 'g' : '' ?>">
               <?php if (current_user_can('view-credit-account')): ?>
