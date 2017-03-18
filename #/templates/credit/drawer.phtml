@@ -21,7 +21,7 @@
     <?php if (current_user_can('view-credit-accounts')): ?>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/credit/account/') ? ' active' : '' ?>"
        href="<?= BASE_URL ?>/credit/account/">
-      <i class="material-icons">assignment_ind</i>Nasabah
+      <i class="material-icons">assignment_ind</i>Akun Kredit
     </a>
     <?php endif ?>
     <?php if (current_user_can('view-credit-referrals')): ?>

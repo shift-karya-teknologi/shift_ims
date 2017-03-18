@@ -32,7 +32,7 @@ class CreditAccount
   public $lastModUsername;
   
   public function getCode() {
-    return '#CA-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    return '#CRA-' . str_pad($this->id, 3, '0', STR_PAD_LEFT);
   }
 
 }

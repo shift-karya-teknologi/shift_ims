@@ -4,7 +4,10 @@ ensure_current_user_can('view-credit-accounts');
 
 require CORELIB_PATH . '/CreditAccount.php';
 
-$sql = 'select * from credit_accounts order by id asc';
+$sql = 'select a.*, r.name referralName'
+  . ' from credit_accounts a'
+  . ' inner join credit_referrals r on r.id=a.referralId'
+  . ' order by a.id asc';
 
 $q = $db->prepare($sql);
 $q->execute();

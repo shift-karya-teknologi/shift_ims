@@ -20,8 +20,93 @@
       </header>
       <main class="mdl-layout__content">
         <div class="mdl-grid">
-          <div class="mdl-cell--12-col">
-            
+          <div class="mdl-cell--4-col">
+            <h5>Informasi Nasabah</h5>
+            <table>
+              <tr>
+                <td>Nama</td>
+                <td>:</td>
+                <td><?= e($item->customerName) ?></td>
+              </tr>
+              <?php if (!empty($item->customerId)): ?>
+              <tr>
+                <td>No. KTP</td>
+                <td>:</td>
+                <td><?= e($item->customerId) ?></td>
+              </tr>
+              <?php endif ?>
+              <?php if (!empty($item->customerAddress)): ?>
+              <tr>
+                <td>Alamat</td>
+                <td>:</td>
+                <td><?= e($item->customerAddress) ?></td>
+              </tr>
+              <?php endif ?>
+              <?php if (!empty($item->customerContact)): ?>
+              <tr>
+                <td>Kontak</td>
+                <td>:</td>
+                <td><?= e($item->customerContact) ?></td>
+              </tr>
+              <?php endif ?>
+            </table>
+          </div>
+          <div class="mdl-cell--4-col">
+            <h5>Informasi Produk</h5>
+            <table>
+              <tr>
+                <td>Produk</td>
+                <td>:</td>
+                <td><?= e($item->productName) ?></td>
+              </tr>
+              <tr>
+                <td>Harga (Rp.)</td>
+                <td>:</td>
+                <td><?= format_number($item->productPrice) ?></td>
+              </tr>
+              <tr>
+                <td>SN/IMEI</td>
+                <td>:</td>
+                <td><?= e($item->productSerialNumber) ?></td>
+              </tr>
+            </table>
+          </div>
+          <div class="mdl-cell--4-col">
+            <h5>Informasi Kredit</h5>
+            <table>
+              <tr>
+                <td>Status</td>
+                <td>:</td>
+                <td><?= $item->balance == 0 ? 'Lunas' : 'Belum Lunas' ?></td>
+              </tr>
+              <tr>
+                <td>Referal</td>
+                <td>:</td>
+                <td><?= e($item->referralName) ?></td>
+              </tr>
+              <tr>
+                <td>Jatuh Tempo</td>
+                <td>:</td>
+                <td>Tgl. <?= $item->dueDate ?></td>
+              </tr>
+              <?php if (!empty($item->administrationCost)): ?>
+              <tr>
+                <td>Biaya Adm (Rp.)</td>
+                <td>:</td>
+                <td><?= format_number($item->administrationCost) ?></td>
+              </tr>
+              <?php endif ?>
+              <tr>
+                <td>Total (Rp.)</td>
+                <td>:</td>
+                <td><?= format_number($item->productPrice + $item->administrationCost) ?></td>
+              </tr>
+              <tr>
+                <td>Sisa (Rp.)</td>
+                <td>:</td>
+                <td><?= format_number($item->balance) ?></td>
+              </tr>
+            </table>
           </div>
         </div>
       </main>
