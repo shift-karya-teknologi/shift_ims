@@ -10,7 +10,7 @@
   <nav class="mdl-navigation">
     <a class="mdl-navigation__link<?= $_SERVER['PATH_INFO'] === BASE_URL . '/credit/' ? ' active' : '' ?>"
        href="<?= BASE_URL ?>/credit/">
-      <i class="material-icons">dashboard</i><small>Dasbor</small>
+      <i class="material-icons">dashboard</i>Dasbor
     </a> 
     <?php if (current_user_can('view-credit-accounts')): ?>
     <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/credit/account/') ? ' active' : '' ?>"
