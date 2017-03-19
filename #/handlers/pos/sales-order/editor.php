@@ -5,6 +5,7 @@ ensure_current_user_can('edit-sales-order');
 require_once CORELIB_PATH . '/Product.php';
 require_once CORELIB_PATH . '/FinanceAccount.php';
 require_once CORELIB_PATH . '/FinanceTransaction.php';
+require_once CORELIB_PATH . '/MultiPaymentTransaction.php';
 
 $now = date('Y-m-d H:i:s');
 $id  = (isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0);
@@ -40,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       }
       else if ($item->productType == Product::MultiPayment) {
           for ($i = 0; $i < $item->quantity; $i++) {
-            $data = new stdClass();
-            $data->type = FinanceTransaction::TYPE_INCOME;
+            $data = new MultiPaymentTransaction();
+            $data->type = MultiPaymentTransaction::Sales;
             $data->dateTime = $now;
             $data->userId = $_SESSION['CURRENT_USER']->id;
             $data->accountId = $item->multiPaymentAccountId;
@@ -63,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     $transaction = new FinanceTransaction();
     $transaction->accountId = $cfg['store_account_id'];
-    $transaction->type = 1;
+    $transaction->type = FinanceTransaction::Income;
     $transaction->amount = $order->totalPrice;
     $transaction->dateTime = $now;
     $transaction->description = "Penjualan #" . format_sales_order_code($order->id);

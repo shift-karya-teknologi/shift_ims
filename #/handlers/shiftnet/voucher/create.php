@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     $transaction = new FinanceTransaction();
     $transaction->accountId = $cfg['store_account_id'];
-    $transaction->type = FinanceTransaction::TYPE_INCOME;
+    $transaction->type = FinanceTransaction::Income;
     $transaction->amount = $voucher->price;
     $transaction->dateTime = $dateTime;
     $transaction->description = "Penjualan Voucher ShiftNet " . format_number($voucher->price);

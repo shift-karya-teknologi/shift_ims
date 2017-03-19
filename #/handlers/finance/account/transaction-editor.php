@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $transaction->type = isset($_POST['type']) ? (int)$_POST['type'] : 0;
     $transaction->description = isset($_POST['description']) ? trim($_POST['description']) : '';
 
-    if (!($transaction->type == FinanceTransaction::TYPE_INCOME || $transaction->type == FinanceTransaction::TYPE_EXPENSE))
+    if (!($transaction->type == FinanceTransaction::Income || $transaction->type == FinanceTransaction::Expense))
       $errors['type'] = 'Jenis transaksi tidak valid.';
     
     if (empty($transaction->amount))
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
       $transaction->dateTime = date('Y-m-d H:i:s');
       $transaction->userId = $_SESSION['CURRENT_USER']->id;
-      if ($transaction->type === FinanceTransaction::TYPE_EXPENSE)
+      if ($transaction->type === FinanceTransaction::Expense)
         $transaction->amount = -$transaction->amount;
 
       $db->beginTransaction();

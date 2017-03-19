@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $trxFrom = new FinanceTransaction();
     $trxFrom->accountId = $data->fromId;
-    $trxFrom->type = FinanceTransaction::TYPE_TRANSFER;
+    $trxFrom->type = FinanceTransaction::Transfer;
     $trxFrom->amount = -$data->amount;
     $trxFrom->dateTime = $dateTime;
     $trxFrom->description = "Transfer ke " . $destinationAccountName . ': ' . $data->description;
