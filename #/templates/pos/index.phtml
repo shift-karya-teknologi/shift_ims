@@ -18,14 +18,14 @@
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">Dasbor POS</span>
+          <span class="mdl-layout-title">Point of Sales</span>
           <div class="mdl-layout-spacer"></div>
         </div>
       </header>
       <?= render('pos/drawer') ?>
       <main class="mdl-layout__content">
         <div class="mdl-grid">
-          <?php foreach ($shifts as $label => $shift): ?>
+          <?php foreach ($sales as $label => $shift): ?>
             <div class="mdl-cell mdl-cell--4-col">
               <div class="mdlx-data-table--responsive" style="border:none;">
                 <table class='mdl-data-table condensed'>
@@ -48,6 +48,29 @@
                           <td class="r"><?= format_number($item['total']) ?></td>
                         </tr>
                       <?php endforeach ?>
+                    <?php endforeach ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <?php endforeach ?>
+        </div>
+        <div class="mdl-grid">
+          <?php foreach ($costs as $label => $shift): ?>
+            <div class="mdl-cell mdl-cell--4-col">
+              <div class="mdlx-data-table--responsive" style="border:none;">
+                <table class='mdl-data-table condensed'>
+                  <tbody>
+                    <tr class="shift">
+                      <td colspan="3">Biaya Opr. <?= $label ?></td>
+                      <td class="r"><?= format_number($shift->total) ?></td>
+                    </tr>
+                    <?php foreach ($shift->categories as $category): ?>
+                      <tr class="spacer"><td colspan="4"></td></tr>
+                      <tr>
+                        <td colspan="3"><?= e($category['name']) ?></td>
+                        <td class="r"><?= format_number($category['total']) ?></td>
+                      </tr>
                     <?php endforeach ?>
                   </tbody>
                 </table>

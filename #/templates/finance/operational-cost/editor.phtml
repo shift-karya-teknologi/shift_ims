@@ -12,7 +12,8 @@
           </a>
           <span class="mdl-layout-title"><?= !$item->id ? 'Tambah' : 'Edit' ?> Biaya</span>
           <div class="mdl-layout-spacer"></div>
-          <?php if (current_user_can('edit-operational-cost')): ?>
+          <?php if ((!$item->id && current_user_can('add-operational-cost'))
+            || ($item->id && current_user_can('edit-operational-cost'))): ?>
             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
               type="submit" name="action" value="save"><i class="material-icons left">check</i></button>
           <?php endif ?>

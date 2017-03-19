@@ -1,50 +1,67 @@
 <div class="mdl-layout__drawer">
   <header class="mdl-color--blue-grey mdl-color-text--white">
-    <span class="mdl-layout-title"><small><?= 'Point of Sales' ?></small></span>
-    <span class="my-account-name"><a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a></span>
+    <span class="mdl-layout-title">
+      <a href="<?= BASE_URL ?>/pos/" style="color:#fff;"><small><?= 'Point of Sales' ?></small></a>
+    </span>
+    <span class="my-account-name">
+      <a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a>
+      <a class="mdl-color-text--white" style="float:right;font-weight:bold;"
+         href="<?= BASE_URL ?>/finance/account/view?id=<?= g('cfg')['store_account_id'] ?>">
+        <?= format_money(get_store_account_balance()) ?>
+      </a>
+    </span>
   </header>
   <nav class="mdl-navigation">
-    <a class="mdl-navigation__link<?= $_SERVER['PATH_INFO'] == BASE_URL . '/pos/' ? ' active' : '' ?>"
-       href="<?= BASE_URL ?>/pos/"><i class="material-icons">dashboard</i>Dasbor</a>
-    <hr>
     <?php if (current_user_can('view-reports')): ?>
       <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/report/') ? ' active' : '' ?>"
         href="<?= BASE_URL ?>/pos/report/">Laporan</a>
       <hr>
     <?php endif ?>
-    <?php if (current_user_can('view-sales-orders')): ?>
+    <?php if (current_user_can('view-sales-orders') || current_user_can('view-customers')): ?>
+      <?php if (current_user_can('view-sales-orders')): ?>
       <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/sales-order/') ? ' active' : '' ?>"
-        href="<?= BASE_URL ?>/pos/sales-order/">Penjualan</a>
+         href="<?= BASE_URL ?>/pos/sales-order/"><i class="material-icons">shopping_cart</i>Penjualan</a>
+      <?php endif ?>
+      <?php if (current_user_can('view-customers')): ?>
+      <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/customer/') ? ' active' : '' ?>"
+        href="<?= BASE_URL ?>/pos/customer/"><i class="material-icons">people</i>Pelanggan</a>
+      <?php endif ?>
       <hr>
     <?php endif ?>
-    <?php if (current_user_can('view-purchasing-orders')): ?>
+    <?php if (current_user_can('view-stock-adjustments') || current_user_can('view-products')): ?>
+      <?php if (current_user_can('view-products')): ?>
+        <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/product/') ? ' active' : '' ?>"
+          href="<?= BASE_URL ?>/pos/product/"><i class="material-icons">devices_other</i>Produk</a>
+      <?php endif ?>
+      <?php if (current_user_can('view-product-categories')): ?>
+        <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/product-category/') ? ' active' : '' ?>"
+          href="<?= BASE_URL ?>/pos/product-category/"><i class="material-icons">grid_on</i>Kategori Produk</a>
+      <?php endif ?>
+      <?php if (current_user_can('view-stock-adjustments')): ?>
+        <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/stock-adjustment/') ? ' active' : '' ?>"
+          href="<?= BASE_URL ?>/pos/stock-adjustment/"><i class="material-icons">compare_arrows</i>Penyesuaian Stok</a>
+      <?php endif ?>
+      <hr>
+    <?php endif ?>
+    <?php if (current_user_can('view-purchasing-orders') || current_user_can('view-suppliers')): ?>
+      <?php if (current_user_can('view-purchasing-orders')): ?>
       <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/purchasing-order/') ? ' active' : '' ?>"
-        href="<?= BASE_URL ?>/pos/purchasing-order/">Pembelian</a>
+        href="<?= BASE_URL ?>/pos/purchasing-order/"><i class="material-icons">local_shipping</i>Pembelian</a>
+      <?php endif ?>
+      <?php if (current_user_can('view-suppliers')): ?>
+      <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/supplier/') ? ' active' : '' ?>"
+        href="<?= BASE_URL ?>/pos/supplier/"><i class="material-icons">people</i>Pemasok</a>
+      <?php endif ?>
       <hr>
     <?php endif ?>
     <?php if (current_user_can('view-multipayment-transactions') || current_user_can('view-multipayment-accounts')): ?>
       <?php if (current_user_can('view-multipayment-transactions')): ?>
         <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/multipayment-transaction/') ? ' active' : '' ?>"
-          href="<?= BASE_URL ?>/pos/multipayment-transaction/">Transaksi Multi Payment</a>
+          href="<?= BASE_URL ?>/pos/multipayment-transaction/"><i class="material-icons">credit_card</i>Transaksi Multipayment</a>
       <?php endif ?>
       <?php if (current_user_can('view-multipayment-accounts')): ?>
         <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/multipayment-account/') ? ' active' : '' ?>"
-          href="<?= BASE_URL ?>/pos/multipayment-account/">Akun Multi Payment</a>
-      <?php endif ?>
-      <hr>
-    <?php endif ?>
-    <?php if (current_user_can('view-stock-adjustments') || current_user_can('view-products')): ?>
-      <?php if (current_user_can('view-stock-adjustments')): ?>
-        <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/stock-adjustment/') ? ' active' : '' ?>"
-          href="<?= BASE_URL ?>/pos/stock-adjustment/">Penyesuaian Stok</a>
-      <?php endif ?>
-      <?php if (current_user_can('view-products')): ?>
-        <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/product/') ? ' active' : '' ?>"
-          href="<?= BASE_URL ?>/pos/product/">Produk</a>
-      <?php endif ?>
-      <?php if (current_user_can('view-product-categories')): ?>
-        <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/pos/product-category/') ? ' active' : '' ?>"
-          href="<?= BASE_URL ?>/pos/product-category/">Kategori Produk</a>
+           href="<?= BASE_URL ?>/pos/multipayment-account/"><i class="material-icons">account_balance_wallet</i>Akun Multipayment</a>
       <?php endif ?>
       <hr>
     <?php endif ?>

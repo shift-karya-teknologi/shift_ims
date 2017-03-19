@@ -46,6 +46,10 @@
   }
 }
 
+.mdl-layout__drawer .mdl-navigation .mdl-navigation__link {
+  padding-left: 10px;
+}
+
 .apps {
   text-align: center;
 }

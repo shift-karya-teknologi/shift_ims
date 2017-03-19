@@ -316,3 +316,8 @@ function get_current_user_finance_accounts() {
   
   return $db->query($sql)->fetchAll(PDO::FETCH_CLASS, FinanceAccount::class);
 }
+
+function get_store_account_balance() {
+  global $db, $cfg;
+  return (int)$db->query("select balance from finance_accounts where id={$cfg['store_account_id']}")->fetchColumn();
+}
