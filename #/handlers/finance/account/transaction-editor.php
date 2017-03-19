@@ -28,6 +28,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? trim($_POST['action']) : '';
   if ($action === 'delete') {
+    ensure_current_user_can('delete-finance-transaction');
     $db->beginTransaction();
     FinanceTransaction::delete($transaction->id);
     FinanceAccount::updateBalance($transaction->accountId);
