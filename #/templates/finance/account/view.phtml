@@ -33,19 +33,41 @@
       </header>
       <main class="mdl-layout__content">
         <div class="mdlx-data-list">
+          <div class="mdlx-data-list__item" style="background:#eee;">
+            <div style="float:right;text-align:right;">
+              <span><b><?= format_number($account->lastBalance) ?></b></span>
+            </div>
+            <div><b>SALDO AKHIR</b></div>
+          </div>
           <?php $balance = $account->lastBalance ?>
           <?php foreach ($items as $item): ?>
+          <?php
+            $balanceAfter = $balance;
+            $balanceBefore = $balance - $item->amount;
+          ?>
             <div class="mdlx-data-list__item">
               <div style="float:right;text-align:right;">
                 <span class="<?= $item->amount > 0 ? 'g' : 'r' ?>"><b><?=
                   ($item->amount > 0 ? '+' : '') . format_number($item->amount) ?></b></span><br>
-                <small><?= format_number($balance) ?></small>
+                  <small><?=
+                    format_number($balanceBefore) .
+                    ($item->amount > 0 ? ' + ' : '') .
+                    format_number($item->amount) .
+                    ' = ' .
+                    format_number($balanceAfter)
+                  ?></small>
               </div>
               <div><?= e($item->description) ?></div>
               <small><?= to_locale_datetime($item->dateTime) ?></small>
             </div>
           <?php $balance -= $item->amount ?>
           <?php endforeach ?>
+          <div class="mdlx-data-list__item" style="background:#eee;">
+            <div style="float:right;text-align:right;">
+              <span><b><?= format_number($balance) ?></b></span>
+            </div>
+            <div><b>SALDO AWAL</b></div>
+          </div>
         </div>
       </main>
     </form>
