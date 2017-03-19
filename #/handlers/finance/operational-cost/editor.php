@@ -38,11 +38,7 @@ if ($id) {
     header('Location: ./');
     exit;
   }
-  $financeTransaction = $db->query("select id, accountId"
-    . " from finance_transactions"
-    . " where refType='operational-cost' and refId=$item->id"
-  )->fetchObject();
-  
+  $financeTransaction = FinanceTransaction::findByRef('operational-cost', $item->id);
   if ($financeTransaction) {
     $item->accountId = (int)$financeTransaction->accountId;
     $item->transactionId = (int)$financeTransaction->id;

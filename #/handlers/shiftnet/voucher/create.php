@@ -1,5 +1,8 @@
 <?php
 
+require CORELIB_PATH . '/FinanceAccount.php';
+require CORELIB_PATH . '/FinanceTransaction.php';
+
 class Voucher
 {
   public $id;
@@ -114,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   
   if (empty($errors)) {
     $voucher = VoucherGenerator::generateVoucher($amount);
-    $now = new DateTime();
+    $dateTime = $voucher->creationDateTime->format('Y-m-d H:i:s');
     
     $db->beginTransaction();
     
@@ -126,18 +129,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $q->bindValue(':code', $voucher->code);
     $q->bindValue(':duration', $voucher->duration);
     $q->bindValue(':price', $voucher->price);
-    $q->bindValue(':creationDateTime', $voucher->creationDateTime->format('Y-m-d H:i:s'));
+    $q->bindValue(':creationDateTime', $dateTime);
     $q->bindValue(':expirationDateTime', $voucher->expirationDateTime->format('Y-m-d H:i:s'));
     $q->execute();
     
     $voucher->id = $db->lastInsertId();
     
-    // TODO: catat transaksi di penjualan
     $q = $db->prepare('insert into sales_orders'
       . ' (lastModDateTime,openDateTime,closeDateTime,status,totalCost,totalPrice,openUserId,lastModUserId,closeUserId)'
       . 'values'
       . ' (:dateTime,:dateTime,:dateTime,1,0,:total,:userId,:userId,:userId)');
-    $q->bindValue(':dateTime', $voucher->creationDateTime->format('Y-m-d H:i:s'));
+    $q->bindValue(':dateTime', $dateTime);
     $q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
     $q->bindValue(':total', $voucher->price);
     $q->execute();
@@ -152,7 +154,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $q->bindValue(':price', $voucher->price);
     $q->execute();
     
-    // TODO: catat transaksi di keuangan
+    $transaction = new FinanceTransaction();
+    $transaction->accountId = $cfg['store_account_id'];
+    $transaction->type = 1;
+    $transaction->amount = $voucher->price;
+    $transaction->dateTime = $dateTime;
+    $transaction->description = "Penjualan Voucher ShiftNet " . format_number($voucher->price);
+    $transaction->refType = 'sales-order';
+    $transaction->refId = $salesOrderId;
+    $transaction->externalRef = '';
+    $transaction->creationDateTime = $dateTime;
+    $transaction->creationUserId = $_SESSION['CURRENT_USER']->id;
+    $transaction->lastModDateTime = $dateTime;
+    $transaction->lastModUserId = $_SESSION['CURRENT_USER']->id;
+    
+    FinanceTransaction::save($transaction);
+    FinanceAccount::updateBalance($transaction->accountId);
     
     $q = $db->prepare('insert into shiftnet_active_vouchers'
                       . ' ( voucherId, code, remainingDuration, activeClientId, lastActiveUsername)'

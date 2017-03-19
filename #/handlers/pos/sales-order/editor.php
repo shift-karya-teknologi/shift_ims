@@ -3,6 +3,8 @@
 ensure_current_user_can('edit-sales-order');
 
 require_once CORELIB_PATH . '/Product.php';
+require_once CORELIB_PATH . '/FinanceAccount.php';
+require_once CORELIB_PATH . '/FinanceTransaction.php';
 
 $now = date('Y-m-d H:i:s');
 $id  = (isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0);
@@ -58,6 +60,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $q->bindValue(':updateId', $updateId);
     $q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
     $q->execute();
+    
+    $transaction = new FinanceTransaction();
+    $transaction->accountId = $cfg['store_account_id'];
+    $transaction->type = 1;
+    $transaction->amount = $order->totalPrice;
+    $transaction->dateTime = $now;
+    $transaction->description = "Penjualan #" . format_sales_order_code($order->id);
+    $transaction->refType = 'sales-order';
+    $transaction->refId = $order->id;
+    $transaction->externalRef = '';
+    $transaction->creationDateTime = $now;
+    $transaction->creationUserId = $_SESSION['CURRENT_USER']->id;
+    $transaction->lastModDateTime = $now;
+    $transaction->lastModUserId = $_SESSION['CURRENT_USER']->id;
+    
+    FinanceTransaction::save($transaction);
+    FinanceAccount::updateBalance($transaction->accountId);
+    
     $db->commit();
     
     $_SESSION['FLASH_MESSAGE'] = 'Penjualan #' . format_sales_order_code($id) . ' telah selesai.';
@@ -92,6 +112,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         else if ($item->productType == Product::MultiPayment) {
           update_multipayment_account_balance($item->multiPaymentAccountId);
         }
+      }
+    }
+    if ($order->status == 1) {
+      if ($transaction = FinanceTransaction::findByRef('sales-order', $order->id)) {
+        FinanceTransaction::delete($transaction->id);
+        FinanceAccount::updateBalance($transaction->accountId);
       }
     }
     $db->commit();

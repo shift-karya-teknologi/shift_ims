@@ -16,7 +16,19 @@ class FinanceTransaction {
   public $lastModUserId;
   public $lastModUsername;
   public $lastModDateTime;
-   
+ 
+  
+  public static function findByRef($type, $id) {
+    global $db;
+    $q = $db->prepare("select *"
+      . " from finance_transactions"
+      . " where refType=? and refId=?");
+    $q->bindValue(1, $type);
+    $q->bindValue(2, $id);
+    $q->execute();
+    return $q->fetchObject(FinanceTransaction::class);
+  }
+  
   public static function save(FinanceTransaction $transaction) {
     global $db;
     
