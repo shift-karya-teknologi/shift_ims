@@ -162,11 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $transaction->description = "Penjualan Voucher ShiftNet " . format_number($voucher->price);
     $transaction->refType = 'sales-order';
     $transaction->refId = $salesOrderId;
-    $transaction->externalRef = '';
-    $transaction->creationDateTime = $dateTime;
-    $transaction->creationUserId = $_SESSION['CURRENT_USER']->id;
-    $transaction->lastModDateTime = $dateTime;
-    $transaction->lastModUserId = $_SESSION['CURRENT_USER']->id;
+    $transaction->userId = $_SESSION['CURRENT_USER']->id;
     
     FinanceTransaction::save($transaction);
     FinanceAccount::updateBalance($transaction->accountId);

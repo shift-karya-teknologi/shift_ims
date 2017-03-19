@@ -64,7 +64,11 @@
                     format_number($balanceAfter)
                   ?></small>
               </div>
-              <div><?= e($item->description) ?></div>
+              <div>
+                <a href="./transaction-editor?id=<?= $item->id ?>">
+                <?= e($item->description) ?>
+                </a>
+              </div>
               <small><?= to_locale_datetime($item->dateTime) ?></small>
             </div>
           <?php $balance -= $item->amount ?>

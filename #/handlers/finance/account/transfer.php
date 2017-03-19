@@ -38,11 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $trxFrom->description = "Transfer ke " . $destinationAccountName . ': ' . $data->description;
     $trxFrom->refType = '';
     $trxFrom->refId = '';
-    $trxFrom->externalRef = '';
-    $trxFrom->creationDateTime = $dateTime;
-    $trxFrom->creationUserId = $_SESSION['CURRENT_USER']->id;
-    $trxFrom->lastModDateTime = $dateTime;
-    $trxFrom->lastModUserId = $_SESSION['CURRENT_USER']->id;
+    $trxFrom->userId = $_SESSION['CURRENT_USER']->id;
     
     $trxTo = clone $trxFrom;
     $trxTo->accountId = $data->toId;

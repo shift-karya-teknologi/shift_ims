@@ -69,11 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $transaction->description = "Penjualan #" . format_sales_order_code($order->id);
     $transaction->refType = 'sales-order';
     $transaction->refId = $order->id;
-    $transaction->externalRef = '';
-    $transaction->creationDateTime = $now;
-    $transaction->creationUserId = $_SESSION['CURRENT_USER']->id;
-    $transaction->lastModDateTime = $now;
-    $transaction->lastModUserId = $_SESSION['CURRENT_USER']->id;
+    $transaction->userId = $_SESSION['CURRENT_USER']->id;
     
     FinanceTransaction::save($transaction);
     FinanceAccount::updateBalance($transaction->accountId);
@@ -115,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       }
     }
     if ($order->status == 1) {
-      if ($transaction = FinanceTransaction::findByRef('sales-order', $order->id)) {
+      if ($transaction = FinanceTransaction::findByReference('sales-order', $order->id)) {
         FinanceTransaction::delete($transaction->id);
         FinanceAccount::updateBalance($transaction->accountId);
       }

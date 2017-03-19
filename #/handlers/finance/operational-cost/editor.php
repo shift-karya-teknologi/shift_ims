@@ -38,7 +38,7 @@ if ($id) {
     header('Location: ./');
     exit;
   }
-  $financeTransaction = FinanceTransaction::findByRef('operational-cost', $item->id);
+  $financeTransaction = FinanceTransaction::findByReference('operational-cost', $item->id);
   if ($financeTransaction) {
     $item->accountId = (int)$financeTransaction->accountId;
     $item->transactionId = (int)$financeTransaction->id;
@@ -131,14 +131,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $transaction->dateTime = $item->dateTime;
     $transaction->description = $item->description;
     $transaction->refType = 'operational-cost';
-    $transaction->externalRef = $item->ref;
-    $transaction->lastModDateTime = $now;
-    $transaction->lastModUserId = $_SESSION['CURRENT_USER']->id;
+    $transaction->userId = $_SESSION['CURRENT_USER']->id;
     
     if (!$item->id) {
       $transaction->refId = $db->lastInsertId();
-      $transaction->creationDateTime = $now;
-      $transaction->creationUserId = $_SESSION['CURRENT_USER']->id;
     }
     else if ($q->rowCount() > 0) {
       $q = $db->prepare('update operational_costs set lastModUserId=:lastModUserId, lastModDateTime=:lastModDateTime where id=:id');
@@ -148,8 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q->execute();
       
       $transaction->refId = $item->id;
-      $transaction->creationDateTime = $item->creationDateTime;
-      $transaction->creationUserId = $item->creationUserId;
     }
     
     FinanceTransaction::save($transaction);
