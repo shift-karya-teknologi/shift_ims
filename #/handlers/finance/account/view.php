@@ -15,7 +15,7 @@ if ($id) {
     exit;
   }
   
-  if (!in_array($account->id, get_current_finance_account_ids())) {
+  if (!in_array($account->id, get_current_user_finance_account_ids())) {
     exit(render('error/403'));
   }
 }

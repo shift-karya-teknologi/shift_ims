@@ -1,5 +1,8 @@
 <?php
 
+require CORELIB_PATH . '/FinanceTransaction.php';
+require CORELIB_PATH . '/FinanceAccount.php';
+
 class OperationalCost
 {
   public $id;
@@ -9,6 +12,9 @@ class OperationalCost
   public $description;
   public $amount;
   public $ref;
+  
+  public $transactionId;
+  public $accountId;
   
   public $creationDateTime;
   public $creationUserId;
@@ -32,6 +38,15 @@ if ($id) {
     header('Location: ./');
     exit;
   }
+  $financeTransaction = $db->query("select id, accountId"
+    . " from finance_transactions"
+    . " where refType='operational-cost' and refId=$item->id"
+  )->fetchObject();
+  
+  if ($financeTransaction) {
+    $item->accountId = (int)$financeTransaction->accountId;
+    $item->transactionId = (int)$financeTransaction->id;
+  }
 }
 else {
   $item = new OperationalCost();
@@ -42,14 +57,20 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? (string)$_POST['action'] : 'save';
   if ($action === 'delete') {
+    $db->beginTransaction();
     try {
       $db->query('delete from operational_costs where id=' . $item->id);
+      if ($item->transactionId) {
+        FinanceTransaction::delete($item->transactionId);
+        FinanceAccount::updateBalance($item->accountId);
+      }
     }
     catch (Exception $ex) {
       $_SESSION['FLASH_MESSAGE'] = 'Biaya tidak dapat dihapus.';
       header('Location: ?id=' . $category->id);
       exit;  
     }
+    $db->commit();
     
     $_SESSION['FLASH_MESSAGE'] = 'Biaya ' . e($category->name) . ' telah dihapus.';
     header('Location: ./');
@@ -61,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $item->amount = from_locale_number(isset($_POST['amount']) ? trim((string)$_POST['amount']) : '0');
   $item->ref = isset($_POST['ref']) ? trim((string)$_POST['ref']) : '';
   $item->dateTime = to_mysql_datetime(isset($_POST['dateTime']) ? trim((string)$_POST['dateTime']) : '');
+  $item->accountId = isset($_POST['accountId']) ? (int)$_POST['accountId'] : 0;
   
   if (empty($item->description))
     $errors['description'] = 'Deskripsi harus diisi.';
@@ -105,13 +127,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $q->bindValue(':ref', $item->ref);
     $q->execute();
     
-    if ($item->id && $q->rowCount() > 0) {
+    $transaction = new FinanceTransaction();
+    $transaction->id = $item->transactionId;
+    $transaction->accountId = $item->accountId;
+    $transaction->type = 2;
+    $transaction->amount = -$item->amount;
+    $transaction->dateTime = $item->dateTime;
+    $transaction->description = $item->description;
+    $transaction->refType = 'operational-cost';
+    $transaction->externalRef = $item->ref;
+    $transaction->lastModDateTime = $now;
+    $transaction->lastModUserId = $_SESSION['CURRENT_USER']->id;
+    
+    if (!$item->id) {
+      $transaction->refId = $db->lastInsertId();
+      $transaction->creationDateTime = $now;
+      $transaction->creationUserId = $_SESSION['CURRENT_USER']->id;
+    }
+    else if ($q->rowCount() > 0) {
       $q = $db->prepare('update operational_costs set lastModUserId=:lastModUserId, lastModDateTime=:lastModDateTime where id=:id');
       $q->bindValue(':lastModUserId', $_SESSION['CURRENT_USER']->id);
       $q->bindValue(':lastModDateTime', $now);
       $q->bindValue(':id', $item->id);
       $q->execute();
+      
+      $transaction->refId = $item->id;
+      $transaction->creationDateTime = $item->creationDateTime;
+      $transaction->creationUserId = $item->creationUserId;
     }
+    
+    FinanceTransaction::save($transaction);
+    FinanceAccount::updateBalance($item->accountId);
+    
     $db->commit();
 
     $_SESSION['FLASH_MESSAGE'] = 'Biaya ' . format_operational_cost_code($item->id). ' telah disimpan.';
@@ -127,8 +174,11 @@ $sql.= ' order by name asc';
 
 $categories = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
 
+$accounts = get_current_user_finance_accounts();
+
 render('finance/operational-cost/editor', [
   'item' => $item,
   'categories' => $categories,
+  'accounts' => $accounts,
   'errors' => $errors,
 ]);

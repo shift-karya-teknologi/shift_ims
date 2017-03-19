@@ -292,11 +292,27 @@ function update_multipayment_account_balance($accountId) {
 }
 
 
-function get_current_finance_account_ids() {
+function get_current_user_finance_account_ids() {
   global $db;
     $q = $db->query('select * from finance_account_users where userId=' . $_SESSION['CURRENT_USER']->id);
   $ids = [];
   while ($r = $q->fetchObject())
     $ids[] = $r->accountId;
   return $ids;
+}
+
+function get_current_user_finance_accounts() {
+  require_once __DIR__ . '/FinanceAccount.php';
+  
+  global $db;
+
+  $sql = 'select a.* from finance_accounts a';
+  if ($_SESSION['CURRENT_USER']->groupId != 1) {
+    $ids = get_current_user_finance_account_ids();
+    if (empty($ids)) return [];
+    $sql .= ' where id in (' . implode(',', $ids) . ')';
+  }
+  $sql .= ' order by a.name asc';
+  
+  return $db->query($sql)->fetchAll(PDO::FETCH_CLASS, FinanceAccount::class);
 }

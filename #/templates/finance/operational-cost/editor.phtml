@@ -12,19 +12,13 @@
           </a>
           <span class="mdl-layout-title"><?= !$item->id ? 'Tambah' : 'Edit' ?> Biaya</span>
           <div class="mdl-layout-spacer"></div>
-          <?php if (!$item->id || ($item->id && $_SESSION['CURRENT_USER']->groupId == 1)): ?>
-          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
-            type="submit" name="action" value="save"><i class="material-icons left">save</i></button>
+          <?php if (current_user_can('edit-operational-cost')): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
+              type="submit" name="action" value="save"><i class="material-icons left">check</i></button>
           <?php endif ?>
-          <?php if ($item->id && $_SESSION['CURRENT_USER']->groupId != 1): ?>
-            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
-              <i class="material-icons">more_vert</i>
-            </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
-              <li class="mdl-menu__item">
-                <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons left">delete</i> Hapus</button>
-              </li>
-            </ul>
+          <?php if (current_user_can('delete-operational-cost')): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
+              type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
           <?php endif ?>
         </div>
       </header>
@@ -60,6 +54,16 @@
               <span class="form-error"><?= $errors['amount'] ?></span>
             <?php endif ?>
           </div>
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--2-col">
+            <select class="mdl-selectfield__select" id="accountId" name="accountId">
+              <?php foreach ($accounts as $account): ?>
+                <option value="<?= $account->id ?>" <?= $item->accountId == $account->id ? 'selected' : '' ?>>
+                  <?= e($account->name) ?>
+                </option>
+              <?php endforeach ?>
+            </select>
+            <label class="mdl-selectfield__label" for="accountId">Dibayar dari</label>
+          </div>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
             !empty($errors['ref']) ? 'is-invalid' : '' ?>">
             <input class="mdl-textfield__input" type="text" value="<?= e($item->ref) ?>" maxlength="100" id="ref" name="ref">
@@ -89,15 +93,7 @@
     </form>
     <?= render('foot') ?>
     <script>
-      var deleteButton = document.querySelector('#delete-button');
-      if (deleteButton) {
-        deleteButton.addEventListener('click', function(e) {
-          if (!confirm('Hapus Kategori?')) {
-            e.preventDefault();
-            return;
-          }
-        });
-      }
+      confirmOnClick('#delete-button', 'Hapus rekaman biaya operasional?');
     </script>
   </body>
 </html>
