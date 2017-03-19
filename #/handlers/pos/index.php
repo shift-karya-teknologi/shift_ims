@@ -69,12 +69,11 @@ while ($record = $q->fetchObject()) {
   $shift->total += $record->subtotalPrice;
 }
 
-$hour = date('H');
-if ($hour >= 19) {
+$hour = (int)date('H');
+if ($hour >= 19 || $hour < 6) {
   unset($shifts['Siang']);
 }
-
-if ($hour < 18) {
+else if ($hour != 18) {
   unset($shifts['Malam']);
 }
 
