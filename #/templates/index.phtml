@@ -1,58 +1,20 @@
-<div class="mdl-grid">
-  <div class="mdl-cell mdl-cell--8-col">
-    <h6>Laporan Hari Ini</h6>
-    <style>
-      table{border-collapse: collapse;}
-      td,th{padding:0 8px;border:1px solid #ddd;}
-      td,tfoot th{text-align:right;}
-      tr>*:first-child{text-align:left;}
-    </style>
-    <table>
-      <thead>
-        <tr>
-          <th>Jenis</th>
-          <th>Siang (Rp.)</th>
-          <th>Malam (Rp.)</th>
-          <th>Total (Rp.)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Penjualan</td>
-          <td><?= format_number($data['shiftkom']['total_sales_1']) ?></td>
-          <td><?= format_number($data['shiftkom']['total_sales_2']) ?></td>
-          <td><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftkom']['total_sales_2']) ?></td>
-        </tr>
-        <tr>
-          <td>Pengeluaran</td>
-          <td><?= format_number($data['costs']['shift_1']) ?></td>
-          <td><?= format_number($data['costs']['shift_2']) ?></td>
-          <td><?= format_number($data['costs']['shift_1'] + $data['costs']['shift_2']) ?></td>
-        </tr>
-      </tbody>
-      <tfoot>
-      <tr>
-        <th>Total (Rp.)</th>
-        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['costs']['shift_1']) ?></th>
-        <th><?= format_number($data['shiftkom']['total_sales_2']+$data['costs']['shift_2']) ?></th>
-        <th><?= format_number($data['shiftkom']['total_sales_1']+$data['shiftkom']['total_sales_2']
-                             +$data['costs']['shift_1']+$data['costs']['shift_2']) ?></th>
-      </tr>
-      </tfoot>
-    </table>
-  </div>
-  <div class="mdl-cell mdl-cell--4-col">
-    <h6>Akses Cepat</h6>
-    <ul>
-      <li><a href="./pos/product/">Daftar Harga</a></li>
-      <li><a href="./pos/sales-order/create">Catat Penjualan</a></li>
-      <li><a href="./shiftnet/voucher/create">Buat Voucher ShiftNet</a></li>
-    </ul>
-  </div>
-  <?php if ($_SESSION['CURRENT_USER']->groupId == 1): ?>
-    <div class="mdl-cell mdl-cell--4-col">
-      <h6>Statistik</h6>
-      <p>Nilai Stok <?= format_money($data['stock']) ?></p>
-    </div>
+<div class="mdl-grid apps">
+  <?php if (current_user_can('open-shiftnet-app')): ?>
+  <a href="<?= BASE_URL ?>/shiftnet/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">device_hub</i><br>ShiftNet</a>
+  <?php endif ?>
+  <?php if (current_user_can('open-pos-app')): ?>
+  <a href="<?= BASE_URL ?>/pos/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">store</i><br>POS</a>
+  <?php endif ?>
+  <?php if (current_user_can('open-finance-app')): ?>
+  <a href="<?= BASE_URL ?>/finance/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">local_atm</i><br>Keuangan</a>
+  <?php endif ?>
+  <?php if (current_user_can('open-credit-app')): ?>
+  <a href="<?= BASE_URL ?>/credit/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">payment</i><br>Kredit</a>
   <?php endif ?>
 </div>
+<?php if ($_SESSION['CURRENT_USER']->groupId == 1): ?>
+<div class="mdl-grid apps">
+  <a href="<?= BASE_URL ?>/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">show_chart</i><br>Laporan</a>
+  <a href="<?= BASE_URL ?>/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">settings</i><br>Sistem</a>
+</div>
+<?php endif ?>
