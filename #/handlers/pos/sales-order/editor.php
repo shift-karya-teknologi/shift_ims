@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       else if ($item->productType == Product::MultiPayment) {
           for ($i = 0; $i < $item->quantity; $i++) {
             $data = new stdClass();
-            $data->type = 2;
+            $data->type = FinanceTransaction::TYPE_INCOME;
             $data->dateTime = $now;
             $data->userId = $_SESSION['CURRENT_USER']->id;
             $data->accountId = $item->multiPaymentAccountId;

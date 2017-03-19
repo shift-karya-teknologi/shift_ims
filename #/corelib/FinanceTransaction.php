@@ -1,6 +1,11 @@
 <?php
 
 class FinanceTransaction {
+  const TYPE_ADJUSTMENT = 0;
+  const TYPE_INCOME = 1;
+  const TYPE_EXPENSE = 2;
+  const TYPE_TRANSFER = 3;
+  
   public $id;
   public $type;
   public $accountId;

@@ -13,6 +13,14 @@ class FinanceAccount {
       . " balance=(select ifnull(sum(amount), 0) from finance_transactions where accountId=$accountId)"
       . " where id=$accountId");
   }
+  
+  static function findById($accountId) {
+    global $db;
+    $accountId = (int)$accountId;
+    return $db->query("select * from finance_accounts"
+      . " where id=$accountId"
+    )->fetchObject(FinanceAccount::class);
+  }
 }
 
 

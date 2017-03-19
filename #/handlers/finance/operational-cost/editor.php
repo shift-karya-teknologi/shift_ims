@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $transaction = new FinanceTransaction();
     $transaction->id = $item->transactionId;
     $transaction->accountId = $item->accountId;
-    $transaction->type = 2;
+    $transaction->type = FinanceTransaction::TYPE_EXPENSE;
     $transaction->amount = -$item->amount;
     $transaction->dateTime = $item->dateTime;
     $transaction->description = $item->description;
