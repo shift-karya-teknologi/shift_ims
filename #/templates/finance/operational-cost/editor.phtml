@@ -57,6 +57,9 @@
           </div>
           <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--2-col">
             <select class="mdl-selectfield__select" id="accountId" name="accountId">
+              <?php if ($_SESSION['CURRENT_USER']->groupId == 1): ?>
+                <option value="-1">Non Kas</option>
+              <?php endif ?>
               <?php foreach ($accounts as $account): ?>
                 <option value="<?= $account->id ?>" <?= $item->accountId == $account->id ? 'selected' : '' ?>>
                   <?= e($account->name) ?>
@@ -80,16 +83,6 @@
             <?php endif ?>
           </div>
         </div>
-        <?php if ($item->id): ?>
-        <div class="mdl-grid">
-          <div class="mdl-cell mdl-cell--12-col">
-            <p>
-              Dibuat oleh <?= e($item->creationUsername) ?>, <?= to_locale_datetime($item->creationDateTime) ?>
-              <br>Diperbarui terakhir kali oleh <?= e($item->lastModUsername) ?>, <?= to_locale_datetime($item->lastModDateTime) ?>
-            </p>
-          </div>
-        </div>
-        <?php endif ?>
       </main>
     </form>
     <?= render('foot') ?>

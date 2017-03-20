@@ -12,27 +12,24 @@ class OperationalCost
   public $description;
   public $amount;
   public $ref;
+  public $userId;
   
   public $transactionId;
   public $accountId;
   
-  public $creationDateTime;
-  public $creationUserId;
-  public $creationUsername;
-  public $lastModDateTime;
-  public $lastModUserId;
-  public $lastModUsername;
+  public function getCode() {
+    return '#OC-' . str_pad($this->id, 5, '0', STR_PAD_LEFT);
+  }
 }
 
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
 if ($id) {
   ensure_current_user_can('edit-operational-cost');
-  $item = $db->query('select o.*, c.name categoryName, u1.username creationUsername, u2.username lastModUsername'
+  $item = $db->query('select o.*, c.name categoryName, u.username'
     . ' from operational_costs o'
     . ' inner join operational_cost_categories c on c.id = o.categoryId'
-    . ' inner join users u1 on u1.id=o.creationUserId'
-    . ' inner join users u2 on u2.id=o.lastModUserId'
+    . ' inner join users u on u.id=o.userId'
     . ' where o.id=' . $id)->fetchObject(OperationalCost::class);
   if (!$item) {
     $_SESSION['FLASH_MESSAGE'] = 'Biaya operasional tidak ditemukan';
@@ -81,7 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $item->amount = from_locale_number(isset($_POST['amount']) ? trim((string)$_POST['amount']) : '0');
   $item->ref = isset($_POST['ref']) ? trim((string)$_POST['ref']) : '';
   $item->dateTime = to_mysql_datetime(isset($_POST['dateTime']) ? trim((string)$_POST['dateTime']) : '');
+  
+  $oldTransactionId = $item->transactionId;
+  $oldAccountId = $item->accountId;
   $item->accountId = isset($_POST['accountId']) ? (int)$_POST['accountId'] : 0;
+  $newAccountId = $item->accountId;
   
   if (empty($item->description))
     $errors['description'] = 'Deskripsi harus diisi.';
@@ -98,14 +99,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->beginTransaction();
     if ($item->id == 0) {
       $q = $db->prepare('insert into operational_costs'
-        . ' ( categoryId, dateTime, description, amount, ref, creationUserId, creationDateTime, lastModUserId, lastModDateTime)'
+        . ' ( categoryId, dateTime, description, amount, ref, userId)'
         . ' values'
-        . ' (:categoryId,:dateTime,:description,:amount,:ref,:creationUserId,:creationDateTime,:lastModUserId,:lastModDateTime)'
+        . ' (:categoryId,:dateTime,:description,:amount,:ref,:userId)'
       );
-      $q->bindValue(':creationUserId', $_SESSION['CURRENT_USER']->id);
-      $q->bindValue(':creationDateTime', $now);
-      $q->bindValue(':lastModUserId', $_SESSION['CURRENT_USER']->id);
-      $q->bindValue(':lastModDateTime', $now);
+      $q->bindValue(':userId', $_SESSION['CURRENT_USER']->id);
     }
     else {
       $q = $db->prepare('update operational_costs set'
@@ -126,35 +124,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $q->bindValue(':ref', $item->ref);
     $q->execute();
     
-    $transaction = new FinanceTransaction();
-    $transaction->id = $item->transactionId;
-    $transaction->accountId = $item->accountId;
-    $transaction->type = FinanceTransaction::Expense;
-    $transaction->amount = -$item->amount;
-    $transaction->dateTime = $item->dateTime;
-    $transaction->description = $item->description;
-    $transaction->refType = 'operational-cost';
-    $transaction->userId = $_SESSION['CURRENT_USER']->id;
-    
-    if (!$item->id) {
-      $transaction->refId = $db->lastInsertId();
-    }
-    else if ($q->rowCount() > 0) {
-      $q = $db->prepare('update operational_costs set lastModUserId=:lastModUserId, lastModDateTime=:lastModDateTime where id=:id');
-      $q->bindValue(':lastModUserId', $_SESSION['CURRENT_USER']->id);
-      $q->bindValue(':lastModDateTime', $now);
-      $q->bindValue(':id', $item->id);
-      $q->execute();
-      
+    if (!$item->id)
+      $item->id = $db->lastInsertId();
+        
+    if ($newAccountId > 0) {
+      $transaction = new FinanceTransaction();
+      $transaction->id = $newAccountId == $oldAccountId ? $item->transactionId : null;
+      $transaction->accountId = $item->accountId;
+      $transaction->type = FinanceTransaction::Expense;
+      $transaction->amount = -$item->amount;
+      $transaction->dateTime = $item->dateTime;
+      $transaction->description = $item->description;
+      $transaction->refType = 'operational-cost';
+      $transaction->userId = $item->userId ? $item->userId : $_SESSION['CURRENT_USER']->id;
       $transaction->refId = $item->id;
+      
+      FinanceTransaction::save($transaction);
+      FinanceAccount::updateBalance($item->accountId);
     }
     
-    FinanceTransaction::save($transaction);
-    FinanceAccount::updateBalance($item->accountId);
+    if ($oldAccountId != $newAccountId && $oldAccountId > 0) {
+      FinanceTransaction::delete($oldTransactionId);
+      FinanceAccount::updateBalance($oldAccountId);
+    }
     
     $db->commit();
 
-    $_SESSION['FLASH_MESSAGE'] = 'Biaya ' . format_operational_cost_code($item->id). ' telah disimpan.';
+    $_SESSION['FLASH_MESSAGE'] = 'Biaya ' . $item->getCode() . ' telah disimpan.';
     header('Location: ./');
     exit;
   }
