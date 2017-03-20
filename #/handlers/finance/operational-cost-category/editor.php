@@ -3,6 +3,7 @@
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
 if ($id) {
+  ensure_current_user_can('edit-operational-cost-category');
   $category = $db->query('select * from operational_cost_categories where id=' . $id)->fetchObject();
   if (!$category) {
     $_SESSION['FLASH_MESSAGE'] = 'Kategori tidak ditemukan';
@@ -11,6 +12,7 @@ if ($id) {
   }
 }
 else {
+  ensure_current_user_can('add-operational-cost-category');
   $category = new stdClass();
   $category->id = null;
   $category->active = 1;
@@ -30,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       exit;  
     }
     
-    $_SESSION['FLASH_MESSAGE'] = 'Kategori ' . e($category->name) . ' telah dihapus.';
+    $_SESSION['FLASH_MESSAGE'] = 'Kategori ' . $category->name . ' telah dihapus.';
     header('Location: ./');
     exit;
   }
@@ -67,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q->bindValue(':active', $category->active);
       $q->execute();
       
-      $_SESSION['FLASH_MESSAGE'] = 'Kategori ' . e($category->name). ' telah disimpan.';
+      $_SESSION['FLASH_MESSAGE'] = 'Kategori ' . $category->name . ' telah disimpan.';
       header('Location: ./');
       exit;
     }
