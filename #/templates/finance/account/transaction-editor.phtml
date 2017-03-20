@@ -30,7 +30,7 @@
           <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--2-col <?=
               !empty($errors['type']) ? 'is-invalid' : '' ?>">
             <select class="mdl-selectfield__select" id="type" name="type">
-              <option value="-1">Pilih Jenis Transaksi</option>
+              <option value="-1">Pilih:</option>
               <option value="<?= FinanceTransaction::Income ?>" <?=
                 $transaction->type == FinanceTransaction::Income  ? 'selected' : '' ?>>Pemasukan</option>
               <option value="<?= FinanceTransaction::Expense ?>" <?=
@@ -45,7 +45,7 @@
           <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdl-cell mdl-cell--4-col <?=
               !empty($errors['categoryId']) ? 'is-invalid' : '' ?>">
             <select class="mdl-selectfield__select" id="categoryId" name="categoryId">
-              <option value="0">Pilih Kategori</option>
+              <option value="0">Pilih:</option>
               <?php foreach ($categories as $category): ?>
               <option value="<?= $category->id ?>" <?= $transaction->categoryId == $category->id ? 'selected' : '' ?>>
                 <?= e($category->name) ?>
@@ -76,6 +76,17 @@
             <label class="mdl-textfield__label" for="description">Deskripsi</label>
             <?php if (!empty($errors['description'])): ?>
               <span class="form-error"><?= $errors['description'] ?></span>
+            <?php endif ?>
+          </div>
+        </div>
+        <div class="mdl-grid">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+            !empty($errors['dateTime']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?= date('d/m/Y H:i:s', strtotime($transaction->dateTime)) ?>"
+                   id="dateTime" name="dateTime" <?= $_SESSION['CURRENT_USER']->groupId == 1 ? '' : 'readonly' ?>>
+            <label class="mdl-textfield__label" for="dateTime">Waktu</label>
+            <?php if (!empty($errors['dateTime'])): ?>
+              <span class="form-error"><?= $errors['dateTime'] ?></span>
             <?php endif ?>
           </div>
         </div>

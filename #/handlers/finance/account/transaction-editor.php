@@ -21,6 +21,7 @@ else {
   $transaction->accountId = $accountId;
   $transaction->refType = '';
   $transaction->refId = '';
+  $transaction->dateTime = date('Y-m-d H:i:s');
 }
 
 $categories = $db->query("select * from finance_transaction_categories where groupId={$_SESSION['CURRENT_USER']->groupId}")
@@ -44,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $transaction->type = isset($_POST['type']) ? (int)$_POST['type'] : 0;
     $transaction->description = isset($_POST['description']) ? trim($_POST['description']) : '';
     $transaction->categoryId = isset($_POST['categoryId']) ? (int)$_POST['categoryId'] : 0;
+    $transaction->dateTime = to_mysql_datetime(isset($_POST['dateTime']) ? trim((string)$_POST['dateTime']) : '');
 
     if (!($transaction->type == FinanceTransaction::Income || $transaction->type == FinanceTransaction::Expense))
       $errors['type'] = 'Jenis transaksi tidak valid.';
@@ -58,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $errors['categoryId'] = 'Pilih kategori transaksi.';
 
     if (empty($errors)) {
-      $transaction->dateTime = date('Y-m-d H:i:s');
+      
       $transaction->userId = $_SESSION['CURRENT_USER']->id;
       if ($transaction->type === FinanceTransaction::Expense)
         $transaction->amount = -$transaction->amount;
