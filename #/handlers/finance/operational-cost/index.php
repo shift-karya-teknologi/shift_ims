@@ -1,5 +1,7 @@
 <?php
 
+ensure_current_user_can('view-operational-costs');
+
 if (!isset($_SESSION['OPERATIONAL_COST_MANAGER'])) $_SESSION['OPERATIONAL_COST_MANAGER'] = [];
 if (!isset($_SESSION['OPERATIONAL_COST_MANAGER']['date'])) $_SESSION['OPERATIONAL_COST_MANAGER']['date'] = 'today';
 if (!isset($_SESSION['OPERATIONAL_COST_MANAGER']['categoryId'])) $_SESSION['OPERATIONAL_COST_MANAGER']['categoryId'] = -1;
