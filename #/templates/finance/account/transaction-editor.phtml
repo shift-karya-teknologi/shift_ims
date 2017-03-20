@@ -62,7 +62,7 @@
         <div class="mdl-grid">
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
               !empty($errors['amount']) ? 'is-invalid' : '' ?>">
-            <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($transaction->amount) ?>"
+            <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number(abs($transaction->amount)) ?>"
                    id="amount" name="amount">
             <label class="mdl-textfield__label" for="amount">Jumlah (Rp.)</label>
             <?php if (!empty($errors['amount'])): ?>
