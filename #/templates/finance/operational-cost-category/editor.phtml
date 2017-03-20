@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
   <head>
-  <?= render('head') ?>
+    <?= render('head') ?>
   </head>
   <body>
     <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
@@ -13,16 +13,10 @@
           <span class="mdl-layout-title"><?= !$category->id ? 'Tambah' : 'Edit' ?> Kategori Biaya</span>
           <div class="mdl-layout-spacer"></div>
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
-            type="submit" name="action" value="save"><i class="material-icons left">save</i></button>
-          <?php if ($category->id): ?>
-            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
-              <i class="material-icons">more_vert</i>
-            </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
-              <li class="mdl-menu__item">
-                <button id="delete-button" type="submit" name="action" value="delete"><i class="material-icons left">delete</i> Hapus</button>
-              </li>
-            </ul>
+            type="submit" name="action" value="save"><i class="material-icons left">check</i></button>
+          <?php if ($category->id && current_user_can('delete-operational-cost-category')): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
+              type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
           <?php endif ?>
         </div>
       </header>
@@ -33,7 +27,8 @@
           <?php endif ?>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
             !empty($errors['name']) ? 'is-invalid' : '' ?>">
-            <input class="mdl-textfield__input" type="text" value="<?= e($category->name) ?>" maxlength="100" id="name" name="name">
+            <input class="mdl-textfield__input" type="text" value="<?= e($category->name) ?>" maxlength="100"
+                   id="name" name="name">
             <label class="mdl-textfield__label" for="name">Nama Kategori</label>
             <?php if (!empty($errors['name'])): ?>
               <span class="form-error"><?= $errors['name'] ?></span>
@@ -50,15 +45,8 @@
       </main>
     </form>
     <?= render('foot') ?>
-    <?php if ($category->id): ?>
     <script>
-      document.querySelector('#delete-button').addEventListener('click', function(e) {
-        if (!confirm('Hapus Kategori?')) {
-          e.preventDefault();
-          return;
-        }
-      });
+      confirmOnClick('#delete-button', 'Hapus kategori biaya operasional?');
     </script>
-    <?php endif ?>
   </body>
 </html>
