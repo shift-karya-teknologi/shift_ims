@@ -23,6 +23,8 @@ else {
   $transaction->refId = '';
 }
 
+$categories = $db->query("select * from finance_transaction_categories where groupId={$_SESSION['CURRENT_USER']->groupId}")
+  ->fetchAll(PDO::FETCH_OBJ);
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -41,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $transaction->amount = isset($_POST['amount']) ? (int) trim(str_replace('.', '', $_POST['amount'])) : 0;
     $transaction->type = isset($_POST['type']) ? (int)$_POST['type'] : 0;
     $transaction->description = isset($_POST['description']) ? trim($_POST['description']) : '';
+    $transaction->categoryId = isset($_POST['categoryId']) ? (int)$_POST['categoryId'] : 0;
 
     if (!($transaction->type == FinanceTransaction::Income || $transaction->type == FinanceTransaction::Expense))
       $errors['type'] = 'Jenis transaksi tidak valid.';
@@ -50,6 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($transaction->description))
       $errors['description'] = 'Deskripsi harus diisi.';
+    
+    if (!empty($categories) && !$transaction->categoryId)
+      $errors['categoryId'] = 'Pilih kategori transaksi.';
 
     if (empty($errors)) {
       $transaction->dateTime = date('Y-m-d H:i:s');
@@ -58,10 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $transaction->amount = -$transaction->amount;
 
       $db->beginTransaction();
-
       FinanceTransaction::save($transaction);
       FinanceAccount::updateBalance($transaction->accountId);
-
       $db->commit();
 
       $_SESSION['FLASH_MESSAGE'] = 'Transaksi kas disimpan.';
@@ -73,5 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 render('finance/account/transaction-editor', [
   'transaction' => $transaction,
+  'categories' => $categories,
   'errors'   => $errors,
 ]);
