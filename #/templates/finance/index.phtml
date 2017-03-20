@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  <style>
+    .r {text-align:right}
+    .h td{font-weight:bold;}
+  </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Keuangan</span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <?= render('finance/drawer') ?>
+      <main class="mdl-layout__content">
+        <?php if (isset($cash['accounts'])): ?>
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <table>
+              <tr class="h">
+                <td>Total Kas</td>
+                <td>Rp.</td>
+                <td class="r"><?= format_number($cash['total']) ?></td>
+              </tr>
+              <tr><td colspan="3"></td></tr>
+              <?php foreach ($cash['accounts'] as $account): ?>
+              <tr>
+                <td><?= e($account->name) ?></td>
+                <td>Rp. </td>
+                <td class="r"><?= format_number($account->balance) ?></td>
+              </tr>
+              <?php endforeach ?>
+            </table>
+          </div>
+        </div>
+        <?php endif ?>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>
