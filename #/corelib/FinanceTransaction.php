@@ -15,6 +15,7 @@ class FinanceTransaction {
   public $refId;
   public $refType;
   public $userId;
+  public $categoryId;
   
   public static function findByReference($type, $id) {
     global $db;
@@ -43,16 +44,16 @@ class FinanceTransaction {
     if (!$transaction->id) {
       $q = $db->prepare('insert into finance_transactions'
         . ' ( type, accountId, description, amount, dateTime,'
-        . '   refId, refType, userId)'
+        . '   refId, refType, userId, categoryId)'
         . ' values'
         . ' (:type,:accountId,:description,:amount,:dateTime,'
-        . '  :refId,:refType,:userId)'
+        . '  :refId,:refType,:userId,:categoryId)'
       );
     }
     else {
       $q = $db->prepare('update finance_transactions set'
         . ' type=:type, accountId=:accountId, description=:description, amount=:amount, dateTime=:dateTime,'
-        . ' refId=:refId, refType=:refType, userId=:userId,'
+        . ' refId=:refId, refType=:refType, userId=:userId, categoryId=:categoryId'
         . ' where id=' . (int)$transaction->id
       );
     }
@@ -65,6 +66,7 @@ class FinanceTransaction {
     $q->bindValue(':refId', $transaction->refId);
     $q->bindValue(':refType', $transaction->refType);
     $q->bindValue(':userId', $transaction->userId);
+    $q->bindValue(':categoryId', $transaction->categoryId ? (int)$transaction->categoryId : null);
     $q->execute();
     
     if (!$transaction->id)
