@@ -9,14 +9,14 @@
         <div class="mdl-layout__header-row">
           <span class="mdl-layout-title">Biaya Operasional (<?= count($items) ?>)</span>
           <div class="mdl-layout-spacer"></div>
-          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
-            <i class="material-icons">filter_list</i>
-          </button>
           <?php if (current_user_can('add-operational-cost')): ?>
           <a href="./editor" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">add</i>
           </a>
           <?php endif ?>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
+            <i class="material-icons">filter_list</i>
+          </button>
         </div>
       </header>
       <?= render('finance/drawer') ?>
@@ -24,12 +24,16 @@
         <div class="mdlx-data-list">
           <?php foreach ($items as $item): ?>
             <div class="mdlx-data-list__item">
+              <?php if (current_user_can('edit-operational-cost')): ?>
               <a href="./editor?id=<?= $item->id ?>">
+              <?php endif ?>
                 <?= '#' . format_operational_cost_code($item->id) . ' ' . to_locale_datetime($item->dateTime) ?>
                 <span style="float:right;"><?= format_money($item->amount) ?></span>
                 <br><?= e($item->categoryName) . ': ' . e($item->description) ?>
                 <?= $item->ref ? '<br>Ref: ' . e($item->ref) : '' ?>
+              <?php if (current_user_can('edit-operational-cost')): ?>
               </a>
+              <?php endif ?>
             </div>
           <?php endforeach ?>
         </div>
@@ -43,7 +47,10 @@
             <select id="categoryId" class="mdl-selectfield__select" name="categoryId">
               <option value="-1" <?= $filter['categoryId'] === -1 ? 'selected' : '' ?>>Semua Kategori</option>
               <?php foreach ($categories as $category): ?>
-                <option value="<?= $category->id ?>" <?= $filter['categoryId'] === (int)$category->id ? 'selected' : '' ?>><?= e($category->name) ?></option>
+                <option value="<?= $category->id ?>" <?=
+                  $filter['categoryId'] === (int)$category->id ? 'selected' : '' ?>>
+                  <?= e($category->name) ?>
+                </option>
               <?php endforeach ?>
             </select>
             <label class="mdl-selectfield__label" for="categoryId">Kategori</label>
