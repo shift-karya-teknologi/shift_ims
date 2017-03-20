@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Laporan</span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <?= render('pos/drawer') ?>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <ul>
+              <li><a href="./daily-sales-detail">Rincian Penjualan Harian</a></li>
+              <li><a href="./daily-sales-recap">Rekapitulasi Penjualan Harian</a></li>
+              <li><a href="./operational-cost-detail">Rincian Biaya Operasional</a></li>
+              <li><a href="./stock-recap">Rekapitulasi Stok</a></li>
+              <li><a href="./stock-detail">Rincian Stok</a></li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>

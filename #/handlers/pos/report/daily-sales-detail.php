@@ -60,6 +60,7 @@ while ($record = $q->fetchObject()) {
 }
 
 ?>
+<!DOCTYPE html>
 <html>
   <head>
     <?= render('head') ?>
