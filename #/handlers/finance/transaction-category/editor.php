@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   
   $category->name = isset($_POST['name']) ? (string)$_POST['name'] : '';
-  $category->active = isset($_POST['active']) ? (int)$_POST['active'] : false;
+  $category->active = isset($_POST['active']) ? (int)$_POST['active'] : 0;
   
   if (empty($category->name))
     $errors['name'] = 'Nama kategori harus diisi.';
