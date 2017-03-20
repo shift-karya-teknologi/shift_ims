@@ -27,6 +27,7 @@ class OperationalCost
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
 if ($id) {
+  ensure_current_user_can('edit-operational-cost');
   $item = $db->query('select o.*, c.name categoryName, u1.username creationUsername, u2.username lastModUsername'
     . ' from operational_costs o'
     . ' inner join operational_cost_categories c on c.id = o.categoryId'
@@ -45,6 +46,7 @@ if ($id) {
   }
 }
 else {
+  ensure_current_user_can('add-operational-cost');
   $item = new OperationalCost();
   $item->dateTime = date('Y-m-d H:i:s');
 }
@@ -53,6 +55,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? (string)$_POST['action'] : 'save';
   if ($action === 'delete') {
+    ensure_current_user_can('delete-operational-cost');
     $db->beginTransaction();
     try {
       $db->query('delete from operational_costs where id=' . $item->id);

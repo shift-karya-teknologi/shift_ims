@@ -21,8 +21,9 @@ else {
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $action = isset($_POST['action']) ? (string)$_POST['action'] : 'save';
+  $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
   if ($action === 'delete') {
+    ensure_current_user_can('delete-operational-cost-category');
     try {
       $db->query('delete from operational_cost_categories where id=' . $category->id);
     }
