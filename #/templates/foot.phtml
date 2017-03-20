@@ -42,4 +42,11 @@
     input.addEventListener('focus', function() { this.select(); });
     input.addEventListener('blur', function() { this.value = parseInt(this.value.replace(/\./g, '').replace(/,/g, '.')).toLocale(); });
   });
+  function setupStandardFilterDialog() {
+    var filterDialog = document.querySelector('#filter-dialog');
+    if (!filterDialog) return;
+    if (!filterDialog.showModal) { dialogPolyfill.registerDialog(filterDialog); }
+    document.querySelector('#filter-dialog .close').addEventListener('click', function() { filterDialog.close(); });
+    document.querySelector('#filter-button').addEventListener('click', function() { filterDialog.showModal(); });
+  }
 </script>

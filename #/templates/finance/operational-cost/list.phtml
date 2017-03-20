@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
   <head>
-  <?= render('head') ?>
-  <style>
-  </style>
+    <?= render('head') ?>
   </head>
   <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
@@ -14,14 +12,16 @@
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
             <i class="material-icons">filter_list</i>
           </button>
+          <?php if (current_user_can('add-operational-cost')): ?>
           <a href="./editor" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">add</i>
           </a>
+          <?php endif ?>
         </div>
       </header>
       <?= render('finance/drawer') ?>
       <main class="mdl-layout__content">
-        <div id="operational-cost-list" class="mdlx-data-list">
+        <div class="mdlx-data-list">
           <?php foreach ($items as $item): ?>
             <div class="mdlx-data-list__item">
               <a href="./editor?id=<?= $item->id ?>">
@@ -69,18 +69,7 @@
     </form>
     <?= render('foot') ?>
     <script>      
-      var filterDialog = document.querySelector('#filter-dialog');
-      if (!filterDialog.showModal) {
-        dialogPolyfill.registerDialog(filterDialog);
-      }
-      
-      document.querySelector('#filter-dialog .close').addEventListener('click', function() {
-        filterDialog.close();
-      });
-      
-      document.querySelector('#filter-button').addEventListener('click', function() {
-        filterDialog.showModal();
-      });
+      setupStandardFilterDialog();
     </script>
   </body>
 </html>
