@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <?= render('head') ?>
+    <style>
+      .g {color:green;}.r{color:red;}
+      .mdlx-data-list__item {clear:both}
+    </style>
+  </head>
+  <body>
+    <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title"><?= e($account->name) ?></span>
+          <div class="mdl-layout-spacer"></div>
+          <?php if (current_user_can('add-debts-transaction')): ?>
+          <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
+            href="./transaction-editor?accountId=<?= $account->id ?>"><i class="material-icons left">add</i></a>
+          <?php endif ?>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
+            <i class="material-icons">filter_list</i>
+          </button>
+          <?php if (current_user_can('edit-debts-account')): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="more-button">
+              <li class="mdl-menu__item">
+                <a href="./editor?id=<?= $account->id ?>"><i class="material-icons left">edit</i> Edit</a>
+              </li>
+            </ul>
+          <?php endif ?>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdlx-data-list">
+          <div class="mdlx-data-list__item" style="background:#eee;">
+            <div style="float:right;text-align:right;">
+              <span><b><?= format_number($account->balance) ?></b></span>
+            </div>
+            <div><b>SALDO AKHIR</b></div>
+          </div>
+          <?php $balance = $account->balance ?>
+          <?php foreach ($items as $item): ?>
+          <?php
+            $balanceAfter = $balance;
+            $balanceBefore = $balance - $item->amount;
+          ?>
+            <div class="mdlx-data-list__item">
+              <div style="float:right;text-align:right;">
+                <span class="<?= $item->amount > 0 ? 'g' : 'r' ?>"><b><?=
+                  ($item->amount > 0 ? '+' : '') . format_number($item->amount) ?></b></span><br>
+                  <small><?=
+                    format_number($balanceBefore) .
+                    ($item->amount > 0 ? ' + ' : '') .
+                    format_number($item->amount) .
+                    ' = ' .
+                    format_number($balanceAfter)
+                  ?></small>
+              </div>
+              <div>
+                <a href="./transaction-editor?id=<?= $item->id ?>">
+                  <?= to_locale_date($item->date) ?>
+                </a>
+                <br><?= e($item->remarks) ?>
+              </div>
+            </div>
+          <?php $balance -= $item->amount ?>
+          <?php endforeach ?>
+          <div class="mdlx-data-list__item" style="background:#eee;">
+            <div style="float:right;text-align:right;">
+              <span><b><?= format_number($balance) ?></b></span>
+            </div>
+            <div><b>SALDO AWAL</b></div>
+          </div>
+        </div>
+      </main>
+    </form>
+    <?= render('foot') ?>
+    <script>
+      confirmOnClick('#delete-button', 'Hapus akun?');
+    </script>
+  </body>
+</html>
