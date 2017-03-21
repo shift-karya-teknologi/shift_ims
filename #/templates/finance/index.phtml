@@ -5,7 +5,7 @@
   <style>
     .r {text-align:right}
     .h td{font-weight:bold;}
-    table{margin:10px 0;width:340px;}
+    table{margin:10px 0;width:100%;}
     tr:first-child td:nth-child(2) {width:40px;}
     tr td:nth-child(2) {text-align: right;}
     tr:first-child td:nth-child(3) {width:90px;}
@@ -23,7 +23,7 @@
       <?php $grandTotal = 0; ?>
       <main class="mdl-layout__content">
         <div class="mdl-grid">
-          <div class="mdl-cell mdl-cell--12-col">
+          <div class="mdl-cell mdl-cell--4-col">
             <?php if (isset($cash['accounts'])): ?>
               <?php $grandTotal += $cash['total']; ?>
                 <table>

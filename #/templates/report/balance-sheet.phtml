@@ -1,0 +1,39 @@
+<?php function print_row($item, $level = 1) { ?>
+  <tr class="l-<?= $level ?>">
+    <td>- &nbsp;<?= e($item->name) ?></td>
+    <td>Rp. </td>
+    <td><?= format_number($item->total) ?></td>
+  </tr>
+  <?php if (!empty($item->items)): ?>
+    <?php foreach ($item->items as $child): ?>
+      <?php print_row($child, $level + 1) ?>
+    <?php endforeach ?>
+  <?php else: ?>
+    <tr><td colspan="3"></td></tr>
+  <?php endif ?>
+<?php } ?>
+<style>
+  tr.l-1 td { font-weight: bold; }
+  tr.l-2 td { color: darkolivegreen; font-weight: bold; }
+  tr.l-1 td:nth-child(1){ padding-left: 0; }
+  tr.l-2 td:nth-child(1){ padding-left: 13px;}
+  tr.l-3 td:nth-child(1){ padding-left: 26px;}
+  td:nth-child(2) { width: 25px; text-align: right; padding-right: 0; }
+  td:nth-child(3) { width: 90px; text-align: right; padding-left: 0; }
+  table { border-collapse: collapse; }
+</style>
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--4-col">
+    <table style="width:100%;">
+      <?php print_row($asset) ?>
+    </table>
+  </div>
+  <div class="mdl-cell mdl-cell--4-col">
+    <table style="width:100%;">
+      <?php print_row($liability) ?>
+    </table>
+    <table style="width:100%;">
+      <?php print_row($equity) ?>
+    </table>
+  </div>
+</div>

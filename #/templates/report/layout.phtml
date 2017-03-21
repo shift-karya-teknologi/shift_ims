@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <?= render('head') ?>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title"><?= $title ?></span>
+          <div class="mdl-layout-spacer"></div>
+          <?= isset($headnav) ? $headnav : '' ?>
+        </div>
+      </header>
+      <div class="mdl-layout__drawer">
+        <header class="mdl-color--blue-grey mdl-color-text--white">
+          <span class="mdl-layout-title"><small>Shift Reports</small></span>
+          <span class="my-account-name"><a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a></span>
+        </header>
+        <?php if (isset($sidenav)): ?>
+          <nav class="mdl-navigation"><?= $sidenav ?></nav>
+        <?php endif ?>
+      </div>
+      <main class="mdl-layout__content"><?= $content ?></main>
+    </div>
+    <?= render('foot') ?>
+    <?php if (!empty($scripts)): ?>
+    <?php foreach ($scripts as $type => $items): ?>
+      <?php if ($type === 'files'): ?>
+        <?php foreach ($items as $key => $item): ?>
+          <script <?= $key . '="' . $item . '"' ?>></script>
+        <?php endforeach ?>
+      <?php endif ?>
+    <?php endforeach ?>
+    <?php endif ?>
+  </body>
+</html>
