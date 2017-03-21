@@ -5,7 +5,10 @@
   <style>
     .r {text-align:right}
     .h td{font-weight:bold;}
-    table{margin:10px 0;}
+    table{margin:10px 0;width:340px;}
+    tr:first-child td:nth-child(2) {width:40px;}
+    tr td:nth-child(2) {text-align: right;}
+    tr:first-child td:nth-child(3) {width:90px;}
   </style>
   </head>
   <body>
@@ -59,6 +62,24 @@
                   </tr>
                 </table>
             <?php endif ?>
+            <?php if (isset($debts)): ?>
+              <?php $grandTotal += $debts['total']; ?>
+                <table>
+                  <tr class="h">
+                    <td style="width:180px;">Utang / Piutang</td>
+                    <td>Rp.</td>
+                    <td class="r"><?= format_number($debts['total']) ?></td>
+                  </tr>
+                  <tr><td colspan="3"></td></tr>
+                  <?php foreach ($debts['accounts'] as $account): ?>
+                  <tr>
+                    <td><?= e($account->name) ?></td>
+                    <td>Rp. </td>
+                    <td class="r"><?= format_number($account->balance) ?></td>
+                  </tr>
+                  <?php endforeach ?>
+                </table>
+            <?php endif ?>            
             <h5 style="margin:20px 0 0 0;">Grand Total Rp. <?= format_number($grandTotal) ?></h5>
           </div>
         </div>

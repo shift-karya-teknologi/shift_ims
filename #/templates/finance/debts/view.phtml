@@ -62,8 +62,8 @@
                 <a href="./transaction-editor?id=<?= $item->id ?>">
                   <?= to_locale_date($item->date) ?>
                 </a>
-                <br><?= e($item->remarks) ?>
               </div>
+              <div><?= e($item->remarks) ?></div>
             </div>
           <?php $balance -= $item->amount ?>
           <?php endforeach ?>

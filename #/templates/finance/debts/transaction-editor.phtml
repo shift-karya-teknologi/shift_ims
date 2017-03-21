@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  </head>
+  <body>
+    <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <?php if ($transaction->id): ?>
+        <input type="hidden" name="id" value="<?= $transaction->id ?>">
+      <?php else: ?>
+        <input type="hidden" name="accountId" value="<?= $transaction->accountId ?>">
+      <?php endif ?>
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="./view?id=<?= $transaction->accountId ?>" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title"><?= $transaction->id ? 'Edit' : 'Catat' ?> Utang Piutang</span>
+          <div class="mdl-layout-spacer"></div>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
+            type="submit" name="action" value="save"><i class="material-icons left">check</i></button>
+          <?php if ($transaction->id && current_user_can('delete-debts-transaction')): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
+              type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
+          <?php endif ?>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+            <input class="mdl-textfield__input" type="text" readonly value="<?= e($accountName) ?>" id="accountName">
+            <label class="mdl-textfield__label" for="accountName">Nama Pihak</label>
+          </div>
+        </div>
+        <div class="mdl-grid">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+              !empty($errors['amount']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($transaction->amount) ?>"
+                   id="amount" name="amount">
+            <label class="mdl-textfield__label" for="amount">Jumlah (Rp.)</label>
+            <?php if (!empty($errors['amount'])): ?>
+              <span class="form-error"><?= $errors['amount'] ?></span>
+            <?php endif ?>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+            !empty($errors['date']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?= to_locale_date($transaction->date) ?>"
+                   id="date" name="date" <?= $_SESSION['CURRENT_USER']->groupId == 1 ? '' : 'readonly' ?>>
+            <label class="mdl-textfield__label" for="date">Tanggal</label>
+            <?php if (!empty($errors['date'])): ?>
+              <span class="form-error"><?= $errors['date'] ?></span>
+            <?php endif ?>
+          </div>
+        </div>
+        <div class="mdl-grid">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
+            !empty($errors['description']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?= e($transaction->remarks) ?>"
+                   maxlength="100" id="remarks" name="remarks">
+            <label class="mdl-textfield__label" for="remarks">Catatan</label>
+            <?php if (!empty($errors['remarks'])): ?>
+              <span class="form-error"><?= $errors['remarks'] ?></span>
+            <?php endif ?>
+          </div>
+        </div>
+      </main>
+    </form>
+    <?= render('foot') ?>
+    <script>
+      confirmOnClick('#delete-button', 'Hapus transaksi?')
+    </script>
+  </body>
+</html>
