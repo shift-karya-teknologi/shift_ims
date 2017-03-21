@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   
   $account->name = isset($_POST['name']) ? (string)$_POST['name'] : '';
-  $account->active = isset($_POST['active']) ? (int)$_POST['active'] : false;
+  $account->active = isset($_POST['active']) ? (int)$_POST['active'] : 0;
   $account->users = isset($_POST['users']) ? (array)$_POST['users'] : [];
   
   if (empty($account->name))
