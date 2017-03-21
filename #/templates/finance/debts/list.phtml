@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+    <style>
+      .mdlx-data-list__item .material-icons {float:left; margin-right: 7px; line-height: 20px;}
+    </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Utang Piutang (<?= count($items) ?>)</span>
+          <div class="mdl-layout-spacer"></div>
+          <?php if (current_user_can('add-debts-account')): ?>
+            <a href="./editor" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+              <i class="material-icons">add</i>
+            </a>
+          <?php endif ?>
+        </div>
+      </header>
+      <?= render('finance/drawer') ?>
+      <main class="mdl-layout__content">
+        <div class="mdlx-data-list">
+          <?php foreach ($items as $item): ?>
+            <div class="mdlx-data-list__item">
+              <?php if (current_user_can('view-debts-account')): ?>
+                <a href="./view?id=<?= $item->id ?>">
+                  <i class="material-icons"><?= $item->type == 0 ? 'person' : 'business' ?></i> <?= e($item->name) ?>
+                <span style="float:right;"><?= format_number($item->balance) ?></span>
+                </a>
+              <?php else: ?>
+                <?= e($item->name) ?>
+              <?php endif ?>
+            </div>
+          <?php endforeach ?>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>
