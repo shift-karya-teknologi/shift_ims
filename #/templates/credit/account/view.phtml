@@ -161,7 +161,7 @@
                       <?php endif ?>
                     </td>
                     <td>
-                      <?= $transaction->types == 0 ? 'Biaya Adm' : ($transaction->types == 1 ? 'Biaya Adm' : 'Biaya Adm dan Angsuran') ?>
+                      <?= $transaction->types == 2 ? 'Biaya Adm' : ($transaction->types == 3 ? 'Biaya Adm' : 'Biaya Adm dan Angsuran') ?>
                     </td>
                     <td><?= format_number($transaction->amount) ?>
                   </tr>

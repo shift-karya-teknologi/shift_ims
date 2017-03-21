@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   else if ($action === 'save') {
     $item->amount = isset($_POST['amount']) ? (int)str_replace('.', '', trim((string)$_POST['amount'])) : 0;
-    $item->types   = isset($_POST['types']) ? (int)$_POST['types'] : 0;
+    $item->types  = isset($_POST['types']) ? (int)$_POST['types'] : 0;
     
     if (empty($item->amount))
       $errors['amount'] = 'Masukkan jumlah pembayaran.';
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
       else {
         $q = $db->prepare('update credit_transactions set'
-          . ' amount=:amount, types=:types'
+          . ' amount=:amount, types=:types where id=' . $item->id
         );
       }
       $q->bindValue(':types', $item->types);
