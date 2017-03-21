@@ -20,9 +20,6 @@
           <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
             href="./transaction-editor?accountId=<?= $account->id ?>"><i class="material-icons left">add</i></a>
           <?php endif ?>
-          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
-            <i class="material-icons">filter_list</i>
-          </button>
           <?php if (current_user_can('edit-debts-account')): ?>
             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="more-button" type="button">
               <i class="material-icons">more_vert</i>
