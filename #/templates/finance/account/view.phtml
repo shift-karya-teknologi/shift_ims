@@ -59,13 +59,7 @@
               <div style="float:right;text-align:right;">
                 <span class="<?= $item->amount > 0 ? 'g' : 'r' ?>"><b><?=
                   ($item->amount > 0 ? '+' : '') . format_number($item->amount) ?></b></span><br>
-                  <small><?=
-                    format_number($balanceBefore) .
-                    ($item->amount > 0 ? ' + ' : '') .
-                    format_number($item->amount) .
-                    ' = ' .
-                    format_number($balanceAfter)
-                  ?></small>
+                  <small><?= format_number($balanceAfter) ?></small>
               </div>
               <div>
                 <a href="./transaction-editor?id=<?= $item->id ?>">

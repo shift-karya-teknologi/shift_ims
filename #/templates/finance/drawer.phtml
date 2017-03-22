@@ -3,17 +3,28 @@
     <span class="mdl-layout-title">
       <a class="mdl-color-text--white" href="<?= BASE_URL ?>/finance/">Keuangan</a>
     </span>
-    <span class="my-account-name"><a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a></span>
+    <div class="my-account-name">
+      <a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a>
+      <span class="mdl-color-text--white" style="float:right;font-weight:bold;">
+        <?php if ($_SESSION['CURRENT_USER']->groupId == 1): ?>
+          <?= format_money(g('db')->query(
+            'select ifnull(sum(balance), 0)'
+            . ' from finance_accounts')->fetchColumn()) ?>
+        <?php elseif (g('cfg')['store_account_id']): ?>
+          <?= format_money(get_store_account_balance()) ?>
+        <?php endif ?>
+      </span>
+    </div>
   </header>
   <nav class="mdl-navigation">
     <?php if (current_user_can('view-finance-accounts') || current_user_can('view-finance-transaction-categories')): ?>
       <?php if (current_user_can('view-finance-accounts')): ?>
         <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/finance/account/') ? ' active' : '' ?>"
-          href="<?= BASE_URL ?>/finance/account/">Akun / Rekening</a>
+          href="<?= BASE_URL ?>/finance/account/"><i class="material-icons">account_balance_wallet</i>Akun / Rekening</a>
       <?php endif ?>
       <?php if (current_user_can('view-finance-transaction-categories')): ?>
         <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/finance/transaction-category/') ? ' active' : '' ?>"
-          href="<?= BASE_URL ?>/finance/transaction-category/">Kategori Transaksi</a>
+          href="<?= BASE_URL ?>/finance/transaction-category/"><i class="material-icons">grid_on</i>Kategori Transaksi</a>
       <?php endif ?>
       <hr>
     <?php endif ?>

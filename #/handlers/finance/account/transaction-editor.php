@@ -24,7 +24,10 @@ else {
   $transaction->dateTime = date('Y-m-d H:i:s');
 }
 
-$categories = $db->query("select * from finance_transaction_categories where groupId={$_SESSION['CURRENT_USER']->groupId}")
+$categories = $db->query("select *"
+  . " from finance_transaction_categories"
+  . " where groupId={$_SESSION['CURRENT_USER']->groupId}"
+  . " order by name asc")
   ->fetchAll(PDO::FETCH_OBJ);
 $errors = [];
 

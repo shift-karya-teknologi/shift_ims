@@ -5,7 +5,7 @@
   <style>
     .r {text-align:right}
     .h td{font-weight:bold;}
-    table{margin:10px 0;width:100%;}
+    table{margin:0;width:100%;}
     tr:first-child td:nth-child(2) {width:40px;}
     tr td:nth-child(2) {text-align: right;}
     tr:first-child td:nth-child(3) {width:90px;}
@@ -24,63 +24,22 @@
       <main class="mdl-layout__content">
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">
-            <?php if (isset($cash['accounts'])): ?>
-              <?php $grandTotal += $cash['total']; ?>
-                <table>
-                  <tr class="h">
-                    <td style="width:180px;">Kas / Tunai</td>
-                    <td>Rp.</td>
-                    <td class="r"><?= format_number($cash['total']) ?></td>
-                  </tr>
-                  <tr><td colspan="3"></td></tr>
-                  <?php foreach ($cash['accounts'] as $account): ?>
-                  <tr>
-                    <td><?= e($account->name) ?></td>
-                    <td>Rp. </td>
-                    <td class="r"><?= format_number($account->balance) ?></td>
-                  </tr>
-                  <?php endforeach ?>
-                </table>
-            <?php endif ?>
-            <?php if (!empty($credit)): ?>
-              <?php $grandTotal += ($credit['balance'] - $credit['administrationCost']); ?>          
-                <table>
-                  <tr class="h">
-                    <td style="width:180px;">Piutang Kredit</td>
-                    <td>Rp.</td>
-                    <td class="r"><?= format_number($credit['balance'] - $credit['administrationCost']) ?></td>
-                  </tr>
-                  <tr>
-                    <td>Total Kredit</td>
-                    <td>Rp.</td>
-                    <td class="r"><?= format_number($credit['balance']) ?></td>
-                  </tr>
-                  <tr>
-                    <td>Biaya Administrasi</td>
-                    <td>Rp.</td>
-                    <td class="r"><?= format_number(-$credit['administrationCost']) ?></td>
-                  </tr>
-                </table>
-            <?php endif ?>
-            <?php if (isset($debts)): ?>
-              <?php $grandTotal += $debts['total']; ?>
-                <table>
-                  <tr class="h">
-                    <td style="width:180px;">Utang / Piutang</td>
-                    <td>Rp.</td>
-                    <td class="r"><?= format_number($debts['total']) ?></td>
-                  </tr>
-                  <tr><td colspan="3"></td></tr>
-                  <?php foreach ($debts['accounts'] as $account): ?>
-                  <tr>
-                    <td><?= e($account->name) ?></td>
-                    <td>Rp. </td>
-                    <td class="r"><?= format_number($account->balance) ?></td>
-                  </tr>
-                  <?php endforeach ?>
-                </table>
-            <?php endif ?>            
-            <h5 style="margin:20px 0 0 0;">Grand Total Rp. <?= format_number($grandTotal) ?></h5>
+            <table>
+              <tr><td colspan="3"></td></tr>
+              <?php foreach ($accounts as $account): ?>
+                <?php $grandTotal += $account->balance; ?>
+                <tr>
+                  <td><?= e($account->name) ?></td>
+                  <td>Rp. </td>
+                  <td class="r"><?= format_number($account->balance) ?></td>
+                </tr>
+              <?php endforeach ?>
+              <tr class="h">
+                <td>Grand Total</td>
+                <td>Rp. </td>
+                <td class="r"><?= format_number($grandTotal) ?></td>
+              </tr> 
+            </table>
           </div>
         </div>
       </main>
