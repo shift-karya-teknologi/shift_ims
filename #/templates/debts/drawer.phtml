@@ -3,12 +3,19 @@
     <span class="mdl-layout-title">
       <a class="mdl-color-text--white" href="<?= BASE_URL ?>/debts/"><small>Utang Piutang</small></a>
     </span>
-    <span class="my-account-name"><a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a></span>
+    <div class="my-account-name">
+      <a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a>
+      <span class="mdl-color-text--white" style="float:right;font-weight:bold;">
+        <?= format_money(g('db')->query(
+          'select ifnull(sum(balance), 0)'
+          . ' from debts_accounts')->fetchColumn()) ?>
+      </span>
+    </div>
   </header>
   <nav class="mdl-navigation">
     <?php if (current_user_can('view-debts-accounts')): ?>
       <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/debts/account/') ? ' active' : '' ?>"
-        href="<?= BASE_URL ?>/debts/account/"><i class="material-icons">monetization_on</i>Utang Piutang</a>
+        href="<?= BASE_URL ?>/debts/account/"><i class="material-icons">account_balance_wallet</i>Pihak-pihak</a>
       <hr>
     <?php endif ?>
     <a class="mdl-navigation__link" href="<?= BASE_URL ?>/"><i class="material-icons">arrow_back</i>Shift Apps</a>

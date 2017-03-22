@@ -5,25 +5,76 @@
   <style>
     .r {text-align:right}
     .h td{font-weight:bold;}
-    table{margin:10px 0;width:100%;}
+    table{margin:0;width:100%;}
     tr:first-child td:nth-child(2) {width:40px;}
     tr td:nth-child(2) {text-align: right;}
     tr:first-child td:nth-child(3) {width:90px;}
+    tr:not(.h) td:first-child {padding-left:10px;}
   </style>
   </head>
   <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">Keuangan</span>
+          <span class="mdl-layout-title">Utang Piutang</span>
           <div class="mdl-layout-spacer"></div>
         </div>
       </header>
       <?= render('debts/drawer') ?>
-      <?php $grandTotal = 0; ?>
       <main class="mdl-layout__content">
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">
+            <table>
+              <tr class="h">
+                <td colspan="4">Piutang</td>
+              </tr>
+              <tr>
+                <td>Perorangan</td>
+                <td>Rp.</td>
+                <td class="r"><?= format_number($debts['items']['personal']) ?></td>
+                <td class="r"><?= format_number($debts['items']['personalPercent'], 2) ?>%</td>
+              </tr>
+              <tr>
+                <td>Perusahaan</td>
+                <td>Rp.</td>
+                <td class="r"><?= format_number($debts['items']['company']) ?></td>
+                <td class="r"><?= format_number($debts['items']['companyPercent'], 2) ?>%</td>
+              </tr>
+              <tr class="h">
+                <td>Total Piutang</td>
+                <td>Rp.</td>
+                <td class="r"><?= format_number($debts['total']) ?></td>
+                <td class="r"></td>
+              </tr>
+              <tr class="h">
+                <td colspan="4">Utang</td>
+              </tr>
+              <tr>
+                <td>Perorangan</td>
+                <td>Rp.</td>
+                <td class="r"><?= format_number($credits['items']['personal']) ?></td>
+                <td class="r"><?= format_number($credits['items']['personalPercent'], 2) ?>%</td>
+              </tr>
+              <tr>
+                <td>Perusahaan</td>
+                <td>Rp.</td>
+                <td class="r"><?= format_number($credits['items']['company']) ?></td>
+                <td class="r"><?= format_number($credits['items']['companyPercent'], 2) ?>%</td>
+              </tr>
+              <tr class="h">
+                <td>Total Utang</td>
+                <td>Rp.</td>
+                <td class="r"><?= format_number($credits['total']) ?></td>
+                <td></td>
+              </tr>
+
+              <tr class="h">
+                <td>Balance</td>
+                <td>Rp.</td>
+                <td class="r"><?= format_number($balance) ?></td>
+                <td></td>
+              </tr>
+            </table>
           </div>
         </div>
       </main>
