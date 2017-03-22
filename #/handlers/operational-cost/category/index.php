@@ -9,6 +9,6 @@ while ($item = $q->fetchObject()) {
   $items[] = $item;
 }
 
-render('finance/operational-cost-category/list', [
+render('operational-cost/category/list', [
   'items' => $items,
 ]);

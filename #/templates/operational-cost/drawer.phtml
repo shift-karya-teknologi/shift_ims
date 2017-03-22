@@ -1,0 +1,26 @@
+<div class="mdl-layout__drawer">
+  <header class="mdl-color--blue-grey mdl-color-text--white">
+    <span class="mdl-layout-title">
+      <a href="<?= BASE_URL ?>/operational-cost/" style="color:#fff;"><small>Operasional</small></a>
+    </span>
+    <span class="my-account-name">
+      <a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a>
+      <span class="mdl-color-text--white" style="float:right;font-weight:bold;">
+        <?= format_money(g('db')->query("select ifnull(sum(amount), 0) from operational_costs"
+          . " where date(dateTime)='" . date('Y-m-d') . "'")->fetchColumn()) ?>
+      </span>
+    </span>
+  </header>
+  <nav class="mdl-navigation">
+    <?php if (current_user_can('view-operational-costs')): ?>
+      <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/operational-cost/transaction/') ? ' active' : '' ?>"
+        href="<?= BASE_URL ?>/operational-cost/transaction/"><i class="material-icons">money_off</i>Biaya Operasional</a>
+    <?php endif ?>
+    <?php if (current_user_can('view-operational-cost-categories')): ?>
+      <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/operational-cost/category/') ? ' active' : '' ?>"
+        href="<?= BASE_URL ?>/operational-cost/category/"><i class="material-icons">grid_on</i>Kategori Biaya</a>
+    <?php endif ?>
+    <hr>
+    <a class="mdl-navigation__link" href="<?= BASE_URL ?>/"><i class="material-icons">apps</i>Shift Apps</a>
+  </nav>
+</div>

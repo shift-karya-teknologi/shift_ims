@@ -165,7 +165,7 @@ $categories = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
 
 $accounts = get_current_user_finance_accounts();
 
-render('finance/operational-cost/editor', [
+render('operational-cost/transaction/editor', [
   'item' => $item,
   'categories' => $categories,
   'accounts' => $accounts,

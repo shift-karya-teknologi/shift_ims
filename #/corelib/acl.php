@@ -21,6 +21,8 @@ $__ACL__ = [
     
     'open-finance-app',
     'view-finance-accounts', 'view-finance-account', 'transfer-cash', 'add-finance-transaction',
+    
+    'open-operational-cost-app',
     'view-operational-costs', 'add-operational-cost',
     'view-operational-cost-categories', 'add-operational-cost-category'
   ],
@@ -38,6 +40,8 @@ $__ACL__ = [
     
     'open-finance-app',
     'view-finance-accounts', 'view-finance-account', 'transfer-cash', 'add-finance-transaction',
+    
+    'open-operational-cost-app',
     'view-operational-costs', 'add-operational-cost',
   ],
   5 => [

@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
-render('finance/operational-cost-category/editor', [
+render('operational-cost/category/editor', [
   'category' => $category,
   'errors'   => $errors,
 ]);

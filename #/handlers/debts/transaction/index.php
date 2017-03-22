@@ -2,10 +2,10 @@
 
 ensure_current_user_can('view-debts-account');
 
-$id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
+$accountId = isset($_REQUEST['accountId']) ? (int)$_REQUEST['accountId'] : 0;
 
-if ($id) {
-  $account = $db->query('select * from debts_accounts where id=' . $id)->fetchObject();
+if ($accountId) {
+  $account = $db->query('select * from debts_accounts where id=' . $accountId)->fetchObject();
   if (!$account) {
     $_SESSION['FLASH_MESSAGE'] = 'Akun tidak ditemukan';
     header('Location: ./');
@@ -19,11 +19,11 @@ $sql = "SELECT t.*"
 $where = ["t.accountId=$account->id"];
 
 $where = implode(' and ', $where);
-$sql .= " where $where order by t.date desc";
+$sql .= " where $where order by t.dateTime desc";
 
 $items = $db->query($sql)->fetchAll(PDO::FETCH_CLASS);
 
-render('finance/debts/view', [
+render('debts/transaction/index', [
   'account' => $account,
   'items'   => $items,
 ]);

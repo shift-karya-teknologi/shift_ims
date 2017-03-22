@@ -1,15 +1,24 @@
 <div class="mdl-grid apps">
   <?php if (current_user_can('open-shiftnet-app')): ?>
-  <a href="<?= BASE_URL ?>/shiftnet/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">device_hub</i><br>ShiftNet</a>
+    <a href="<?= BASE_URL ?>/shiftnet/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">device_hub</i><br>ShiftNet</a>
   <?php endif ?>
   <?php if (current_user_can('open-pos-app')): ?>
-  <a href="<?= BASE_URL ?>/pos/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">store</i><br>POS</a>
+    <a href="<?= BASE_URL ?>/pos/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">store</i><br>POS</a>
   <?php endif ?>
   <?php if (current_user_can('open-finance-app')): ?>
-  <a href="<?= BASE_URL ?>/finance/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">local_atm</i><br>Keuangan</a>
+    <a href="<?= BASE_URL ?>/finance/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">local_atm</i><br>Keuangan</a>
   <?php endif ?>
   <?php if (current_user_can('open-credit-app')): ?>
-  <a href="<?= BASE_URL ?>/credit/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">payment</i><br>Kredit</a>
+    <a href="<?= BASE_URL ?>/credit/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">payment</i><br>Kredit</a>
+  <?php endif ?>
+  <?php if (current_user_can('open-operational-cost-app')): ?>
+    <a href="<?= BASE_URL ?>/operational-cost/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">money_off</i><br>Operasional</a>
+  <?php endif ?>
+  <?php if (current_user_can('open-debts-app')): ?>
+    <a href="<?= BASE_URL ?>/debts/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">monetization_on</i><br>Utang Piutang</a>
+  <?php endif ?>
+  <?php if (current_user_can('open-asset-app')): ?>
+    <a href="<?= BASE_URL ?>/asset/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">business</i><br>Aset</a>
   <?php endif ?>
 </div>
 <?php if ($_SESSION['CURRENT_USER']->groupId == 1): ?>

@@ -1,5 +1,8 @@
 <?php
 
+require CORELIB_PATH . '/FinanceTransaction.php';
+require CORELIB_PATH . '/FinanceAccount.php';
+
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
 if ($id) {
@@ -73,16 +76,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $q->bindValue(':active', $account->active);
       $q->execute();
       
+      if (!$account->id) $account->id = $db->lastInsertId();
+      
       $db->commit();
       
       $_SESSION['FLASH_MESSAGE'] = 'Akun ' . $account->name . ' telah disimpan.';
-      header('Location: ./');
+      header('Location: ../transaction/?accountId=' . $account->id);
       exit;
     }
   }
 }
 
-render('finance/debts/editor', [
+render('debts/account/editor', [
   'account' => $account,
   'errors'   => $errors,
 ]);

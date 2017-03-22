@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  <style>
+    .r {text-align:right}
+    .h td{font-weight:bold;}
+    table{margin:10px 0;width:100%;}
+    tr:first-child td:nth-child(2) {width:40px;}
+    tr td:nth-child(2) {text-align: right;}
+    tr:first-child td:nth-child(3) {width:90px;}
+  </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Keuangan</span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <?= render('debts/drawer') ?>
+      <?php $grandTotal = 0; ?>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--4-col">
+          </div>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>
