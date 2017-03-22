@@ -83,7 +83,7 @@ $sql .= ' order by o.dateTime desc';
 
 $items = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
 $categories = $db->query('select * from operational_cost_categories')->fetchAll(PDO::FETCH_OBJ);
-render('operational-cost/transaction/list', [
+render('cost/transaction/list', [
   'items' => $items,
   'filter' => $filter,
   'categories' => $categories,
