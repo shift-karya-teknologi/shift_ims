@@ -6,11 +6,6 @@
     <span class="my-account-name"><a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a></span>
   </header>
   <nav class="mdl-navigation">
-    <?php if (current_user_can('view-debts-accounts')): ?>
-      <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/finance/debts/') ? ' active' : '' ?>"
-        href="<?= BASE_URL ?>/finance/debts/">Utang Piutang</a>
-      <hr>
-    <?php endif ?>
     <?php if (current_user_can('view-finance-accounts') || current_user_can('view-finance-transaction-categories')): ?>
       <?php if (current_user_can('view-finance-accounts')): ?>
         <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/finance/account/') ? ' active' : '' ?>"
