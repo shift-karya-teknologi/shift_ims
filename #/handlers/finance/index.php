@@ -9,7 +9,9 @@ if ($_SESSION['CURRENT_USER']->groupId == 1) {
     ->fetchAll(PDO::FETCH_OBJ);
 }
 else {
-
+  $data['accounts'] = $db->query("select * from finance_accounts"
+    . " where id in('" . implode("','", get_current_user_finance_account_ids()) . "')")
+    ->fetchAll(PDO::FETCH_OBJ);
 }
 
 render('finance/index', $data);
