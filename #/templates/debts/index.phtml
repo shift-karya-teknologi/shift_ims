@@ -31,14 +31,14 @@
               <tr>
                 <td>Perorangan</td>
                 <td>Rp.</td>
-                <td class="r"><?= format_number($debts['items']['personal']) ?></td>
-                <td class="r"><?= format_number($debts['items']['personalPercent'], 2) ?>%</td>
+                <td class="r"><?= format_number($debts['personal'][0]) ?></td>
+                <td class="r"><?= format_number($debts['personal'][1], 2) ?>%</td>
               </tr>
               <tr>
                 <td>Perusahaan</td>
                 <td>Rp.</td>
-                <td class="r"><?= format_number($debts['items']['company']) ?></td>
-                <td class="r"><?= format_number($debts['items']['companyPercent'], 2) ?>%</td>
+                <td class="r"><?= format_number($debts['company'][0]) ?></td>
+                <td class="r"><?= format_number($debts['company'][1], 2) ?>%</td>
               </tr>
               <tr class="h">
                 <td>Total Piutang</td>
@@ -52,14 +52,14 @@
               <tr>
                 <td>Perorangan</td>
                 <td>Rp.</td>
-                <td class="r"><?= format_number($credits['items']['personal']) ?></td>
-                <td class="r"><?= format_number($credits['items']['personalPercent'], 2) ?>%</td>
+                <td class="r"><?= format_number($credits['personal'][0]) ?></td>
+                <td class="r"><?= format_number($credits['personal'][1], 2) ?>%</td>
               </tr>
               <tr>
                 <td>Perusahaan</td>
                 <td>Rp.</td>
-                <td class="r"><?= format_number($credits['items']['company']) ?></td>
-                <td class="r"><?= format_number($credits['items']['companyPercent'], 2) ?>%</td>
+                <td class="r"><?= format_number($credits['company'][0]) ?></td>
+                <td class="r"><?= format_number($credits['company'][1], 2) ?>%</td>
               </tr>
               <tr class="h">
                 <td>Total Utang</td>

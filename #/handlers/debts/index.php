@@ -4,38 +4,36 @@ ensure_current_user_can('open-debts-app');
 
 $data = [
   'debts'   => [
-    'total'   => 0,
-    'items' => [
-      'personal' => (float)$db->query('select v.b from (select ifnull(sum(balance),0) b from debts_accounts where type=0) v where b>0')->fetchColumn(),
-      'company'  => (float)$db->query('select v.b from (select ifnull(sum(balance),0) b from debts_accounts where type=1) v where b>0')->fetchColumn(),
-      'personalPercent' => 0,
-      'companyPercent'  => 0,
-    ]
+    'total'    => 0,
+    'personal' => [0,0],
+    'company'  => [0,0]
   ],
   'credits' => [
-    'total' => 0,
-    'items' => [
-      'personal' => (float)$db->query('select v.b from (select ifnull(sum(balance),0) b from debts_accounts where type=0) v where b<0')->fetchColumn(),
-      'company'  => (float)$db->query('select v.b from (select ifnull(sum(balance),0) b from debts_accounts where type=1) v where b<0')->fetchColumn(),
-      'personalPercent' => 0,
-      'companyPercent'  => 0,
-    ]
+    'total'    => 0,
+    'personal' => [0,0],
+    'company'  => [0,0]
   ],
   'balance' => 0
 ];
 
-$data['debts']['total']   = $data['debts']['items']['company'] + $data['debts']['items']['personal'];
-$data['credits']['total'] = $data['credits']['items']['company'] + $data['credits']['items']['personal'];
-$data['balance'] = $data['debts']['total'] + $data['credits']['total'];
+$q = $db->query('select * from debts_accounts where balance <> 0');
+while ($r = $q->fetchObject()) {
+  $a = $r->balance > 0 ? 'debts' : 'credits';
+  $b = $r->type == 0 ? 'personal' : 'company';
+  
+  $data[$a]['total'] += $r->balance;
+  $data[$a][$b][0] += $r->balance;
+  $data['balance'] += $r->balance;
+}
 
 if ($data['debts']['total'] != 0) {
-  $data['debts']['items']['companyPercent']  = ($data['debts']['items']['company']  / $data['debts']['total']) * 100;
-  $data['debts']['items']['personalPercent'] = ($data['debts']['items']['personal'] / $data['debts']['total']) * 100;
+  $data['debts']['company'][1]  = ($data['debts']['company'][0] / $data['debts']['total']) * 100;
+  $data['debts']['personal'][1] = ($data['debts']['personal'][0] / $data['debts']['total']) * 100;
 }
 
 if ($data['credits']['total'] != 0) {
-  $data['credits']['items']['companyPercent']  = abs($data['credits']['items']['company']  / $data['credits']['total']) * 100;
-  $data['credits']['items']['personalPercent'] = abs($data['credits']['items']['personal'] / $data['credits']['total']) * 100;
+  $data['credits']['company'][1]  = abs($data['credits']['company'][0] / $data['credits']['total']) * 100;
+  $data['credits']['personal'][1] = abs($data['credits']['personal'][0] / $data['credits']['total']) * 100;
 }
 
 render('debts/index', $data);
