@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  <style>
+    .r {text-align:right}
+    .h td{font-weight:bold;}
+    table{margin:0;width:100%;}
+    tr:first-child td:nth-child(2) {width:40px;}
+    tr td:nth-child(2) {text-align: right;}
+    tr:first-child td:nth-child(3) {width:90px;}
+  </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Multi Payment</span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <?= render('multipayment/drawer') ?>
+      <?php $grandTotal = 0; ?>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--4-col">
+            <table>
+              <tr><td colspan="3"></td></tr>
+              <?php foreach ($accounts as $account): ?>
+                <?php $grandTotal += $account->balance; ?>
+                <tr>
+                  <td><?= e($account->name) ?></td>
+                  <td>Rp. </td>
+                  <td class="r"><?= format_number($account->balance) ?></td>
+                </tr>
+              <?php endforeach ?>
+              <tr class="h">
+                <td>Grand Total</td>
+                <td>Rp. </td>
+                <td class="r"><?= format_number($grandTotal) ?></td>
+              </tr> 
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>

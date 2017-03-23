@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  </head>
+  <body>
+    <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title"><?= !$account->id ? 'Tambah' : 'Edit' ?> Akun Multi Payment</span>
+          <div class="mdl-layout-spacer"></div>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
+            type="submit" name="action" value="save"><i class="material-icons left">check</i></button>
+          <?php if ($account->id && current_user_can('delete-multipayment-account')): ?>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button"
+            type="submit" name="action" value="delete"><i class="material-icons left">delete_forever</i></button>
+          <?php endif ?>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <?php if ($account->id): ?>
+            <input type="hidden" name="id" value="<?= $account->id ?>">
+          <?php endif ?>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
+            !empty($errors['name']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?= e($account->name) ?>" maxlength="100" id="name" name="name">
+            <label class="mdl-textfield__label" for="name">Nama Akun</label>
+            <?php if (!empty($errors['name'])): ?>
+              <span class="form-error"><?= $errors['name'] ?></span>
+            <?php endif ?>
+          </div>
+          <div class="mdl-cell mdl-cell--1-col">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="active">
+              <input type="checkbox" id="active" class="mdl-checkbox__input" value="1"
+                     name="active" <?= $account->active ? 'checked' : '' ?>>
+              <span class="mdl-checkbox__label">Aktif</span>
+            </label>
+          </div>
+        </div>
+      </main>
+    </form>
+    <?= render('foot') ?>
+    <script>
+      var deleteButton = document.querySelector('#delete-button');
+      if (deleteButton) { deleteButton.addEventListener('click', function(e) { if (!confirm('Hapus Akun?')) { e.preventDefault(); return; } }); }
+    </script>
+  </body>
+</html>

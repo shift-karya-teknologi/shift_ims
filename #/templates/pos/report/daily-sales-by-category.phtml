@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+    <style>
+      .h {font-weight:bold;}
+      .i td:first-child{padding-left:10px;}
+      .r{text-align:right;}
+      table{border-collapse:collapse;width:100%;}
+    </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title"><small>Penjualan Harian per Kategori</small></span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <?= render('pos/drawer') ?>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--4-col">
+            <table>
+              <tr class="h">
+                <td colspan="5"><?= strftime('%A, %d %B %Y', strtotime($dateTime)) ?><br><br></td>
+              </tr>
+              <?php $grandTotalPrice = 0; $grandTotalProfit = 0; ?>
+              <?php foreach ($data as $categoryName => $items): ?>
+                <?php $subtotalPrice = 0; $subtotalProfit = 0; ?>
+                <tr class="h">
+                  <td colspan="5"><?= e($categoryName) ?></td>
+                </tr>
+                <?php foreach ($items as $name => $item): ?>
+                  <tr class="i">
+                    <td><?= e($name) ?></td>
+                    <td class="r"><?= format_number($item['quantity']) ?></td>
+                    <td><?= e($item['uom']) ?></td>
+                    <td class="r"><?= format_number($item['price']) ?></td>
+                    <td class="r"><?= format_number($item['profit']) ?></td>
+                  </tr>
+                  <?php $subtotalPrice += $item['price']; $subtotalProfit += $item['profit']; ?>
+                <?php endforeach ?>
+                <tr class="h">
+                  <td colspan="3">Subtotal</td>
+                  <td class="r"><?= format_number($subtotalPrice) ?></td>
+                  <td class="r"><?= format_number($subtotalProfit) ?></td>
+                </tr>
+                <tr><td colspan="5"><br></td></tr>
+                <?php $grandTotalPrice += $subtotalPrice; $grandTotalProfit += $subtotalProfit; ?>
+              <?php endforeach ?>
+              <tr class="h">
+                <td colspan="3>">Grand Total</td>
+                <td class="r"><?= format_number($grandTotalPrice) ?></td>
+                <td class="r"><?= format_number($grandTotalProfit) ?></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>

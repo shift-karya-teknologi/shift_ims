@@ -5,6 +5,9 @@
   <?php if (current_user_can('open-pos-app')): ?>
     <a href="<?= BASE_URL ?>/pos/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">store</i><br>POS</a>
   <?php endif ?>
+  <?php if (current_user_can('open-multipayment-app')): ?>
+    <a href="<?= BASE_URL ?>/multipayment/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">account_balance_wallet</i><br>Multi Payment</a>
+  <?php endif ?>
   <?php if (current_user_can('open-finance-app')): ?>
     <a href="<?= BASE_URL ?>/finance/" class="mdl-cell mdl-cell--1-col"><i class="material-icons">local_atm</i><br>Keuangan</a>
   <?php endif ?>

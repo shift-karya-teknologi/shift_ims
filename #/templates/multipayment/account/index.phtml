@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Akun MultiPayment (<?= count($items) ?>)</span>
+          <div class="mdl-layout-spacer"></div>
+          <?php if (current_user_can('add-multipayment-account')): ?>
+          <a href="./editor" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">add</i>
+          </a>
+          <?php endif ?>
+        </div>
+      </header>
+      <?= render('multipayment/drawer') ?>
+      <main class="mdl-layout__content">
+        <div id="product-list" class="mdlx-data-list">
+          <?php foreach ($items as $item): ?>
+            <div class="mdlx-data-list__item <?= $item->active ? '' : 'r' ?>">
+              <span style="float:right;"><?= format_number($item->balance) ?></span>
+              <?php if (current_user_can('view-multipayment-transactions')): ?>
+                <a href="../transaction/?accountId=<?= $item->id ?>">
+                  <?= e($item->name) ?>
+                </a>
+              <?php else: ?>
+                <?= e($item->name) ?>
+              <?php endif ?>
+            </div>
+          <?php endforeach ?>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>

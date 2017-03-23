@@ -6,7 +6,7 @@
     <span class="my-account-name">
       <a class="mdl-color-text--white" href="<?= BASE_URL ?>/account"><?= $_SESSION['CURRENT_USER']->username ?></a>
       <a class="mdl-color-text--white" style="float:right;font-weight:bold;"
-         href="<?= BASE_URL ?>/finance/account/view?id=<?= g('cfg')['store_account_id'] ?>">
+         href="<?= BASE_URL ?>/finance/transaction/?accountId=<?= g('cfg')['store_account_id'] ?>">
         <?= format_money(get_store_account_balance()) ?>
       </a>
     </span>
