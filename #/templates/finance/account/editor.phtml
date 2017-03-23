@@ -7,7 +7,7 @@
     <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-          <a href="<?= $account->id ? './view?id=' . $account->id : './' ?>" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+          <a href="<?= $account->id ? '../transaction/?accountId=' . $account->id : './' ?>" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">arrow_back</i>
           </a>
           <span class="mdl-layout-title"><?= !$account->id ? 'Tambah' : 'Edit' ?> Akun / Rekening</span>

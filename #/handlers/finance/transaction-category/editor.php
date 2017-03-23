@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($action === 'delete') {
     ensure_current_user_can('delete-finance-transaction-category');
     try {
-      $db->query('delete from operational_cost_categories where id=' . $category->id);
+      $db->query('delete from finance_transaction_categories where id=' . $category->id);
     }
     catch (Exception $ex) {
       $_SESSION['FLASH_MESSAGE'] = 'Kategori tidak dapat dihapus.';

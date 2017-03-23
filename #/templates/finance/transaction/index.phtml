@@ -10,14 +10,14 @@
     <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-          <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+          <a href="../account/" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">arrow_back</i>
           </a>
           <span class="mdl-layout-title"><?= e($account->name) ?></span>
           <div class="mdl-layout-spacer"></div>
           <?php if (current_user_can('add-finance-transaction')): ?>
-          <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
-            href="./transaction-editor?accountId=<?= $account->id ?>"><i class="material-icons left">add</i></a>
+            <a class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
+              href="./editor?accountId=<?= $account->id ?>"><i class="material-icons left">add</i></a>
           <?php endif ?>
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
             <i class="material-icons">filter_list</i>
@@ -34,7 +34,7 @@
               <?php endif ?>
               <?php if (current_user_can('edit-finance-account')): ?>
                 <li class="mdl-menu__item">
-                  <a href="./editor?id=<?= $account->id ?>"><i class="material-icons left">edit</i> Edit</a>
+                  <a href="../account/editor?id=<?= $account->id ?>"><i class="material-icons left">edit</i> Edit</a>
                 </li>
               <?php endif ?>
             </ul>
@@ -61,12 +61,8 @@
                   ($item->amount > 0 ? '+' : '') . format_number($item->amount) ?></b></span><br>
                   <small><?= format_number($balanceAfter) ?></small>
               </div>
-              <div>
-                <a href="./transaction-editor?id=<?= $item->id ?>">
-                <?= e($item->description) ?>
-                </a>
-              </div>
-              <small><?= to_locale_datetime($item->dateTime) ?></small>
+              <small><a href="./editor?id=<?= $item->id ?>"><?= to_locale_datetime($item->dateTime) ?></a></small>
+              <div><?= e($item->description) ?></div>
             </div>
           <?php $balance -= $item->amount ?>
           <?php endforeach ?>

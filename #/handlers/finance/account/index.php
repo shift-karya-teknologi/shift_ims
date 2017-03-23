@@ -4,6 +4,6 @@ ensure_current_user_can('view-finance-accounts');
 
 $items = get_current_user_finance_accounts();
 
-render('finance/account/list', [
+render('finance/account/index', [
   'items' => $items,
 ]);

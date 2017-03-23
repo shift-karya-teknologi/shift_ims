@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     FinanceAccount::updateBalance($transaction->accountId);
     $db->commit();
     $_SESSION['FLASH_MESSAGE'] = 'Transaksi kas telah dihapus.';
-    header('Location: ./view?id=' . $transaction->accountId);
+    header('Location: ./?accountId=' . $transaction->accountId);
     exit;
   }
   else if ($action === 'save') {
@@ -74,13 +74,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $db->commit();
 
       $_SESSION['FLASH_MESSAGE'] = 'Transaksi kas disimpan.';
-      header('Location: ./view?id=' . $transaction->accountId);
+      header('Location: ./?accountId=' . $transaction->accountId);
       exit;
     }
   }
 }
 
-render('finance/account/transaction-editor', [
+render('finance/transaction/editor', [
   'transaction' => $transaction,
   'categories' => $categories,
   'errors'   => $errors,

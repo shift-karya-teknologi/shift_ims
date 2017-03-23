@@ -5,13 +5,13 @@ ensure_current_user_can('view-finance-account');
 require CORELIB_PATH . '/FinanceAccount.php';
 require CORELIB_PATH . '/FinanceTransaction.php';
 
-$id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
+$id = isset($_REQUEST['accountId']) ? (int)$_REQUEST['accountId'] : 0;
 
 if ($id) {
   $account = $db->query('select * from finance_accounts where id=' . $id)->fetchObject(FinanceAccount::class);
   if (!$account) {
     $_SESSION['FLASH_MESSAGE'] = 'Akun tidak ditemukan';
-    header('Location: ./');
+    header('Location: ../account/');
     exit;
   }
   
@@ -99,7 +99,7 @@ $q = $db->query("select sum(amount)"
   . " and dateTime<='$endDateTime'");
 $account->lastBalance = $q->fetchColumn();
 
-render('finance/account/view', [
+render('finance/transaction/index', [
   'account' => $account,
   'items'   => $items,
   'filter'  => $filter,

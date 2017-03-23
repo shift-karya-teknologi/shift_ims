@@ -56,14 +56,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->commit();
       
     $_SESSION['FLASH_MESSAGE'] = 'Transfer kas disimpan.';
-    header('Location: ./');
+    header('Location: ./accountId=' . $data->fromId);
     exit;
   }
 }
 
 $accounts = $db->query('select * from finance_accounts where id<>' . $data->fromId)->fetchAll(PDO::FETCH_OBJ);
 
-render('finance/account/transfer', [
+render('finance/transaction/transfer', [
   'data' => $data,
   'accounts' => $accounts,
   'errors' => $errors,
