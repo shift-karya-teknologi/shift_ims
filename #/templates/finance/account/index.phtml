@@ -22,7 +22,7 @@
           <?php foreach ($items as $item): ?>
             <div class="mdlx-data-list__item <?= $item->active ? '' : 'r' ?>">
               <span style="float:right;"><?= format_number($item->balance) ?></span>
-              <?php if (current_user_can('view-finance-account')): ?>
+              <?php if (current_user_can('view-finance-transactions')): ?>
                 <a href="../transaction/?accountId=<?= $item->id ?>">
                   <?= e($item->name) ?>
                 </a>
