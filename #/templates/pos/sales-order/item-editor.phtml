@@ -80,10 +80,12 @@
     <?= render('foot') ?>
     <script>
       var products = <?= json_encode($products) ?>;
+      var multipaymentProducts = <?= json_encode($multiPaymentProducts) ?>;
       var productsByIds = new Map()
         , productsByNames = new Map()
         , productsByCodes = new Map()
         , selectedProduct;
+      var multipaymentProductsByAccountIds = new Map();
       
       var i;
       for (i = 0; i < products.length; i++) {
@@ -91,6 +93,20 @@
         productsByIds.set(product.id, product);
         productsByNames.set(product.name.toLowerCase(), product);
         productsByCodes.set(product.code.toLowerCase(), product);
+      }
+      
+      for (i = 0; i < multipaymentProducts.length; i++) {
+        var product = multipaymentProducts[i];
+        product.accountId = parseInt(product.accountId);
+        product.productId = parseInt(product.productId);
+        product.cost = parseInt(product.cost);
+        product.price = parseInt(product.price);
+        
+        if (!multipaymentProductsByAccountIds.get(product.accountId))
+          multipaymentProductsByAccountIds.set(product.accountId, new Map());
+        
+        multipaymentProductsByAccountIds.get(product.accountId)
+          .set(product.productId, { cost: product.cost, price:product.price });
       }
 
       var productNameTextBox = document.querySelector('#productName');
@@ -100,10 +116,18 @@
       var productIdInput = document.querySelector('#productId');
       var priceHintElement = document.querySelector('#price-hint');
       var costEditor = document.querySelector('#cost-editor');
+      var costTextBox = document.querySelector('#cost');
       var multiPaymentAccountSelect = document.querySelector('#multiPaymentAccountSelect');
+      var multiPaymentAccountSelect2 = document.querySelector('#multiPaymentAccountId');
       
       function updatePrice() {
         priceHintElement.innerHTML = "Harga tidak ditemukan.";
+        
+        if (selectedProduct.type === '101') {
+          priceHintElement.innerHTML = "";
+          updateSubtotal();
+          return;
+        }
         
         var quantity = parseInt(quantityTextBox.value.replace(/\./g, '').replace(/,/g, '.'));
         if (selectedProduct && quantity > 0) {
@@ -121,6 +145,8 @@
           }
 
           if (priceFound) {
+            priceHintElement.innerHTML = "";
+            
             var min = 0, max = 0, tmpMin, tmpMax;
             for (i = 1; i <= 3; i++) {
               tmpMin = priceFound['price' + i + 'Min'];
@@ -167,8 +193,20 @@
         if (selectedProduct) {
           productIdInput.value = selectedProduct.id;
           if (selectedProduct.type === '101' || selectedProduct.type === '1') {
-            costEditor.style.display = 'inherit';
+            //costEditor.style.display = 'inherit';
             multiPaymentAccountSelect.style.display = 'inherit';
+            
+            var selectedAccountId = parseInt(multiPaymentAccountSelect2.value);
+            var mpp = multipaymentProductsByAccountIds.get(selectedAccountId);
+            
+            if (mpp) {
+              var mp = mpp.get(parseInt(selectedProduct.id));
+              if (mp) {
+                priceTextBox.value = mp.price.toLocale();
+                costTextBox.value = mp.cost.toLocale();
+                updateSubtotal();
+              }
+            }
           }
         }
       }
@@ -177,6 +215,7 @@
       productNameTextBox.addEventListener('change', updatePrice);
       quantityTextBox.addEventListener('change', updatePrice);
       priceTextBox.addEventListener('change', updateSubtotal);
+      multiPaymentAccountSelect.addEventListener('change', onProductChanged);
       
       // handle delete
       var deleteButton = document.querySelector('#delete-button');

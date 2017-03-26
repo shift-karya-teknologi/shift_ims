@@ -133,12 +133,15 @@ while ($price = $q->fetchObject()) {
   }
 }
 
-$multiPaymentAccounts = $db->query('select id, name from multipayment_accounts where active=1 order by name asc')->fetchAll(PDO::FETCH_OBJ);
+$multiPaymentAccounts = $db->query('select id, name from multipayment_accounts where active=1 order by name asc')
+  ->fetchAll(PDO::FETCH_OBJ);
+$multiPaymentProducts = $db->query('select * from multipayment_products')->fetchAll(PDO::FETCH_OBJ);
 
 render('pos/sales-order/item-editor', [
   'item' => $item,
   'products' => $products,
   'productByIds' => $productByIds,
   'multiPaymentAccounts' => $multiPaymentAccounts,
+  'multiPaymentProducts' => $multiPaymentProducts,
   'errors' => $errors,
 ]);
