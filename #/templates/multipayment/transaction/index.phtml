@@ -3,7 +3,7 @@
   <head>
   <?= render('head') ?>
   <style>
-    .fr{float:right;}
+    .fr{float:right;text-align:right;}
   </style>
   </head>
   <body>
@@ -49,10 +49,10 @@
               <?php if (current_user_can('edit-multipayment-transaction')): ?>
                 <a href="./editor?id=<?= $item->id ?>">
               <?php endif ?>
-              <span class="fr"><b><?= format_number($item->amount) ?></b>
+                <span class="fr"><b><?= format_number($item->amount) ?></b>
               </span>
-                  <b><?= e($item->accountName) . ' | ' . $item->getTypeName() . ' | ' . e($item->description) ?></b>
-                  <br><small><?= to_locale_datetime($item->dateTime) ?> <?= $item->getCode(); ?> <?= $item->username ?></small>
+                  <small><?= to_locale_datetime($item->dateTime) . ' <b>' . $item->getTypeName() . '</b> ' . $item->username ?></small>
+                  <br><b><?= e($item->description) ?></b>
               <?php if (current_user_can('edit-multipayment-transaction')): ?>
                 </a>
               <?php endif ?>

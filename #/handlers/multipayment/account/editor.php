@@ -81,7 +81,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
-render('pos/multipayment-account/editor', [
+if ($account->id) {
+  $products = $db->query('select mp.*, p.name productName'
+    . ' from multipayment_products mp'
+    . ' inner join products p on p.id=mp.productId'
+    . ' where mp.accountId=' . $account->id)
+    ->fetchAll(PDO::FETCH_OBJ);
+}
+
+render('multipayment/account/editor', [
   'account' => $account,
+  'products' => $products,
   'errors'   => $errors,
 ]);

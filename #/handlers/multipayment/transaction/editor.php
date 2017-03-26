@@ -6,7 +6,8 @@ $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 if ($id) {
   ensure_current_user_can('edit-multipayment-transaction');
   
-  $transaction = $db->query("select * from multipayment_transactions where id=$id")->fetchObject(MultiPaymentTransaction::class);
+  $transaction = $db->query("select * from multipayment_transactions where id=$id")
+    ->fetchObject(MultiPaymentTransaction::class);
   
   if (!$transaction) {
     $transaction = new MultiPaymentTransaction();
@@ -29,6 +30,8 @@ else {
 
 $types = MultiPaymentTransaction::getTypes();
 unset($types[MultiPaymentTransaction::Sales]);
+unset($types[MultiPaymentTransaction::Adjustment]);
+unset($types[MultiPaymentTransaction::TopUp]);
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

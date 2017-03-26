@@ -13,6 +13,11 @@
     </div>
   </header>
   <nav class="mdl-navigation">
+    <?php if (current_user_can('view-multipayment-transactions')): ?>
+      <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/multipayment/transaction/') ? ' active' : '' ?>"
+        href="<?= BASE_URL ?>/multipayment/transaction/"><i class="material-icons">payment</i>Transaksi</a>
+      <hr>
+    <?php endif ?>
     <?php if (current_user_can('view-multipayment-accounts')): ?>
       <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/multipayment/account/') ? ' active' : '' ?>"
         href="<?= BASE_URL ?>/multipayment/account/"><i class="material-icons">account_balance_wallet</i>Akun</a>

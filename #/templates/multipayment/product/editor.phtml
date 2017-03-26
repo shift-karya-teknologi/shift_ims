@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  </head>
+  <body>
+    <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="../account/editor?id=<?= $item->accountId ?>" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title"><small><?= ($item->productId ? 'Edit' : 'Tambah') . ' Produk ' . e($item->accountName)?></small></span>
+          <div class="mdl-layout-spacer"></div>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="save-button"
+            type="submit" name="action" value="save"><i class="material-icons left">check</i></button>
+          <?php if ($item->productId): ?>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="delete-button" type="submit" name="action" value="delete">
+              <i class="material-icons left">delete</i>
+            </button>
+          <?php endif ?>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <input type="hidden" name="accountId" value="<?= $item->accountId ?>">
+          <input type="hidden" id="productId" name="productId" value="<?= $item->productId ?>">
+          <datalist id="product-list">
+            <?php foreach ($products as $product): ?>
+            <option value="<?= e($product->name) ?>" />
+            <?php endforeach; ?>
+          </datalist>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?= !empty($errors['productId']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input" type="text" value="<?= e($item->productName) ?>" id="productName" name="productName" list="product-list">
+            <label class="mdl-textfield__label" for="productName">Produk</label>
+            <?php if (!empty($errors['productId'])): ?>
+              <span class="form-error"><?= $errors['productId'] ?></span>
+            <?php endif ?>
+          </div>
+        </div>
+        
+        <div class="mdl-grid">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+              !empty($errors['cost']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($item->cost) ?>" id="cost" name="cost">
+            <label class="mdl-textfield__label" for="cost">Modal</label>
+            <span class="form-error"></span>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
+              !empty($errors['price']) ? 'is-invalid' : '' ?>">
+            <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($item->price) ?>" id="price" name="price">
+            <label class="mdl-textfield__label" for="price">Harga</label>
+            <span class="form-error"></span>
+          </div>
+        </div>
+      </main>
+    </form>
+    <?= render('foot') ?>
+    <script>
+      var products = <?= json_encode($products) ?>;
+      var productsByIds = new Map()
+        , productsByNames = new Map()
+        , selectedProduct;
+      
+      var i;
+      for (i = 0; i < products.length; i++) {
+        var product = products[i];
+        productsByIds.set(product.id, product);
+        productsByNames.set(product.name.toLowerCase(), product);
+      }
+
+      var productNameTextBox = document.querySelector('#productName');
+      var productIdInput = document.querySelector('#productId');
+      
+      function onProductChanged() {
+        productIdInput.value = "0";
+        
+        var text = productNameTextBox.value.trim().toLowerCase();
+        selectedProduct = productsByNames.get(text);
+        
+        if (selectedProduct) {
+          productIdInput.value = selectedProduct.id;
+        }
+      }
+      
+      productNameTextBox.addEventListener('change', onProductChanged);
+      
+      // handle delete
+      confirmOnClick('#delete-button', 'Hapus rekaman?');
+      
+      onProductChanged();
+    </script>
+  </body>
+</html>

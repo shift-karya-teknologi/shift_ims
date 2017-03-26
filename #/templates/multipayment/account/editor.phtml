@@ -27,7 +27,8 @@
           <?php endif ?>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col <?=
             !empty($errors['name']) ? 'is-invalid' : '' ?>">
-            <input class="mdl-textfield__input" type="text" value="<?= e($account->name) ?>" maxlength="100" id="name" name="name">
+            <input class="mdl-textfield__input" type="text" value="<?= e($account->name) ?>"
+                   maxlength="100" id="name" name="name">
             <label class="mdl-textfield__label" for="name">Nama Akun</label>
             <?php if (!empty($errors['name'])): ?>
               <span class="form-error"><?= $errors['name'] ?></span>
@@ -41,12 +42,51 @@
             </label>
           </div>
         </div>
+        <?php if ($account->id): ?>
+          <div class="mdl-grid">
+            <div id="price-list-container" class="mdl-cell mdl-cell--6-col mdl-cell--4-col-mobile">
+              <h5>Daftar Produk
+                <a href="../product/editor?accountId=<?= $account->id ?>"
+                   class="mdl-button mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
+                  <i class="material-icons">add</i>
+                </a>
+              </h5>
+              <?php if (empty($products)): ?>
+                <p>Produk tidak tersedia.</p>
+              <?php else: ?>
+                <div class="mdlx-data-table--responsive">
+                  <table class="mdl-data-table condensed">
+                    <thead>
+                      <tr>
+                        <th>Nama Produk</th>
+                        <th>Modal</th>
+                        <th>Harga</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php foreach ($products as $product): ?>
+                        <tr>
+                          <td>
+                            <a href="../product/editor?productId=<?= $product->productId ?>&accountId=<?= $account->id ?>">
+                              <?= $product->productName ?>
+                            </a>
+                          </td>
+                          <td><?= format_number($product->cost) ?></td>
+                          <td><?= format_number($product->price) ?></td>
+                        </tr>
+                      <?php endforeach ?>
+                    </tbody>
+                  </table>
+                </div>
+              <?php endif ?>
+            </div>
+          </div>
+        <?php endif ?>
       </main>
     </form>
     <?= render('foot') ?>
     <script>
-      var deleteButton = document.querySelector('#delete-button');
-      if (deleteButton) { deleteButton.addEventListener('click', function(e) { if (!confirm('Hapus Akun?')) { e.preventDefault(); return; } }); }
+      confirmOnClick('delete-button', 'Hapus akun?');
     </script>
   </body>
 </html>
