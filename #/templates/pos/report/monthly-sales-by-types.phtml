@@ -10,23 +10,22 @@
     </style>
   </head>
   <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
           <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">arrow_back</i>
           </a>
-          <span class="mdl-layout-title"><small>Penjualan Harian per Jenis</small></span>
+          <span class="mdl-layout-title"><small>Penjualan Bulanan per Jenis</small></span>
           <div class="mdl-layout-spacer"></div>
         </div>
       </header>
-      <?= render('pos/drawer') ?>
       <main class="mdl-layout__content">
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">
             <table>
               <tr class="h">
-                <td colspan="5"><?= strftime('%A, %d %B %Y', strtotime($dateTime)) ?><br><br></td>
+                <td colspan="5"><?= strftime('%B %Y', strtotime($dateTime)) ?><br><br></td>
               </tr>
               <?php $grandTotalPrice = 0; $grandTotalProfit = 0; ?>
               <?php foreach ($data as $type => $items): ?>

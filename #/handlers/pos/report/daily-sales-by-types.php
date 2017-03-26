@@ -39,7 +39,7 @@ while ($record = $q->fetchObject()) {
   $items[$record->productType][$record->productName]['price'] += $record->subtotalPrice;
   $items[$record->productType][$record->productName]['profit'] += ($record->subtotalPrice - $record->subtotalCost);
 }
-render('pos/report/daily-sales-by-type', [
+render('pos/report/daily-sales-by-types', [
   'dateTime' => $startDateTime->format('Y-m-d H:i:s'),
   'data' => $items
 ]);

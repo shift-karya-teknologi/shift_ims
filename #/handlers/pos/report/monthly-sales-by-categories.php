@@ -5,9 +5,9 @@ require CORELIB_PATH . '/Product.php';
 if ($_SESSION['CURRENT_USER']->groupId != 1)
   exit(header('Location: ./'));
   
-$startDateTime = new DateTime(date('Y-m-d 00:00:00'));
+$startDateTime = new DateTime(date('Y-m-01 00:00:00'));
 $endDateTime = clone $startDateTime;
-$endDateTime->add(new DateInterval('P1D'));
+$endDateTime->add(new DateInterval('P1M'));
 
 $q = $db->prepare('select d.*,'
   . ' p.name productName, p.uom uom, c.name categoryName'
@@ -40,7 +40,7 @@ while ($record = $q->fetchObject()) {
   $items[$record->categoryName][$record->productName]['price'] += $record->subtotalPrice;
   $items[$record->categoryName][$record->productName]['profit'] += ($record->subtotalPrice - $record->subtotalCost);
 }
-render('pos/report/daily-sales-by-category', [
+render('pos/report/monthly-sales-by-categories', [
   'dateTime' => $startDateTime->format('Y-m-d H:i:s'),
   'data' => $items
 ]);
