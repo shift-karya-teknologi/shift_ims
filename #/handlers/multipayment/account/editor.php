@@ -85,7 +85,8 @@ if ($account->id) {
   $products = $db->query('select mp.*, p.name productName'
     . ' from multipayment_products mp'
     . ' inner join products p on p.id=mp.productId'
-    . ' where mp.accountId=' . $account->id)
+    . ' where mp.accountId=' . $account->id
+    . ' order by p.name asc')
     ->fetchAll(PDO::FETCH_OBJ);
 }
 
