@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
   <head>
-  <?= render('head') ?>
+  <?= render('head') ?> 
+    <style>th.r,td.r{text-align:right;}</style>
   </head>
   <body>
     <form method="POST" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
@@ -44,7 +45,7 @@
         </div>
         <?php if ($account->id): ?>
           <div class="mdl-grid">
-            <div id="price-list-container" class="mdl-cell mdl-cell--6-col mdl-cell--4-col-mobile">
+            <div id="price-list-container" class="mdl-cell mdl-cell--4-col">
               <h5>Daftar Produk
                 <a href="../product/editor?accountId=<?= $account->id ?>"
                    class="mdl-button mdl-button--fab mdl-button--mini-fab mdl-js-button mdl-js-ripple-effect">
@@ -59,8 +60,9 @@
                     <thead>
                       <tr>
                         <th>Nama Produk</th>
-                        <th>Modal</th>
-                        <th>Harga</th>
+                        <th class="r">Modal</th>
+                        <th class="r">Harga</th>
+                        <th class="r">Laba</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -71,8 +73,9 @@
                               <?= $product->productName ?>
                             </a>
                           </td>
-                          <td><?= format_number($product->cost) ?></td>
-                          <td><?= format_number($product->price) ?></td>
+                          <td class="r"><?= format_number($product->cost) ?></td>
+                          <td class="r"><?= format_number($product->price) ?></td>
+                          <td class="r"><?= format_number($product->price - $product->cost) ?></td>
                         </tr>
                       <?php endforeach ?>
                     </tbody>
