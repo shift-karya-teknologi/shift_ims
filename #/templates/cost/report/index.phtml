@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Laporan</span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <?= render('cost/drawer') ?>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <div><a href="./monthly-detail">Rincian Biaya Operasional Bulanan</a></div>
+            <div><a href="./monthly-recap">Rekapitulasi Biaya Operasional Bulanan</a></div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>

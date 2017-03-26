@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+    <style>
+      .h {font-weight:bold;}
+      .i td:first-child{padding-left:20px;}
+      th.r, td.r{text-align:right;}
+      table{border-collapse:collapse;width:100%;}
+      td{padding:0 5px;}
+      tfoot th{border-bottom: 1px solid #bbb;}
+      h3{margin:0 0 10px;font-size:16px;font-weight:bold;line-height:normal;}
+    </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title">Rekapitulasi Operasional</span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--4-col">
+            <form>
+              <input type="month" value="<?= date('Y-m', $date) ?>" name="month">
+              <input type="submit" value="OK">
+            </form>
+            <br>
+            <div class="mdlx-data-table--responsive">
+            <table class="mdl-data-table condensed">
+              <thead>
+                <th style="width:30px;" class="r">No.</th>
+                <th>Kategori</th>
+                <th style="width:100px;" class="r">Jumlah</th>
+              </thead>
+              <tbody>
+                <?php $total = 0; $i = 1; ?>
+                <?php foreach ($items as $categoryName => $subTotal): ?>
+                  <?php $total += $subTotal; ?>
+                  <tr>
+                    <td class="r"><?= format_number($i++) ?></td>
+                    <td><?= e($categoryName) ?></td>
+                    <td class="r"><?= format_number($subTotal) ?></td>              
+                  </tr>
+                <?php endforeach ?>
+              </tbody>
+              <tfoot>
+                <th colspan="2">Grand Total</th>
+                <th class="r"><?= format_number($total) ?></th>
+              </tfoot>
+            </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>

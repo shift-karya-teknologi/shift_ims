@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+    <style>
+      .h {font-weight:bold;}
+      .i td:first-child{padding-left:20px;}
+      .r{text-align:right;}
+      table{border-collapse:collapse;width:100%;}
+      td{padding:0 5px;}
+      tfoot th{border-bottom: 1px solid #bbb;}
+      h3{margin:0 0 10px;font-size:16px;font-weight:bold;line-height:normal;}
+    </style>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdlx-layout__no-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <span class="mdl-layout-title">Rincian Operasional</span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <form>
+              <input type="month" value="<?= date('Y-m', $date) ?>" name="month">
+              <input type="submit" value="OK">
+            </form>
+            <br>
+            <div class="mdlx-data-table--responsive">
+            <table class="mdl-data-table condensed">
+              <thead>
+                <th style="width:25px;">Tgl</th>
+                <th>Kategori</th>
+                <th style="width:80px;">Jumlah</th>
+                <th>Deskripsi</th>
+              </thead>
+              <tbody>
+                <?php $total = 0; ?>
+                <?php foreach ($items as $array): ?>
+                  <?php foreach ($array as $item): ?>
+                    <?php $total += $item->amount; ?>
+                    <tr>
+                      <td class="r"><?= date('d', strtotime($item->dateTime)) ?></td>
+                      <td><?= e($item->categoryName) ?></td>
+                      <td class="r"><?= format_number($item->amount) ?></td>
+                      <td><?= e($item->description) ?></td>
+                    </tr>
+                  <?php endforeach ?>
+                <?php endforeach ?>
+              </tbody>
+              <tfoot>
+                <th colspan="2">Grand Total</th>
+                <th class="r"><?= format_number($total) ?></th>
+                <th></th>
+              </tfoot>
+            </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>

@@ -12,6 +12,11 @@
     </span>
   </header>
   <nav class="mdl-navigation">
+    <?php if (current_user_can('view-operational-cost-reports')): ?>
+      <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/cost/report/') ? ' active' : '' ?>"
+        href="<?= BASE_URL ?>/cost/report/"><i class="material-icons">trending_up</i>Laporan</a>
+      <hr>
+    <?php endif ?>
     <?php if (current_user_can('view-operational-costs')): ?>
       <a class="mdl-navigation__link<?= str_starts_with($_SERVER['PATH_INFO'], '/cost/transaction/') ? ' active' : '' ?>"
         href="<?= BASE_URL ?>/cost/transaction/"><i class="material-icons">money_off</i>Biaya Operasional</a>

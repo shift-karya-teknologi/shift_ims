@@ -321,3 +321,12 @@ function get_store_account_balance() {
   global $db, $cfg;
   return (int)$db->query("select balance from finance_accounts where id={$cfg['store_account_id']}")->fetchColumn();
 }
+
+function check_mysql_date($date)
+{
+    $matches = null;
+    if (preg_match( '#^(?P<year>\d{2}|\d{4})([- /.])(?P<month>\d{1,2})\2(?P<day>\d{1,2})$#', $date, $matches )
+           && checkdate($matches['month'],$matches['day'],$matches['year']))
+      return $matches;
+    return false;
+}
