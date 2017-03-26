@@ -44,13 +44,15 @@
               !empty($errors['cost']) ? 'is-invalid' : '' ?>">
             <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($item->cost) ?>" id="cost" name="cost">
             <label class="mdl-textfield__label" for="cost">Modal</label>
-            <span class="form-error"></span>
           </div>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col <?=
               !empty($errors['price']) ? 'is-invalid' : '' ?>">
             <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($item->price) ?>" id="price" name="price">
             <label class="mdl-textfield__label" for="price">Harga</label>
-            <span class="form-error"></span>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
+            <input class="mdl-textfield__input numberEditor" type="text" value="<?= format_number($item->price - $item->cost) ?>" id="profit">
+            <label class="mdl-textfield__label" for="profit">Laba</label>
           </div>
         </div>
       </main>
@@ -71,6 +73,9 @@
 
       var productNameTextBox = document.querySelector('#productName');
       var productIdInput = document.querySelector('#productId');
+      var costTextBox = document.querySelector('#cost');
+      var priceTextBox = document.querySelector('#price');
+      var profitTextBox = document.querySelector('#profit');
       
       function onProductChanged() {
         productIdInput.value = "0";
@@ -83,7 +88,16 @@
         }
       }
       
+      function updateProfit() {
+        profitTextBox.value = (priceTextBox.value.toLocaleNumber() - costTextBox.value.toLocaleNumber()).toLocale();
+      }
+      
       productNameTextBox.addEventListener('change', onProductChanged);
+      costTextBox.addEventListener('change', updateProfit);
+      priceTextBox.addEventListener('change', updateProfit);
+      profitTextBox.addEventListener('change', function() {
+        costTextBox.value = (priceTextBox.value.toLocaleNumber() - this.value.toLocaleNumber()).toLocale();
+      });
       
       // handle delete
       confirmOnClick('#delete-button', 'Hapus rekaman?');
