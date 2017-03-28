@@ -1,6 +1,6 @@
 <?php
 
-ensure_current_user_can('view-finance-account');
+ensure_current_user_can('view-finance-transactions');
 
 require CORELIB_PATH . '/FinanceAccount.php';
 require CORELIB_PATH . '/FinanceTransaction.php';

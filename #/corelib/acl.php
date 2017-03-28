@@ -20,7 +20,7 @@ $__ACL__ = [
     'open-shiftnet-app',
     
     'open-finance-app',
-    'view-finance-accounts', 'view-finance-account', 'transfer-cash', 'add-finance-transaction',
+    'view-finance-accounts', 'view-finance-account', 'view-finance-transactions', 'transfer-cash', 'add-finance-transaction',
     
     'open-operational-cost-app',
     'view-operational-costs', 'add-operational-cost',
@@ -39,7 +39,7 @@ $__ACL__ = [
     'open-shiftnet-app',
     
     'open-finance-app',
-    'view-finance-accounts', 'view-finance-account', 'transfer-cash', 'add-finance-transaction',
+    'view-finance-accounts', 'view-finance-account', 'view-finance-transactions', 'transfer-cash', 'add-finance-transaction',
     
     'open-operational-cost-app',
     'view-operational-costs', 'add-operational-cost',
