@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->commit();
       
     $_SESSION['FLASH_MESSAGE'] = 'Transfer kas disimpan.';
-    header('Location: ./accountId=' . $data->fromId);
+    header('Location: ./?accountId=' . $data->fromId);
     exit;
   }
 }
