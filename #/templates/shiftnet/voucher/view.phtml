@@ -3,14 +3,37 @@
   div.mdl-cell{padding:20px 0;}
   div.mdl-cell>*{padding:0 20px;}
   h2,h3,p{margin:5px;}
+  @media print {
+    .mdl-layout__drawer,.mdl-layout__header { display: none; }
+    #vouchercard,#vouchercard>div { width: auto; margin: 0; padding: 0; height: auto; }
+    #vouchercard {
+      position: fixed;
+      left: 0;
+      top: 0;
+      padding: 0.8cm;
+      min-height: 0;
+    }
+    #vouchercard div{width:3.65cm;min-height:0;}
+    #vouchercard hr {display:none;margin:0;padding:0;height:0;min-height:0;}
+    #vouchercard h3, #vouchercard h2, #vouchercard p {
+      display:block;
+      font-family: "Arial Narrow";
+      margin: 0;
+      padding: 0;
+      height: inherit;
+      line-height: normal;
+    }
+    h3, h2{font-size:15pt;}
+  }
 </style>
-<div class="mdl-grid">
+<div id="vouchercard" class="mdl-grid">
   <div class="mdl-cell mdl-cell--12-col mdl-card mdl-shadow--2dp">
-      <h3><?= format_money($voucher->price) ?></h3>
-      <hr>
-      <h2><?= $voucher->code ?></h2>
-      <h3><?= format_duration($voucher->duration) ?></h3>
-      <hr>
-      <p>EXP: <?= strftime('<b>%A, %e %B %Y</b> jam <b>%H:%M:%S</b>', strtotime($voucher->expirationDateTime)) ?>.</p>
+    <p>Voucher ShiftNet</p>
+    <h3><?= format_money($voucher->price) ?></h3>
+    <hr>
+    <h2><?= $voucher->code ?></h2>
+    <h3><?= format_duration($voucher->duration) ?></h3>
+    <hr>
+    <p>EXP: <?= strftime('%A<br>%e %B %Y %H:%M:%S', strtotime($voucher->expirationDateTime)) ?></p>
   </div>
 </div>
