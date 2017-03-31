@@ -3,22 +3,24 @@
   <head>
     <style>
       table { border-collapse: collapse; width: 100%; }
-      td, th { border: 1px solid #000; padding: 5px 5px; }
+      .row>td,.row>th { border: 1px solid #000; padding: 5px 5px; }
       .r {text-align: right;}
       .s { border-right: none; }
       .u { border-left: none; }
       body { max-width: 19cm; margin: 0 auto; }
-      h3, p { margin: 5px 0; }
+      h3 { margin: 0; }
       html { font-family: "Arial Narrow"; }
     </style>
   </head>  
   <body>
-    <h3>Penyesuaian Stok</h3>
-    <p><?= format_stock_adjustment_status($data->status) ?> <?= $data->dateTime ?></p>
-    <p>Dicetak: <?= date('Y-m-d H:i:s') ?></p>
     <table>
       <thead>
         <tr>
+          <th colspan="7">
+            #<?= format_stock_adjustment_code($data->id) . ' - ' . date('d/m/Y H:i:s') . ' - ' . $_SESSION['CURRENT_USER']->username ?>
+          </th>
+        </tr>
+        <tr class="row">
           <th>No</th>
           <th>Kode</th>
           <th>Nama Produk</th>
@@ -29,7 +31,7 @@
       </thead>
       <tbody>
       <?php foreach ($data->items as $i => $item): ?>
-        <tr>
+        <tr class="row">
           <td class="r"><?= $i+1 ?></td>
           <td><?= format_product_code($item->id) ?></td>
           <td><?= e($item->name) ?></td>

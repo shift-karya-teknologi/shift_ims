@@ -89,7 +89,7 @@
                   <td>
                     <?php if ($data->status == 0): ?>
                     <div class="mdl-textfield mdl-js-textfield">
-                      <input class="mdl-textfield__input" type="number" min="0" step="1" id="item-<?= $i ?>" name="i[<?= $item->id ?>]" value="<?= $item->quantity ?>"
+                      <input class="mdl-textfield__input" type="number" step="1" id="item-<?= $i ?>" name="i[<?= $item->id ?>]" value="<?= $item->quantity ?>"
                              onfocus="this.select();" pattern="\d{1,5}">
                       <label class="mdl-textfield__label" for="item-<?= $i ?>"></label>
                     </div>
