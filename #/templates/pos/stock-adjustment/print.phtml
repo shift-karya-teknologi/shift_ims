@@ -14,7 +14,7 @@
   </head>  
   <body>
     <h3>Penyesuaian Stok</h3>
-    <p>Dibuat : <?= $data->dateTime ?></p>
+    <p><?= format_stock_adjustment_status($data->status) ?> <?= $data->dateTime ?></p>
     <p>Dicetak: <?= date('Y-m-d H:i:s') ?></p>
     <table>
       <thead>
