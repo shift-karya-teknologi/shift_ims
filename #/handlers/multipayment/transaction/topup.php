@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $accounts = $db->query('select * from multipayment_accounts where active=1 order by name asc')
   ->fetchAll(PDO::FETCH_OBJ);
-render('pos/multipayment-transaction/topup', [
+render('multipayment/transaction/topup', [
   'transaction' => $transaction,
   'accounts' => $accounts,
   'errors' => $errors,

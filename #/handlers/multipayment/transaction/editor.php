@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $accounts = $db->query('select * from multipayment_accounts where active=1 order by name asc')
   ->fetchAll(PDO::FETCH_OBJ);
 
-render('pos/multipayment-transaction/editor', [
+render('multipayment/transaction/editor', [
   'transaction' => $transaction,
   'types'    => $types,
   'accounts' => $accounts,
