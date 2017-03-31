@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table { border-collapse: collapse; width: 100%; }
+      td, th { border: 1px solid #000; padding: 5px 5px; }
+      .r {text-align: right;}
+      .s { border-right: none; }
+      .u { border-left: none; }
+      body { max-width: 19cm; margin: 0 auto; }
+      h3, p { margin: 5px 0; }
+      html { font-family: "Arial Narrow"; }
+    </style>
+  </head>  
+  <body>
+    <h3>Penyesuaian Stok</h3>
+    <p>Dibuat : <?= $data->dateTime ?></p>
+    <p>Dicetak: <?= date('Y-m-d H:i:s') ?></p>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Kode</th>
+          <th>Nama Produk</th>
+          <th colspan="2">Tercatat</th>
+          <th>Aktual</th>
+          <th>Selisih</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach ($data->items as $i => $item): ?>
+        <tr>
+          <td class="r"><?= $i+1 ?></td>
+          <td><?= format_product_code($item->id) ?></td>
+          <td><?= e($item->name) ?></td>
+          <td class="r s"><?= format_number($item->stock) ?></td>
+          <td class="u"><?= $item->uom ?></td>
+          <td></td>
+          <td></td>
+        </tr>
+      <?php endforeach ?>
+      </tbody>
+    </table>
+  </body>
+</html>

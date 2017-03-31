@@ -22,6 +22,9 @@
           </a>
           <span class="mdl-layout-title">#<?= format_stock_adjustment_code($data->id) ?></span>
           <div class="mdl-layout-spacer"></div>
+          <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="print">
+            <i class="material-icons">print</i>
+          </button>          
           <?php if ($data->status == 0): ?>
             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" type="submit" name="action" value="save">
               <i class="material-icons">save</i>

@@ -5,6 +5,7 @@ ensure_current_user_can('edit-stock-adjustment');
 require_once CORELIB_PATH . '/Product.php';
 
 $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
+$print = isset($_REQUEST['print']) ? (int)$_REQUEST['print'] : 0;
 
 $data = $db->query('select * from stock_adjustments where id=' . $id)->fetch(PDO::FETCH_OBJ);
 if (!$data) {
@@ -30,7 +31,8 @@ while ($item = $q->fetchObject()) {
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = isset($_POST['action']) ? $_POST['action'] : 'save';
-  if ($action == 'save' || $action == 'complete') {
+  
+  if ($action == 'save' || $action == 'print' || $action == 'complete') {
     if (!(isset($_POST['i']) && is_array($_POST['i'])))
       exit;
     
@@ -62,11 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $q->bindValue(':id', $data->id);
     $q->execute();
 
-    if ($action == 'save') {
+    if ($action == 'save' || $action == 'print') {
       $db->commit();
 
       $_SESSION['FLASH_MESSAGE'] = 'Penyesuaian stok telah disimpan.';
-      header('Location: ?id=' . $data->id);
+      header('Location: ?id=' . $data->id . '&print=' . ($action == 'print' ? 1 : 0));
       exit;
     }
     
@@ -115,9 +117,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['FLASH_MESSAGE'] = 'Penyesuaian stok #' . format_stock_adjustment_code($data->id) . ' telah dihapus.';
     header('Location: ./');
     exit;
-  } 
+  }
 }
 
-render('pos/stock-adjustment/editor', [
-  'data' => $data
-]);
+if (!$print) {
+  render('pos/stock-adjustment/editor', [
+    'data' => $data
+  ]);
+}
+else {
+  render('pos/stock-adjustment/print', [
+    'data' => $data
+  ]);  
+}
