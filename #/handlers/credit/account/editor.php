@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $errors['productPrice'] = 'Harga produk harus diisi.';
     }
     
-    if ($item->dueDate < 1 || $item->dueDate >= 27) {
+    if ($item->dueDate < 1 || $item->dueDate > 28) {
       $errors['dueDate'] = 'Tanggal jatuh tempo tidak valid.';
     }
     
