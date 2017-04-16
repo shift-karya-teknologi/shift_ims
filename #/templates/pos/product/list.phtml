@@ -1,3 +1,4 @@
+<?php if (!isset($_GET['_x'])): ?>
 <!DOCTYPE html>
 <html lang="id">
   <head>
@@ -11,13 +12,16 @@
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">Produk (<?= format_number(count($products)) . '/'. format_number($productCount) ?>)</span>
+          <span class="mdl-layout-title">Produk</span>
           <div class="mdl-layout-spacer"></div>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
             <label class="mdl-button mdl-js-button mdl-button--icon" for="search-product-textbox"><i class="material-icons">search</i></label>
-            <div class="mdl-textfield__expandable-holder">
-              <input class="mdl-textfield__input" type="text" id="search-product-textbox" onkeyup="applyFilter()">
-            </div>
+            <form class="mdl-textfield__expandable-holder">
+              <input type="hidden" name="categoryId" value="<?= $filter['categoryId'] ?>">
+              <input type="hidden" name="type" value="<?= $filter['type'] ?>">
+              <input type="hidden" name="status" value="<?= $filter['status'] ?>">
+              <input class="mdl-textfield__input" type="text" id="search-product-textbox" name="name" value="<?= e($filter['name']) ?>">
+            </form>
           </div>
           <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="filter-button" type="button">
             <i class="material-icons">filter_list</i>
@@ -32,6 +36,7 @@
       <?= render('pos/drawer') ?>
       <main class="mdl-layout__content">
         <div id="product-list" class="mdlx-data-list">
+<?php endif ?> 
           <?php foreach ($products as $product): ?>
             <div class="mdlx-data-list__item <?= $product->active ? '' : 'r' ?>">
               <a href="./editor?id=<?= $product->id ?>">
@@ -55,6 +60,8 @@
               </a>
             </div>
           <?php endforeach ?>
+          
+<?php if (!isset($_GET['_x'])): ?>
         </div>
       </main>
     </div>
@@ -98,27 +105,49 @@
     </form>
     <?= render('foot') ?>
     <script>
-      function applyFilter() {
+      
+      (function(){
+        var xhr = new XMLHttpRequest();
+        var sending = false;
+        var lastRow = 0;
+        var productListElement = document.querySelector('#product-list');
+        var mainContentElement = document.querySelector('main');
+        mainContentElement.addEventListener('scroll', function() {
+          if (mainContentElement.scrollTop + mainContentElement.clientHeight === mainContentElement.scrollHeight) {
+            lastRow = productListElement.children.length + 1;
+            
+            if (sending)
+              return;
+            
+            xhr.open('GET', '?_x=1&_s=' + (lastRow + 1)
+                    + '&name='+ '<?= $filter['name'] ?>'
+                    + '&categoryId='+ '<?= $filter['categoryId'] ?>'
+                    + '&type='+ '<?= $filter['type'] ?>'
+                    + '&status='+ '<?= $filter['status'] ?>');
+            xhr.send(null);
+            sending = true;
+          }
+        });
         
-        var input, filter, rows, productNameElement, productCodeElement, i;
-        input = document.getElementById("search-product-textbox");
-        filter = input.value.toUpperCase();
-        rows = document.querySelectorAll("#product-list>div");
-        for (i = 0; i < rows.length; i++) {
-          productNameElement = rows[i].children[0].children[0];
-          productCodeElement = rows[i].children[0].children[1];
-          if (productNameElement) {
-            if (productNameElement.innerHTML.toUpperCase().indexOf(filter) > -1
-                || productCodeElement.innerHTML.toUpperCase().indexOf(filter) > -1) {
-              rows[i].style.display = "";
-            } else {
-              rows[i].style.display = "none";
+        xhr.onreadystatechange = function () {
+          var DONE = 4;
+          var OK = 200;
+          if (xhr.readyState === DONE) {
+            if (xhr.status === OK) {
+              productListElement.innerHTML += xhr.responseText;
             }
+            else {
+              console.log('Error: ' + xhr.status);
+            }
+            
+            sending = false;
           }
         }
-      }
+        
+      })();
       
       setupStandardFilterDialog();
     </script>
   </body>
 </html>
+<?php endif ?>
