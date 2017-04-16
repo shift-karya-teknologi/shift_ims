@@ -53,4 +53,5 @@
     document.querySelector('#filter-dialog .close').addEventListener('click', function() { filterDialog.close(); });
     document.querySelector('#filter-button').addEventListener('click', function() { filterDialog.showModal(); });
   }
+  document.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', showSubmitProgress); });
 </script>
