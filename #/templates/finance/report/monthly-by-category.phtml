@@ -19,7 +19,7 @@
           <a href="./" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
             <i class="material-icons">arrow_back</i>
           </a>
-          <span class="mdl-layout-title">Rekapitulasi Operasional</span>
+          <span class="mdl-layout-title"><small>Laporan Keuangan Bulanan per Kategori</small></span>
           <div class="mdl-layout-spacer"></div>
         </div>
       </header>
@@ -28,6 +28,11 @@
           <div class="mdl-cell mdl-cell--4-col">
             <form>
               <input type="month" value="<?= date('Y-m', $date) ?>" name="month">
+              <select name="accountId">
+                <?php foreach ($accounts as $account): ?>
+                  <option value="<?= $account->id ?>" <?= $accountId == $account->id ? 'selected' : '' ?>><?= $account->name ?></option>
+                <?php endforeach ?>
+              </select>
               <input type="submit" value="OK">
             </form>
             <br>

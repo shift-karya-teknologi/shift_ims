@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+  <?= render('head') ?>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Keuangan</span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <?= render('finance/drawer') ?>
+      <?php $grandTotal = 0; ?>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <ul>
+              <li><a href="./monthly-by-category">Rekap Laporan Keuangan Bulanan</a></li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+    <?= render('foot') ?>
+  </body>
+</html>
