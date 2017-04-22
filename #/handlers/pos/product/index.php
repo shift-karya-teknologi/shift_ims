@@ -21,7 +21,7 @@ $filter['name'] = isset($_GET['name']) ? $_GET['name'] : '';
 $_SESSION['PRODUCT_MANAGER_FILTER'] = $filter;
 
 $where = [];
-$sql = 'select * from products';
+$sql = 'select * from (select *, CONCAT(\'P-\', LPAD(id, 5, \'0\')) code from products) products';
 if ($filter['type'] !== -1)
   $where[] = 'type=' . $filter['type'];
 if ($filter['status'] !== -1)
@@ -33,7 +33,7 @@ if ($filter['categoryId'] !== -1) {
     $where[] = 'categoryId=' . $filter['categoryId'];
 }
 if (!empty($filter['name'])) {
-  $where[] = 'name like :name';
+  $where[] = 'name like :name or code like :name';
 }
 
 if (!empty($where))
